@@ -34,8 +34,11 @@ public final class TaskerEditActivity extends Activity {
             final Bundle taskerBundle = getIntent().getBundleExtra(com.twofortyfouram.locale.api.Intent.EXTRA_BUNDLE);
 
             if (taskerBundle != null) {
-                List<String> savedSelectedFields = Arrays.asList(taskerBundle.getStringArray(Const.INTENT_EXTRA_FIELD_LIST));
-                storedFieldKeySelection.addAll(savedSelectedFields);
+                String[] savedSelectedFieldsArray = taskerBundle.getStringArray(Const.INTENT_EXTRA_FIELD_LIST);
+                if(savedSelectedFieldsArray != null) {
+                    List<String> savedSelectedFields = Arrays.asList(savedSelectedFieldsArray);
+                    storedFieldKeySelection.addAll(savedSelectedFields);
+                }
             }
         }
         /*
@@ -46,8 +49,7 @@ public final class TaskerEditActivity extends Activity {
         try {
             callingApplicationLabel =
                     getPackageManager().getApplicationLabel(
-                            getPackageManager().getApplicationInfo(getCallingPackage(),
-                                    0));
+                            getPackageManager().getApplicationInfo(getCallingPackage(),0));
         } catch (final NameNotFoundException e) {
             //TODO log
         }
@@ -69,7 +71,7 @@ public final class TaskerEditActivity extends Activity {
         final String[] fieldLabels = new String[fieldCount];
         final boolean[] fieldChecks = new boolean[fieldCount];
 
-        for (Integer i = 0; i < locusFields.size(); i++) {
+        for (int i = 0; i < locusFields.size(); i++) {
             LocusField field = locusFields.get(i);
             fieldLabels[i] = field.label;
             fieldChecks[i] = storedFieldKeySelection.contains(field.taskerName);
@@ -127,7 +129,7 @@ public final class TaskerEditActivity extends Activity {
         for (LocusField field : selectedFields) {
             fieldDesc.add("%" + field.taskerName + "\n" + field.label + "\n");
         }
-        TaskerPlugin.addRelevantVariableList(resultIntent, fieldDesc.toArray(new String[fieldDesc.size()]));
+        TaskerPlugin.addRelevantVariableList(resultIntent, fieldDesc.toArray(new String[0]));
 
         //TODO remove static value
         Setting.requestTimeoutMS(resultIntent, 3000);

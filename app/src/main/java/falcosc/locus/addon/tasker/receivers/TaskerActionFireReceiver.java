@@ -34,7 +34,14 @@ public final class TaskerActionFireReceiver extends BroadcastReceiver {
             return;
         }
 
-        Set<String> selectedFields = new HashSet<>(Arrays.asList(bundle.getStringArray(Const.INTENT_EXTRA_FIELD_LIST)));
+        String[] selectedFieldsArray = bundle.getStringArray(Const.INTENT_EXTRA_FIELD_LIST);
+
+        if (selectedFieldsArray == null) {
+            //TODO log
+            return;
+        }
+
+        Set<String> selectedFields = new HashSet<>(Arrays.asList(selectedFieldsArray));
 
         LocusCache locusCache = LocusCache.getInstance(context);
 
@@ -48,7 +55,7 @@ public final class TaskerActionFireReceiver extends BroadcastReceiver {
 
             Bundle varsBundle = new Bundle();
             for (String field : selectedFields) {
-                //Don't neet to check updateContainerMethodMap, illegal intents creates exceptions
+                //Don't need to check updateContainerMethodMap, illegal intents creates exceptions
                 LocusField lf = locusCache.updateContainerFieldMap.get(field);
                 varsBundle.putString("%" + field, lf.updateContainerGetter.apply(update));
                 TaskerPlugin.addVariableBundle(getResultExtras(true), varsBundle);
@@ -58,7 +65,6 @@ public final class TaskerActionFireReceiver extends BroadcastReceiver {
         } catch (RequiredVersionMissingException e) {
             //TODO
             e.printStackTrace();
-            return;
         }
 
     }

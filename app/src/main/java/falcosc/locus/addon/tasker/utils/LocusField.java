@@ -9,7 +9,7 @@ public class LocusField {
     public final String label;
     public final Function<UpdateContainer, String> updateContainerGetter;
 
-    public LocusField(String taskerName, String label, Function<UpdateContainer, String> updateContainerGetter) throws IllegalArgumentException {
+    LocusField(String taskerName, String label, Function<UpdateContainer, String> updateContainerGetter) throws IllegalArgumentException {
         if (!TaskerPlugin.variableNameValid("%" + taskerName)) {
             throw new IllegalArgumentException("taskerName: " + taskerName + " is not valid");
         }

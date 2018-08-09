@@ -48,6 +48,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
+@SuppressWarnings("ALL")
 public class TaskerPlugin {
 
     private final static String 	TAG = "TaskerPlugin";

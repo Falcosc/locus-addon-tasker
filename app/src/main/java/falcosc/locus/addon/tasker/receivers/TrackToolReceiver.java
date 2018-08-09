@@ -1,6 +1,5 @@
 package falcosc.locus.addon.tasker.receivers;
 
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +10,6 @@ import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 import locus.api.objects.extra.Track;
 
 public final class TrackToolReceiver extends BroadcastReceiver {
-
 
     @Override
     public void onReceive(@NonNull final Context context, @NonNull final Intent intent) {
