@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Locus Map Addon Tasker Plugin</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <!-- Discard menu item -->
+    <string name="menu_discard_changes">Discard changes</string>
+
+    <string name="tasker_plugin_name">Locus Maps</string>
+</resources>

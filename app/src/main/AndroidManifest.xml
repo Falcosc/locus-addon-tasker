@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="falcosc.locus.addon.tasker">
+
+
+    <!-- Although many of these default to true, some users with modified ROMs have
+        trouble seeing apps unless these attributes are explicitly set. -->
+    <supports-screens
+            android:anyDensity="true"
+            android:largeScreens="true"
+            android:normalScreens="true"
+            android:smallScreens="true"
+            android:xlargeScreens="true"/>
+
+    <application
+            android:allowBackup="false"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme">
+
+
+        <!-- main activity contains an app description to tell why Locus Map sees this app -->
+        <activity
+                android:name=".MainActivity"
+                android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <!-- listen Locus click track tools -->
+        <receiver android:name=".receivers.TrackToolReceiver">
+            <intent-filter>
+                <action android:name="locus.api.android.INTENT_ITEM_TRACK_TOOLS"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </receiver>
+
+        <!-- listen tasker edit action -->
+        <activity
+                android:name=".TaskerEditActivity"
+                android:label="@string/tasker_plugin_name"
+                android:icon="@mipmap/ic_launcher"
+                android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING"/>
+            </intent-filter>
+        </activity>
+
+        <!-- listen tasker action fire -->
+        <receiver
+                android:name=".receivers.TaskerActionFireReceiver"
+                android:exported="true"
+                >
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.FIRE_SETTING"/>
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>
