@@ -17,5 +17,11 @@
             android:text="This App creates Intends for Tasker based on Locus Map events"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" android:id="@+id/textView"/>
+    <TextView
+            android:text="https://github.com/Falcosc/locus-addon-tasker/wiki/Privacy-Policy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autoLink="web"
+            android:linksClickable="true"/>
 
 </android.support.design.widget.CoordinatorLayout>
