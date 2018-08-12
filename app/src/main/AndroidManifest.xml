@@ -30,20 +30,87 @@
             </intent-filter>
         </activity>
 
-        <!-- listen Locus click track tools -->
-        <receiver android:name=".receivers.TrackToolReceiver">
+        <!-- set Track for calculate remaining elevation http://help.locusmap.eu/topic/elevation-to-target -->
+        <activity
+                android:name=".LocusSetGuideTrackActivity"
+                android:label="Calc remaining Elevation"
+                android:icon="@mipmap/ic_launcher"
+                android:theme="@style/Theme.AppCompat.Dialog" >
             <intent-filter>
                 <action android:name="locus.api.android.INTENT_ITEM_TRACK_TOOLS"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
-        </receiver>
+        </activity>
+
+        <!-- run Tasker Task -->
+        <activity
+                android:name=".LocusRunTaskerActivity"
+                android:label="run Task"
+                android:icon="@mipmap/ic_launcher"
+                android:theme="@style/Theme.AppCompat.Dialog" >
+            <!-- thanks to this, app appear in list of available locations -->
+            <intent-filter>
+                <action
+                    android:name="locus.api.android.INTENT_ITEM_GET_LOCATION"/>
+                <category
+                    android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+
+            <!-- thanks to this, app appear in sub-menu of every point -->
+            <intent-filter>
+                <action
+                    android:name="locus.api.android.INTENT_ITEM_POINT_TOOLS"/>
+                <category
+                    android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+
+            <!-- thanks to this, app appear in sub-menu of every track -->
+            <intent-filter>
+                <action
+                    android:name="locus.api.android.INTENT_ITEM_TRACK_TOOLS"/>
+                <category
+                    android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+
+            <!-- thanks to this, app appear in function list -->
+            <intent-filter>
+                <action
+                    android:name="locus.api.android.INTENT_ITEM_MAIN_FUNCTION"/>
+                <category
+                    android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+
+            <!-- thanks to this, app appear in searching options -->
+            <intent-filter>
+                <action
+                    android:name="locus.api.android.INTENT_ITEM_SEARCH_LIST"/>
+                <category
+                    android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+
+            <!-- thanks to this, app appear in points screen - tools button -->
+            <intent-filter>
+                <action
+                    android:name="locus.api.android.INTENT_ITEM_POINTS_SCREEN_TOOLS"/>
+                <category
+                    android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+
+            <!-- thanks to this, app can handle incoming locations -->
+            <intent-filter>
+                <action
+                    android:name="locus.api.android.ACTION_RECEIVE_LOCATION"/>
+                <category
+                    android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
 
         <!-- listen tasker edit action -->
         <activity
                 android:name=".TaskerEditActivity"
                 android:label="@string/tasker_plugin_name"
                 android:icon="@mipmap/ic_launcher"
-                android:theme="@style/AppTheme">
+                android:theme="@style/Theme.AppCompat.Dialog" >
             <intent-filter>
                 <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING"/>
             </intent-filter>
