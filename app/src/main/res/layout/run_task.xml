@@ -4,14 +4,25 @@
     android:layout_height="300dip"
     android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="This event is not properly implemented, if you want to use it please ask for a tasker event implementation and tell which data you need." />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="For now you can manually execute on of your task and get event data at '%data':" />
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout 
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              android:id="@+id/linearContent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="This event is not properly implemented, if you want to use it please ask for a tasker event implementation and tell which data you need." />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="For now you can manually execute on of your task and get event data at '%data' in form of useless IDs instead of populating many tasker variables with object members:" />
+        </LinearLayout>
+    </ScrollView>    
+
 
     <Button
         android:id="@+id/btnClose"
