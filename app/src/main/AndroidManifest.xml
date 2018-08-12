@@ -96,13 +96,13 @@
                     android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
 
-            <!-- thanks to this, app can handle incoming locations -->
+            <!-- TODO get location is async. thanks to this, app can handle incoming locations 
             <intent-filter>
                 <action
                     android:name="locus.api.android.ACTION_RECEIVE_LOCATION"/>
                 <category
                     android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
+            </intent-filter>-->
         </activity>
 
         <!-- listen tasker edit action -->
