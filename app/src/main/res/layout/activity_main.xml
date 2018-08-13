@@ -11,7 +11,8 @@
         android:layout_width="96dp"
         android:layout_height="96dp"
         android:layout_gravity="center_horizontal"
-        android:src="@mipmap/ic_launcher" />
+        android:src="@drawable/launcher_large"
+        android:contentDescription="App Icon" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -24,14 +25,14 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="32dp"
+        android:paddingTop="24dp"
         android:gravity="left"
         android:text="You could trigger Locus Map actions in your Tasker task or Tasker can listen for Locus Map events" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="32dp"
+        android:paddingTop="24dp"
         android:autoLink="web"
         android:gravity="left"
         android:text="Currently only some parts of the Locus API are implemented in this plugin. Please share your Tasker project idea if you miss any API implementations to make me able to create a proper translation to Tasker variables: https://github.com/Falcosc/locus-addon-tasker/issues" />

@@ -2,6 +2,7 @@ package falcosc.locus.addon.tasker;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Button;
 
 public class LocusSetGuideTrackActivity extends AppCompatActivity {
 
@@ -11,7 +12,7 @@ public class LocusSetGuideTrackActivity extends AppCompatActivity {
         //TODO handle intent and set Track
 
         setContentView(R.layout.calc_remain_elevation);
-        Button closeButton = findViewById(R.id.btnClose); 
+        Button closeButton = findViewById(R.id.btnClose);
         closeButton.setOnClickListener(v -> finish());
     }
 }

@@ -1,4 +1,4 @@
-package falcosc.locus.addon.tasker;
+package falcosc.locus.addon.tasker.utils;
 
 // Constants and functions for Tasker *extensions* to the plugin protocol
 // See Also: http://tasker.dinglisch.net/plugins.html

@@ -5,8 +5,11 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.widget.Toast;
+import locus.api.android.ActionTools;
 import locus.api.android.features.periodicUpdates.UpdateContainer;
 import locus.api.android.utils.LocusUtils;
+import locus.api.android.utils.exceptions.RequiredVersionMissingException;
+import locus.api.objects.extra.Track;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.WordUtils;
 
@@ -19,6 +22,7 @@ public class LocusCache {
     public final Map<String, LocusField> updateContainerFieldMap;
     public final ArrayList<LocusField> updateContainerFields;
     public final LocusUtils.LocusVersion locusVersion;
+    public Track lastSelectedTrack;
     private final Resources locusResources;
 
     private LocusCache(Context context) {
@@ -37,12 +41,23 @@ public class LocusCache {
         updateContainerFields = createUpdateContainerFields();
         updateContainerFieldMap = createUpdateConfainerFieldMap();
         trackRecordingKeys = createUpdateContainerTrackRecKeys();
+
+        //TODO remove this, this have to be done by intent, only debugging
+        try {
+            lastSelectedTrack = ActionTools.getLocusTrack(context, locusVersion, 1);
+        } catch (RequiredVersionMissingException e) {
+            e.printStackTrace();
+        }
     }
 
     public static LocusCache getInstance(Context context) {
         if (instance == null) {
             instance = new LocusCache(context);
         }
+        return instance;
+    }
+
+    public static LocusCache getInstanceNullable(){
         return instance;
     }
 
@@ -138,6 +153,7 @@ public class LocusCache {
         f.add(cLocusField("map_top_left_lat", "", u -> String.valueOf(u.getMapTopLeft().latitude)));
         f.add(cLocusField("map_center_lon", "", u -> String.valueOf(u.getLocMapCenter().longitude)));
         f.add(cLocusField("map_center_lat", "", u -> String.valueOf(u.getLocMapCenter().latitude)));
+        f.add(cLocusField("calc_remain_uphill_elevation", "", new CalculateElevationToTarget()));
 
         //TODO Navigration points
 

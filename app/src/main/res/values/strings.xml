@@ -1,9 +1,21 @@
 <resources>
     <string name="app_name">Locus Map Addon Tasker Plugin</string>
-    <string name="title_activity_main">MainActivity</string>
-
-    <!-- Discard menu item -->
-    <string name="menu_discard_changes">Discard changes</string>
-
     <string name="tasker_plugin_name">Locus Maps</string>
+    <string name="act_request_stats_sensors">Request sensors and stats</string>
+    <string name="act_exec_task">Execute Action Task</string>
+    <string name="act_import_points">Import points with dialog</string>
+    <string name="act_display_points">Display new points</string>
+    <string name="act_display_geocaches">Display new geocaches</string>
+    <string name="act_get_geocache_field_notes">Get geocaching field notes</string>
+    <string name="act_search_point_by_name">Search point by name</string>
+    <string name="act_display_point_screen">Display point detail screen</string>
+    <string name="act_display_tracks">Display new tracks</string>
+    <string name="act_start_nav_to">Start navigation to</string>
+    <string name="act_import_gpx">Import GPX with dialog</string>
+    <string name="act_pick_location">Pick location from Locus</string>
+    <string name="act_get_root_dir">Get Locus root directory</string>
+    <string name="act_add_wms_map">Add WMS map</string>
+    <string name="act_display_circles">Display circles</string>
+    <string name="select_locus_action">Select Locus Maps Action</string>
+    <string name="act_log_field_notes">Log field notes online</string>
 </resources>

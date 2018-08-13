@@ -1,4 +1,4 @@
-package falcosc.locus.addon.tasker.receivers;
+package falcosc.locus.addon.tasker.intent.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

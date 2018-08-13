@@ -11,7 +11,7 @@
 
 // For usage examples see http://tasker.dinglisch.net/invoketasks.html
 
-package net.dinglisch.android.tasker;
+package falcosc.locus.addon.tasker.utils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -107,6 +107,7 @@ public class TaskerIntent extends Intent {
 	// OK: you should be able to send a task to run. Still need to listen for result 
 	//     for e.g. task not found
 	
+	@SuppressWarnings("UnnecessaryEnumModifier")
 	public static enum Status { NotInstalled, NoPermission, NotEnabled, AccessBlocked, NoReceiver, OK };
 
 	// -------------------------- PRIVATE VARS ---------------------------- //
