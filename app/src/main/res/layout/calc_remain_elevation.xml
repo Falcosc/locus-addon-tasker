@@ -9,34 +9,47 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingBottom="8dp"
-        android:text="Track is set, now you could use the field 'calc remaining elevation' from 'request stats and sensors' if something goes wrong you get the following returns values:" />
+        android:text="Track is set, now you could use the Tasker field 'calc remaining elevation' from 'request stats and sensors'. If something goes wrong you get the following returns values:" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="8dp"
         android:paddingBottom="8dp"
-        android:text="offTRK - guiding is of or your next guide point is not part of the selected track" />
+        android:text="offTRK - Guiding is of or your next guide point is not part of the selected track" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="8dp"
         android:paddingBottom="8dp"
-        android:text="noTRK - no track selected" />
+        android:text="noTRK - No track selected" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="8dp"
         android:paddingBottom="8dp"
-        android:text="wrong - track guiding is off" />
+        android:text="wrong - Wrong track or track guiding is off" />
 
-    <Button
-        android:id="@+id/btnClose"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Close" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btnClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Close" 
+            android:layout_alignParentLeft="true" />
+
+        <Button
+            android:id="@+id/btnShare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Share"
+            android:layout_alignParentRight="true" />
+    </RelativeLayout>
 
 </LinearLayout>

@@ -25,10 +25,13 @@ public class LocusRunTaskerActivity extends AppCompatActivity {
 
         Button closeButton = findViewById(R.id.btnClose);
         closeButton.setOnClickListener(v -> finish());
+
+        Button shareButton = findViewById(R.id.btnShare);
+        shareButton.setOnClickListener(v -> openWebPage("https://github.com/Falcosc/locus-addon-tasker/issues"));
+
     }
 
     private void addTaskButtons(ViewGroup viewGroup) {
-
 
         LayoutInflater inflater = LayoutInflater.from(this);
 
@@ -43,11 +46,18 @@ public class LocusRunTaskerActivity extends AppCompatActivity {
                 Button taskBtn = view.findViewById(R.id.listBtn);
                 taskBtn.setText(task);
                 taskBtn.setOnClickListener(v -> startTask(task));
-
                 viewGroup.addView(view);
             }
 
             c.close();
+        }
+    }
+
+    public void openWebPage(String url) {
+        Uri webpage = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
         }
     }
 

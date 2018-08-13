@@ -35,7 +35,7 @@
         <!-- set Track for calculate remaining elevation http://help.locusmap.eu/topic/elevation-to-target -->
         <activity
             android:name=".LocusSetGuideTrackActivity"
-            android:label="Calc remaining Elevation"
+            android:label="Prepair remaining elevation"
             android:icon="@mipmap/ic_tasker"
             android:theme="@style/Theme.AppCompat.Light.Dialog">
             <intent-filter>
@@ -47,7 +47,7 @@
         <!-- run Tasker Task -->
         <activity
             android:name=".LocusRunTaskerActivity"
-            android:label="Run Task"
+            android:label="Run task"
             android:icon="@mipmap/ic_tasker"
             android:theme="@style/Theme.AppCompat.Light.Dialog">
             <!-- thanks to this, app appear in list of available locations -->
