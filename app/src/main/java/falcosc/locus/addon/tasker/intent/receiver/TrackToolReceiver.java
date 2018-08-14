@@ -5,9 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
+import falcosc.locus.addon.tasker.utils.LocusCache;
 import locus.api.android.utils.LocusUtils;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
-import locus.api.objects.extra.Track;
 
 public final class TrackToolReceiver extends BroadcastReceiver {
 
@@ -15,15 +15,11 @@ public final class TrackToolReceiver extends BroadcastReceiver {
     public void onReceive(@NonNull final Context context, @NonNull final Intent intent) {
 
         try {
-            final Track track = LocusUtils.handleIntentTrackTools(context, intent);
 
-            if (track == null) {
-                Toast.makeText(context, "Wrong INTENT - no track!", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(context, "Received intent with track:\n\n" + track.getName() + "\n\ndesc:" + track.getParameterDescription(), Toast.LENGTH_SHORT).show();
-            }
+            LocusCache.getInstance(context).lastSelectedTrack = LocusUtils.handleIntentTrackTools(context, intent);
+
         } catch (RequiredVersionMissingException e) {
-            e.printStackTrace();
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 }

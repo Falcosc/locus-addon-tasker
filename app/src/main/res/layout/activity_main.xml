@@ -12,7 +12,7 @@
         android:layout_height="96dp"
         android:layout_gravity="center_horizontal"
         android:src="@drawable/launcher_large"
-        android:contentDescription="App Icon" />
+        android:contentDescription="@string/app_icon" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -26,23 +26,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="24dp"
-        android:gravity="left"
-        android:text="You could trigger Locus Map actions in your Tasker task or Tasker can listen for Locus Map events" />
+        android:gravity="start"
+        android:text="@string/app_main_description" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="24dp"
         android:autoLink="web"
-        android:gravity="left"
-        android:text="Currently only some parts of the Locus API are implemented in this plugin. Please share your Tasker project idea if you miss any API implementations to make me able to create a proper translation to Tasker variables: https://github.com/Falcosc/locus-addon-tasker/issues" />
+        android:gravity="start"
+        android:text="@string/app_main_notice" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="8dp"
         android:autoLink="web"
-        android:gravity="left"
-        android:text="https://github.com/Falcosc/locus-addon-tasker/wiki/Privacy-Policy" />
+        android:gravity="start"
+        android:text="@string/privacy_policy_link" />
 
 </LinearLayout>

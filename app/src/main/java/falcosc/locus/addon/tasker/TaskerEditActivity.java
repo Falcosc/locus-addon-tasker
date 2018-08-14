@@ -3,6 +3,7 @@ package falcosc.locus.addon.tasker;
 import android.content.Intent;
 import android.os.Bundle;
 
+import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import falcosc.locus.addon.tasker.R.layout;
 import falcosc.locus.addon.tasker.intent.LocusActionType;
 import falcosc.locus.addon.tasker.intent.edit.AbstractDialogFragment;
 import falcosc.locus.addon.tasker.utils.Const;
+import falcosc.locus.addon.tasker.utils.LocusCache;
 
 public final class TaskerEditActivity extends AppCompatActivity implements AbstractDialogFragment.EditTaskFinish {
 
@@ -28,9 +30,13 @@ public final class TaskerEditActivity extends AppCompatActivity implements Abstr
         LayoutInflater inflater = LayoutInflater.from(this);
 
         for (LocusActionType type : LocusActionType.values()) {
-            View view = inflater.inflate(layout.list_btn, viewGroup);
-            Button button = view.findViewById(id.listBtn);
+            View view = inflater.inflate(layout.list_btn_launcher, viewGroup, false);
+            Button  button = view.findViewById(id.listBtn);
             button.setText(type.getLabelStringId());
+            if(type.isNotImplemented()){
+                //noinspection deprecation because TextViewCompat does use the same method
+                button.setTextAppearance(this, R.style.textRed);
+            }
             button.setOnClickListener(v -> type.createFragment().show(getSupportFragmentManager(), type.name()));
             viewGroup.addView(view);
         }
@@ -39,6 +45,9 @@ public final class TaskerEditActivity extends AppCompatActivity implements Abstr
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //start reading locus resources files in background to speed up UI
+        LocusCache.initAsync(this);
 
         //TODO try to hide the dialog if we did open 2nd level dialog
         setContentView(layout.task_selection);

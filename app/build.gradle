@@ -10,6 +10,7 @@ android {
         targetSdkVersion Integer.valueOf(PARAM_TARGET_SDK_VERSION)
         versionCode 1
         versionName "0.1"
+        vectorDrawables.useSupportLibrary = true
     }
 
     packagingOptions {

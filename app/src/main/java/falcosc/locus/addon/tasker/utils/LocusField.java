@@ -1,6 +1,7 @@
 package falcosc.locus.addon.tasker.utils;
 
 import android.arch.core.util.Function;
+import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
 import locus.api.android.features.periodicUpdates.UpdateContainer;
 
 public class LocusField {

@@ -1,4 +1,4 @@
-package falcosc.locus.addon.tasker.utils;
+package falcosc.locus.addon.tasker.thridparty;
 
 // Constants and functions for Tasker *extensions* to the plugin protocol
 // See Also: http://tasker.dinglisch.net/plugins.html
@@ -48,7 +48,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
-@SuppressWarnings("ALL")
 public class TaskerPlugin {
 
     private final static String 	TAG = "TaskerPlugin";

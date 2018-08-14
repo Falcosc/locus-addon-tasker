@@ -11,8 +11,8 @@ public abstract class AbstractDialogFragment extends DialogFragment {
 
     }
 
-    public void finish(Intent resultIntent) {
-        EditTaskFinish activity = (EditTaskFinish) getActivity();
+    void finish(Intent resultIntent) {
+        EditTaskFinish activity = (EditTaskFinish) requireActivity();
         activity.onFinish(resultIntent);
     }
 }

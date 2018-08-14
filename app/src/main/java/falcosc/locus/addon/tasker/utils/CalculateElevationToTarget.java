@@ -7,7 +7,11 @@ import locus.api.objects.extra.Track;
 
 import java.util.List;
 
-public class CalculateElevationToTarget implements Function<UpdateContainer, String> {
+class CalculateElevationToTarget implements Function<UpdateContainer, String> {
+    private static final String NO_TRK = "noTRK";
+    private static final String WRONG = "wrong";
+    private static final String OFF_TRK = "offTRK";
+
     @Override
     public String apply(UpdateContainer updateContainer) {
 
@@ -15,7 +19,7 @@ public class CalculateElevationToTarget implements Function<UpdateContainer, Str
             Track track = LocusCache.getInstanceNullable().lastSelectedTrack;
 
             if (track == null) {
-                return "noTRK";
+                return NO_TRK;
             }
 
             //TODO reverse track calculation
@@ -44,10 +48,10 @@ public class CalculateElevationToTarget implements Function<UpdateContainer, Str
 
             if (direction == 0) {
                 //wrong track
-                return "wrong";
+                return WRONG;
             }
 
-            int currentIndex = findMatchingPointIntex(points, nextGuidLocation);
+            int currentIndex = findMatchingPointIndex(points, nextGuidLocation);
             if (currentIndex >= 0) {
                 return String.valueOf(remainingUphill[currentIndex]);
             }
@@ -57,7 +61,7 @@ public class CalculateElevationToTarget implements Function<UpdateContainer, Str
         }
 
         //tracking is off on exception or we are not on track
-        return "offTRK";
+        return OFF_TRK;
     }
 
     private int getTrackDirection(Location targetLocation, Track track) {
@@ -77,7 +81,7 @@ public class CalculateElevationToTarget implements Function<UpdateContainer, Str
         return 0;
     }
 
-    private int findMatchingPointIntex(List<Location> points, Location current) {
+    private int findMatchingPointIndex(List<Location> points, Location current) {
         for (int i = points.size() - 1; i >= 0; i--) {
             Location loc = points.get(i);
             if (current.longitude == loc.longitude && current.latitude == loc.latitude) {

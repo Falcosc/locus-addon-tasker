@@ -6,8 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
+import android.widget.Toast;
 import falcosc.locus.addon.tasker.R;
-import falcosc.locus.addon.tasker.utils.TaskerPlugin;
+import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
 import falcosc.locus.addon.tasker.intent.LocusActionType;
 import falcosc.locus.addon.tasker.utils.Const;
 import falcosc.locus.addon.tasker.utils.LocusCache;
@@ -24,7 +25,7 @@ public class UpdateContainerDialog extends AbstractDialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        Activity activity = getActivity();
+        Activity activity = requireActivity();
 
         LocusCache locusCache = LocusCache.getInstance(activity);
 
@@ -32,14 +33,13 @@ public class UpdateContainerDialog extends AbstractDialogFragment {
 
         if (savedInstanceState == null) {
 
-            final Bundle taskerBundle = getActivity().getIntent().getBundleExtra(com.twofortyfouram.locale.api.Intent.EXTRA_BUNDLE);
+            final Bundle taskerBundle = activity.getIntent().getBundleExtra(com.twofortyfouram.locale.api.Intent.EXTRA_BUNDLE);
             if (taskerBundle != null) {
 
                 String[] savedSelectedFieldsArray = taskerBundle.getStringArray(Const.INTENT_EXTRA_FIELD_LIST);
                 if (savedSelectedFieldsArray != null) {
 
-                    List<String> savedSelectedFields = Arrays.asList(savedSelectedFieldsArray);
-                    for (String fieldKey : savedSelectedFields) {
+                    for (String fieldKey : savedSelectedFieldsArray) {
 
                         LocusField field = locusCache.updateContainerFieldMap.get(fieldKey);
                         if (field != null) {
@@ -66,11 +66,10 @@ public class UpdateContainerDialog extends AbstractDialogFragment {
         builder.setMultiChoiceItems(fieldLabels, fieldChecks,
                 (dialog, which, isChecked) -> fieldChecks[which] = isChecked);
 
-        //TODO label
         builder.setTitle(R.string.act_request_stats_sensors);
-        builder.setNegativeButton("Cancel", (dialog, which) -> getActivity().finish());
-        builder.setNeutralButton("Back", null);
-        builder.setPositiveButton("OK", (dialog, which) -> {
+        builder.setNegativeButton(R.string.cancel, (dialog, which) -> requireActivity().finish());
+        builder.setNeutralButton(R.string.back, null);
+        builder.setPositiveButton(R.string.ok, (dialog, which) -> {
             storedFieldSelection = new LinkedHashMap<>();
             for (int i = 0; i < fieldChecks.length; i++) {
                 if (fieldChecks[i]) {
@@ -86,14 +85,16 @@ public class UpdateContainerDialog extends AbstractDialogFragment {
 
     private void setGetUpdateContainerResult() {
 
-        Bundle hostExtras = getActivity().getIntent().getExtras();
+        Bundle hostExtras = requireActivity().getIntent().getExtras();
 
         if (!TaskerPlugin.hostSupportsRelevantVariables(hostExtras)) {
-            //TODO add Error
+            Toast.makeText(requireContext(), R.string.err_no_support_relevant_variables, Toast.LENGTH_LONG).show();
+            return;
         }
 
         if (!TaskerPlugin.Setting.hostSupportsSynchronousExecution(hostExtras)) {
-            //TODO add error
+            Toast.makeText(requireContext(), R.string.err_no_support_sync_exec, Toast.LENGTH_LONG).show();
+            return;
         }
 
         String[] fieldKeyList = storedFieldSelection.keySet().toArray(new String[0]);
@@ -102,7 +103,7 @@ public class UpdateContainerDialog extends AbstractDialogFragment {
         Bundle extraBundle = new Bundle();
         extraBundle.putString(Const.INTEND_EXTRA_ADDON_ACTION_TYPE, LocusActionType.UPDATE_CONTAINER_REQUEST.name());
         extraBundle.putStringArray(Const.INTENT_EXTRA_FIELD_LIST, fieldKeyList);
-        String blurb = "Get Sensor/Stats: " + StringUtils.join(fieldKeyList, ", ");
+        String blurb = "Get Sensor/Stats: " + StringUtils.join(fieldKeyList, ", "); //NON-NLS
 
         Intent resultIntent = new Intent();
         resultIntent.putExtra(com.twofortyfouram.locale.api.Intent.EXTRA_BUNDLE, extraBundle);
@@ -115,7 +116,8 @@ public class UpdateContainerDialog extends AbstractDialogFragment {
         }
         TaskerPlugin.addRelevantVariableList(resultIntent, fieldDesc.toArray(new String[0]));
 
-        //TODO remove static value
+        //force synchronous execution by set a timeout to handle variables
+        //TODO set this only if timeout is missing
         TaskerPlugin.Setting.requestTimeoutMS(resultIntent, 3000);
 
         finish(resultIntent);

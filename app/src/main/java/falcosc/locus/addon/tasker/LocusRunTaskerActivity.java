@@ -5,15 +5,19 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import falcosc.locus.addon.tasker.utils.TaskerIntent;
+import android.widget.Toast;
+import falcosc.locus.addon.tasker.thridparty.TaskerIntent;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class LocusRunTaskerActivity extends AppCompatActivity {
+
+    private static final String TAG = "LocusRunTaskerActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +31,7 @@ public class LocusRunTaskerActivity extends AppCompatActivity {
         closeButton.setOnClickListener(v -> finish());
 
         Button shareButton = findViewById(R.id.btnShare);
-        shareButton.setOnClickListener(v -> openWebPage("https://github.com/Falcosc/locus-addon-tasker/issues"));
+        shareButton.setOnClickListener(v -> openWebPage(getString(R.string.issues_link)));
 
     }
 
@@ -35,14 +39,15 @@ public class LocusRunTaskerActivity extends AppCompatActivity {
 
         LayoutInflater inflater = LayoutInflater.from(this);
 
-        Cursor c = getContentResolver().query(Uri.parse("content://net.dinglisch.android.tasker/tasks"), null, null, null, null);
+        Cursor c = getContentResolver().query(Uri.parse("content://net.dinglisch.android.tasker/tasks"), //NON-NLS
+                null, null, null, null);
         if (c != null) {
-            int nameCol = c.getColumnIndex("name");
+            int nameCol = c.getColumnIndex("name"); //NON-NLS
 
             while (c.moveToNext()) {
                 String task = c.getString(nameCol);
 
-                View view = inflater.inflate(R.layout.list_btn, viewGroup);
+                View view = inflater.inflate(R.layout.list_btn, viewGroup, false);
                 Button taskBtn = view.findViewById(R.id.listBtn);
                 taskBtn.setText(task);
                 taskBtn.setOnClickListener(v -> startTask(task));
@@ -53,24 +58,23 @@ public class LocusRunTaskerActivity extends AppCompatActivity {
         }
     }
 
-    public void openWebPage(String url) {
-        Uri webpage = Uri.parse(url);
-        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+    private void openWebPage(String url) {
+        Uri webPage = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, webPage);
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
         }
     }
 
-    private void startTask(String taskname) {
+    private void startTask(String taskName) {
         TaskerIntent.Status taskerStatus = TaskerIntent.testStatus(this);
         if (taskerStatus.equals(TaskerIntent.Status.OK)) {
-            TaskerIntent i = new TaskerIntent(taskname);
+            TaskerIntent i = new TaskerIntent(taskName);
             //TODO translate intend to tasker variables
-            i.addLocalVariable("%data", getAllIntentFieldsAsJSON(getIntent()));
+            i.addLocalVariable("%data", getAllIntentFieldsAsJSON(getIntent())); //NON-NLS
             sendBroadcast(i);
         } else {
-            //TODO error handling 
-            //taskerStatus
+            Toast.makeText(this, getString(R.string.err_cant_start_task) + taskerStatus.name(), Toast.LENGTH_LONG).show();
         }
         finish();
     }
@@ -83,10 +87,11 @@ public class LocusRunTaskerActivity extends AppCompatActivity {
             for (String key : bundle.keySet()) {
                 Object value = bundle.get(key);
                 try {
-                    json.put(key + "(" + value.getClass().getName() + ")", value.toString());
+                    if (value != null) {
+                        json.put(key + "(" + value.getClass().getName() + ")", value.toString());
+                    }
                 } catch (JSONException e) {
-                    //TODO
-                    e.printStackTrace();
+                    Log.i(TAG, "exception at key " + key, e); //NON-NLS
                 }
             }
         }

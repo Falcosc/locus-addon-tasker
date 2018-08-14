@@ -3,34 +3,53 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:minWidth="300dp"
-    android:orientation="vertical"
-    android:padding="8dp">
+    android:orientation="vertical">
 
     <ScrollView
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-        <LinearLayout 
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:orientation="vertical"
-              android:id="@+id/linearContent">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="This event is not properly implemented, if you want to use it please ask for a Tasker event implementation by sharing your Tasker project idea to tell which data you need." />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="For now you can manually execute one of your tasks and get all event data as '%data' in form of useless IDs to preview:" />
-        </LinearLayout>
-    </ScrollView>    
-
-
-    <Button
-        android:id="@+id/btnClose"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Close" />
+        android:padding="8dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/linearContent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/run_task_description" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/run_task_execute" />
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnClose"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/close" />
+
+        <Button
+            android:id="@+id/btnShare"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/share" />
+
+    </LinearLayout>
 
 </LinearLayout>

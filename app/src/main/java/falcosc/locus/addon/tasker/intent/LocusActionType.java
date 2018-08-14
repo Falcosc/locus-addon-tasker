@@ -6,11 +6,12 @@ import falcosc.locus.addon.tasker.intent.edit.NotImplementedDialog;
 import falcosc.locus.addon.tasker.intent.edit.UpdateContainerDialog;
 import falcosc.locus.addon.tasker.intent.handler.TaskerAction;
 import falcosc.locus.addon.tasker.intent.handler.UpdateContainerRequest;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.Callable;
 
 public enum LocusActionType {
-    UPDATE_CONTAINER_REQUEST(R.string.act_request_stats_sensors, () -> new UpdateContainerRequest(), () -> new UpdateContainerDialog()),
+    UPDATE_CONTAINER_REQUEST(R.string.act_request_stats_sensors, UpdateContainerRequest::new, UpdateContainerDialog::new),
     ACTION_TASK(R.string.act_exec_task, null, null),
     IMPORT_POINTS(R.string.act_import_points, null, null),
     IMPORT_GPX(R.string.act_import_gpx, null, null),
@@ -38,20 +39,28 @@ public enum LocusActionType {
     private final Callable<TaskerAction> handler;
     private final Callable<DialogFragment> editFragment;
 
-    public int getLabelStringId(){
+    public int getLabelStringId() {
         return labelStringId;
     }
 
+    public boolean isNotImplemented(){
+        return handler == null || editFragment == null;
+    }
+
+    @NotNull
     public TaskerAction createHandler() {
         try {
-            return handler.call();
+            TaskerAction handlerInstance = handler.call();
+            if (handlerInstance == null) {
+                throw new IllegalArgumentException("Handler required for " + name());
+            }
+            return handlerInstance;
         } catch (Exception e) {
-            //TODO
-            e.printStackTrace();
-            return null;
+            throw new IllegalArgumentException("Handler required for " + name(), e);
         }
     }
 
+    @NotNull
     public DialogFragment createFragment() {
         try {
             if (editFragment == null) {
@@ -60,9 +69,7 @@ public enum LocusActionType {
 
             return editFragment.call();
         } catch (Exception e) {
-            //TODO
-            e.printStackTrace();
-            return null;
+            throw new IllegalArgumentException("Dialog Fragment required for " + name(), e);
         }
     }
 }

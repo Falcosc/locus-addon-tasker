@@ -2,54 +2,52 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="300dip"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="10dp">
+    android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="8dp"
-        android:text="Track is set, now you could use the Tasker field 'calc remaining elevation' from 'request stats and sensors'. If something goes wrong you get the following returns values:" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="8dp"
-        android:paddingBottom="8dp"
-        android:text="offTRK - Guiding is of or your next guide point is not part of the selected track" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="8dp"
-        android:paddingBottom="8dp"
-        android:text="noTRK - No track selected" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="8dp"
-        android:paddingBottom="8dp"
-        android:text="wrong - Wrong track or track guiding is off" />
-
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/text_desc"
+            android:text="@string/calc_remain_elev_description" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/textBullet"
+            android:text="@string/calc_remain_elev_offtrk" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/textBullet"
+            android:text="@string/calc_remain_elev_notrk" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/textBullet"
+            android:text="@string/calc_remain_elev_wrong" />
+    </LinearLayout>
+
+    <LinearLayout
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/btnClose"
-            android:layout_width="wrap_content"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Close" 
-            android:layout_alignParentLeft="true" />
-
-        <Button
-            android:id="@+id/btnShare"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Share"
-            android:layout_alignParentRight="true" />
-    </RelativeLayout>
+            android:layout_weight="1"
+            android:text="@string/ok" />
+    </LinearLayout>
 
 </LinearLayout>

@@ -6,35 +6,43 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import falcosc.locus.addon.tasker.R;
+import org.jetbrains.annotations.NotNull;
 
 public class NotImplementedDialog extends DialogFragment {
+
+    private static final String TITLE_ID = "titleId";
 
     public static NotImplementedDialog newInstance(int titleId) {
 
         Bundle args = new Bundle();
-        args.putInt("titleId", titleId);
+        args.putInt(TITLE_ID, titleId);
 
         NotImplementedDialog fragment = new NotImplementedDialog();
         fragment.setArguments(args);
         return fragment;
     }
 
-    @Override
+    @SuppressWarnings("unused")
+    @NotNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(getArguments().getInt("titleId"));
-        builder.setMessage("This action is currently not implemented because nobody did request this. Please share your Tasker project idea at Github to tell me how I should implement this API to be usefull at Tasker.");
-        builder.setNegativeButton("Back", null);
-        builder.setPositiveButton("Share", (dialog, id) -> openWebPage("https://github.com/Falcosc/locus-addon-tasker/issues"));
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        Bundle args = getArguments();
+        if (args != null) {
+            builder.setTitle(getArguments().getInt(TITLE_ID));
+        }
+        builder.setMessage(R.string.action_not_implemented_desc);
+        builder.setNegativeButton(R.string.back, null);
+        builder.setPositiveButton(R.string.share, (dialog, id) -> openWebPage(getString(R.string.issues_url)));
         // Create the AlertDialog object and return it
         return builder.create();
     }
 
-    public void openWebPage(String url) {
-        Uri webpage = Uri.parse(url);
-        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
-        if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
+    private void openWebPage(String url) {
+        Uri webPage = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, webPage);
+        if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
             startActivity(intent);
         }
     }

@@ -11,7 +11,7 @@
 
 // For usage examples see http://tasker.dinglisch.net/invoketasks.html
 
-package falcosc.locus.addon.tasker.utils;
+package falcosc.locus.addon.tasker.thridparty;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
