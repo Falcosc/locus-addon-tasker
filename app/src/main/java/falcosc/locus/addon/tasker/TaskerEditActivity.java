@@ -31,11 +31,10 @@ public final class TaskerEditActivity extends AppCompatActivity implements Abstr
 
         for (LocusActionType type : LocusActionType.values()) {
             View view = inflater.inflate(layout.list_btn_launcher, viewGroup, false);
-            Button  button = view.findViewById(id.listBtn);
+            Button button = view.findViewById(id.listBtn);
             button.setText(type.getLabelStringId());
-            if(type.isNotImplemented()){
-                //noinspection deprecation because TextViewCompat does use the same method
-                button.setTextAppearance(this, R.style.textRed);
+            if (type.isNotImplemented()) {
+                TextViewCompat.setTextAppearance(button, R.style.textRed);
             }
             button.setOnClickListener(v -> type.createFragment().show(getSupportFragmentManager(), type.name()));
             viewGroup.addView(view);

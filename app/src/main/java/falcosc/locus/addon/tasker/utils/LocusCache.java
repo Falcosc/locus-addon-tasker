@@ -25,6 +25,8 @@ public class LocusCache {
     public final LocusUtils.LocusVersion locusVersion;
     public Track lastSelectedTrack;
     private final Resources locusResources;
+    public int[] remainingTrackElevation;
+    public int lastIndexOnRemainingTrack;
 
     private LocusCache(Context context) {
         Log.d(TAG, "init Locus Cache");//NON-NLS

@@ -9,51 +9,31 @@ import java.util.List;
 
 class CalculateElevationToTarget implements Function<UpdateContainer, String> {
     private static final String NO_TRK = "noTRK";
-    private static final String WRONG = "wrong";
     private static final String OFF_TRK = "offTRK";
 
     @Override
     public String apply(UpdateContainer updateContainer) {
 
         try {
-            Track track = LocusCache.getInstanceNullable().lastSelectedTrack;
+            LocusCache locusCache = LocusCache.getInstanceNullable();
+            Track track = locusCache.lastSelectedTrack;
 
             if (track == null) {
                 return NO_TRK;
             }
 
-            //TODO reverse track calculation
 
-            List<Location> points = track.getPoints();
-            int size = points.size();
-            //make array one point larger because we assign remaining elevation to point+1 because remain is current target point -1
-            int[] remainingUphill = new int[size + 1];
-            Double uphillElevation = 0.0;
-            double nextAltitude = points.get(size - 1).getAltitude();
-            for (int i = size - 1; i >= 0; i--) {
-                double currentAltitude = points.get(i).getAltitude();
-                if (nextAltitude > currentAltitude) {
-                    uphillElevation += nextAltitude - currentAltitude;
-                }
-                remainingUphill[i + 1] = uphillElevation.intValue();
-                nextAltitude = currentAltitude;
-            }
-            //assign remaining altitude of point 0 because we have no values at 0 because we read 1 point ahead.
-            remainingUphill[0] = remainingUphill[1];
-
-            Location nextGuidLocation = updateContainer.getGuideTypeTrack().getNavPoint1Loc();
-            Location targetLocation = updateContainer.getGuideTypeTrack().getTargetLoc();
-
-            int direction = getTrackDirection(targetLocation, track);
-
-            if (direction == 0) {
-                //wrong track
-                return WRONG;
+            Location nextPoint = updateContainer.getGuideTypeTrack().getTargetLoc();
+            int currentIndex = findMatchingPointIndex(track.getPoints(), nextPoint, locusCache.lastIndexOnRemainingTrack);
+            if (currentIndex < 0) {
+                //point not found on track, try to find the nav point because this may align because the selected track has less points
+                Location nextNavPoint = updateContainer.getGuideTypeTrack().getNavPoint1Loc();
+                currentIndex = findMatchingPointIndex(track.getPoints(), nextNavPoint, locusCache.lastIndexOnRemainingTrack);
             }
 
-            int currentIndex = findMatchingPointIndex(points, nextGuidLocation);
             if (currentIndex >= 0) {
-                return String.valueOf(remainingUphill[currentIndex]);
+                locusCache.lastIndexOnRemainingTrack = currentIndex;
+                return String.valueOf(locusCache.remainingTrackElevation[currentIndex]);
             }
 
         } catch (Exception e) {
@@ -64,25 +44,29 @@ class CalculateElevationToTarget implements Function<UpdateContainer, String> {
         return OFF_TRK;
     }
 
-    private int getTrackDirection(Location targetLocation, Track track) {
-        List<Location> points = track.getPoints();
-        Location firstLoc = points.get(0);
-        Location lastLoc = points.get(points.size() - 1);
+    //TODO need to be able to reverse but track with name "navigation" is never reverse
+    private int findMatchingPointIndex(List<Location> points, Location current, int previousIndex) {
+        //go back 5 points in case of wrong position
+        previousIndex -= 5;
 
-        if (lastLoc.latitude == targetLocation.latitude && lastLoc.longitude == targetLocation.longitude) {
-            return 1;
+        int lastIndex = points.size() - 1;
+
+        if (previousIndex < 0) {
+            previousIndex = 0;
+        }
+        if (previousIndex > lastIndex) {
+            previousIndex = lastIndex;
         }
 
-        if (firstLoc.latitude == targetLocation.latitude && firstLoc.longitude == targetLocation.longitude) {
-            return -1;
+        for (int i = previousIndex; i <= lastIndex; i++) {
+            Location loc = points.get(i);
+            if (current.longitude == loc.longitude && current.latitude == loc.latitude) {
+                return i;
+            }
         }
 
-        //is not the guiding track
-        return 0;
-    }
-
-    private int findMatchingPointIndex(List<Location> points, Location current) {
-        for (int i = points.size() - 1; i >= 0; i--) {
+        //not found ahead, go backwards
+        for (int i = previousIndex; i >= 0; i--) {
             Location loc = points.get(i);
             if (current.longitude == loc.longitude && current.latitude == loc.latitude) {
                 return i;
