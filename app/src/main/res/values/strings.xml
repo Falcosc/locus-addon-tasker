@@ -36,7 +36,6 @@
     <string name="err_not_set_sync_exec">Your app setup did not set Synchronous execution to handle variables</string>
     <string name="err_field_selection_missing">Field selection is missing</string>
     <string name="err_cant_start_task">Can\'t start Task:</string>
-    <string name="not_implemented">Not implemented</string>
     <string name="close">Close</string>
     <string name="cancel">Cancel</string>
     <string name="back">Back</string>

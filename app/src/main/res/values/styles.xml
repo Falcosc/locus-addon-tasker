@@ -28,6 +28,19 @@
         <item name="android:drawablePadding">8dp</item>
     </style>
 
+    <style name="listCheckbox">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:background">@color/colorPrimaryLight</item>
+        <item name="android:layout_marginTop">@dimen/fab_margin</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:button">@null</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:padding">4dp</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:drawableRight">?android:attr/listChoiceIndicatorMultiple</item>
+    </style>
+
     <style name="textRed">
         <item name="android:textColor">@android:color/holo_red_dark</item>
         <item name="android:fontFamily">sans-serif</item>

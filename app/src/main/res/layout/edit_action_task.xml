@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/fab_margin"
+        android:paddingRight="@dimen/fab_margin"
+        tools:ignore="HardcodedText">
+
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Map Center Action"
+            android:id="@+id/map_center"
+            style="@style/listCheckbox" />
+
+        <Spinner
+            android:id="@+id/map_center_content"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/on_off_toggle" />
+
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Live Tracking ASAMM"
+            android:id="@+id/live_tracking_asamm"
+            style="@style/listCheckbox" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/live_tracking_asamm_content"
+            android:visibility="gone">
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/live_tracking_asamm_spinner"
+                android:entries="@array/start_stop" />
+
+            <EditText
+                android:id="@+id/live_tracking_asamm_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:hint="Name of configuration (optional)" />
+        </LinearLayout>
+
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Live Tracking Custom"
+            android:id="@+id/live_tracking_custom"
+            style="@style/listCheckbox" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/live_tracking_custom_content"
+            android:visibility="gone">
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/live_tracking_custom_spinner"
+                android:entries="@array/start_stop" />
+
+            <EditText
+                android:id="@+id/live_tracking_custom_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:hint="Name of configuration (optional)" />
+        </LinearLayout>
+
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Map Move X"
+            android:id="@+id/map_move_x"
+            style="@style/listCheckbox" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:id="@+id/map_move_x_content"
+            android:visibility="gone">
+
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="+/- amount"
+                android:gravity="end"
+                android:id="@+id/map_move_x_text"
+                android:inputType="numberSigned"
+                android:imeOptions="actionDone"
+                android:layout_weight="1" />
+
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/map_move_x_spinner"
+                android:entries="@array/map_move_units" />
+        </LinearLayout>
+
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Map Move Y"
+            android:id="@+id/map_move_y"
+            style="@style/listCheckbox" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:id="@+id/map_move_y_content"
+            android:visibility="gone">
+
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="+/- amount"
+                android:gravity="end"
+                android:id="@+id/map_move_y_text"
+                android:inputType="numberSigned"
+                android:imeOptions="actionDone"
+                android:layout_weight="1" />
+
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/map_move_y_spinner"
+                android:entries="@array/map_move_units" />
+        </LinearLayout>
+
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Map Zoom Action"
+            android:id="@+id/map_zoom"
+            style="@style/listCheckbox" />
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/map_zoom_content"
+            android:entries="@array/map_zoom"
+            android:visibility="gone" />
+
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Open Action"
+            android:id="@+id/open"
+            style="@style/listCheckbox" />
+
+        <Spinner
+            android:id="@+id/open_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/open_action"
+            android:visibility="gone" />
+
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Preset apply"
+            android:id="@+id/preset"
+            style="@style/listCheckbox" />
+
+        <EditText
+            android:id="@+id/preset_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:hint="Name of preset"
+            android:visibility="gone" />
+
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Screen Action"
+            android:id="@+id/screen"
+            style="@style/listCheckbox" />
+
+        <Spinner
+            android:id="@+id/screen_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/on_off_toggle"
+            android:visibility="gone" />
+
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Track record"
+            android:id="@+id/track_record"
+            style="@style/listCheckbox" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/track_record_content"
+            android:visibility="gone">
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/track_record_spinner"
+                android:entries="@array/track_record" />
+
+            <EditText
+                android:id="@+id/track_record_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:hint="Profile name / Point name (Optional)" />
+
+            <CheckBox
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/track_record_checkbox"
+                android:text="auto save" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Action after add wpt: " />
+
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/track_record_wpt_spinner"
+                    android:entries="@array/track_record_wpt_after" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</ScrollView>

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
 import falcosc.locus.addon.tasker.R;
-import falcosc.locus.addon.tasker.intent.receiver.AbstractTaskerAction;
 import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
 import falcosc.locus.addon.tasker.utils.Const;
 import falcosc.locus.addon.tasker.utils.LocusCache;

@@ -1,17 +1,25 @@
 package falcosc.locus.addon.tasker.intent.handler;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.widget.Toast;
-import falcosc.locus.addon.tasker.R;
+import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
+import falcosc.locus.addon.tasker.utils.Const;
+import falcosc.locus.addon.tasker.utils.LocusCache;
 
-public class ActionTask implements TaskerAction {
+public class ActionTask extends AbstractTaskerAction {
+
+    private static final String COM_ASAMM_LOCUS_ACTION_TASK = "com.asamm.locus.ACTION_TASK";
+
     @Override
-    public void handle(@NonNull Context context, @NonNull Intent intent, @NonNull Bundle apiExtraBundle, @NonNull BroadcastReceiver receiver) {
-        //TODO implement it
-        Toast.makeText(context, R.string.not_implemented, Toast.LENGTH_LONG).show();
+    protected void doHandle(@NonNull Bundle apiExtraBundle) {
+        LocusCache locusCache = LocusCache.getInstance(context);
+
+        String json = apiExtraBundle.getString(Const.INTENT_EXTRA_FIELD_JSON);
+
+        Intent intent = new Intent(COM_ASAMM_LOCUS_ACTION_TASK);
+        intent.putExtra(Const.INTENT_ACTION_TASK_EXTRA_KEY, json);
+        intent.setPackage(locusCache.locusVersion.getPackageName());
+        context.sendBroadcast(intent);
     }
 }

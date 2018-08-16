@@ -25,6 +25,8 @@
     <pattern value="falcosc.locus.addon.tasker.intent.edit.NotImplementedDialog" method="onCreateDialog" />
     <pattern value="falcosc.locus.addon.tasker.intent.handler.UpdateContainerRequest" method="doHandle" />
     <pattern value="falcosc.locus.addon.tasker.intent.edit.UpdateContainerDialog" method="onCreateDialog" />
+    <pattern value="falcosc.locus.addon.tasker.intent.handler.AbstractTaskerAction" method="handle" />
+    <pattern value="falcosc.locus.addon.tasker.intent.handler.ActionTask" method="doHandle" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="false" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />

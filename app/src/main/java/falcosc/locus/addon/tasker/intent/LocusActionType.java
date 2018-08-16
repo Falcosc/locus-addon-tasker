@@ -2,8 +2,10 @@ package falcosc.locus.addon.tasker.intent;
 
 import android.support.v4.app.DialogFragment;
 import falcosc.locus.addon.tasker.R;
+import falcosc.locus.addon.tasker.intent.edit.ActionTaskDialog;
 import falcosc.locus.addon.tasker.intent.edit.NotImplementedDialog;
 import falcosc.locus.addon.tasker.intent.edit.UpdateContainerDialog;
+import falcosc.locus.addon.tasker.intent.handler.ActionTask;
 import falcosc.locus.addon.tasker.intent.handler.TaskerAction;
 import falcosc.locus.addon.tasker.intent.handler.UpdateContainerRequest;
 import org.jetbrains.annotations.NotNull;
@@ -12,7 +14,7 @@ import java.util.concurrent.Callable;
 
 public enum LocusActionType {
     UPDATE_CONTAINER_REQUEST(R.string.act_request_stats_sensors, UpdateContainerRequest::new, UpdateContainerDialog::new),
-    ACTION_TASK(R.string.act_exec_task, null, null),
+    ACTION_TASK(R.string.act_exec_task, ActionTask::new, ActionTaskDialog::new),
     IMPORT_POINTS(R.string.act_import_points, null, null),
     IMPORT_GPX(R.string.act_import_gpx, null, null),
     DISPLAY_POINTS(R.string.act_display_points, null, null),
