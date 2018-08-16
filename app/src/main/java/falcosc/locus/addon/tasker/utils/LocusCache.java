@@ -23,26 +23,39 @@ public class LocusCache {
     public final Map<String, LocusField> updateContainerFieldMap;
     public final ArrayList<LocusField> updateContainerFields;
     public final LocusUtils.LocusVersion locusVersion;
-    public Track lastSelectedTrack;
     private final Resources locusResources;
+    public final String navigationTrackName;
+
+    //selected track fields
+    private Track lastSelectedTrack;
     public int[] remainingTrackElevation;
     public int lastIndexOnRemainingTrack;
 
+    @SuppressWarnings("HardCodedStringLiteral")
     private LocusCache(Context context) {
-        Log.d(TAG, "init Locus Cache");//NON-NLS
+        Log.d(TAG, "init Locus cache");
 
         locusVersion = LocusUtils.getActiveVersion(context);
+        Log.d(TAG, "Locus version: " + locusVersion.getPackageName());
 
         Resources locusRes = null;
         try {
             locusRes = context.getPackageManager().getResourcesForApplication(locusVersion.getPackageName());
+            Log.d(TAG, "Found Locus resources");
         } catch (PackageManager.NameNotFoundException e) {
-            Log.d(TAG, "Missing Locus resources", e);//NON-NLS
+            Log.d(TAG, "Missing Locus resources", e);
         }
         locusResources = locusRes;
+
         updateContainerFields = createUpdateContainerFields();
+        Log.d(TAG, "Locus fields created: " + updateContainerFields.size());
         updateContainerFieldMap = createUpdateContainerFieldMap();
         trackRecordingKeys = createUpdateContainerTrackRecKeys();
+        Log.d(TAG, "Locus field keys mapped - recording keys: " + trackRecordingKeys.size());
+
+
+        navigationTrackName = getLocusLabelByName("navigation");
+        Log.d(TAG, "Locus navigation track name: " + navigationTrackName);
     }
 
     public static LocusCache getInstance(Context context) {
@@ -77,13 +90,7 @@ public class LocusCache {
     }
 
     private LocusField cLocusField(String taskerVar, String locusResName, Function<UpdateContainer, String> updateContainerGetter) throws IllegalArgumentException {
-        String label = null;
-        if (locusResources != null) {
-            int id = locusResources.getIdentifier(locusResName, "string", locusVersion.getPackageName()); //NON-NLS
-            if (id != 0) {
-                label = locusResources.getString(id);
-            }
-        }
+        String label = getLocusLabelByName(locusResName);
 
         if (StringUtils.isBlank(label)) {
             label = taskerVar.replace('_', ' ');
@@ -91,6 +98,16 @@ public class LocusCache {
         }
         return new LocusField(taskerVar, label, updateContainerGetter);
 
+    }
+
+    private String getLocusLabelByName(String locusResName) {
+        if (locusResources != null && locusResName != null) {
+            int id = locusResources.getIdentifier(locusResName, "string", locusVersion.getPackageName()); //NON-NLS
+            if (id != 0) {
+                return locusResources.getString(id);
+            }
+        }
+        return null;
     }
 
 
@@ -106,31 +123,31 @@ public class LocusCache {
         f.add(cLocusField("my_speed", "speed", u -> String.valueOf(u.getLocMyLocation().getSpeedOptimal())));
         f.add(cLocusField("sensor_hrm", "heart_rate", u -> String.valueOf(u.getLocMyLocation().getSensorHeartRate())));
         f.add(cLocusField("sensor_cadence", "cadence", u -> String.valueOf(u.getLocMyLocation().getSensorCadence())));
-        f.add(cLocusField("sensor_speed", "", u -> String.valueOf(u.getLocMyLocation().getSensorSpeed())));
+        f.add(cLocusField("sensor_speed", null, u -> String.valueOf(u.getLocMyLocation().getSensorSpeed())));
         f.add(cLocusField("sensor_strides", "strides_label", u -> String.valueOf(u.getLocMyLocation().getSensorStrides())));
         f.add(cLocusField("sensor_temperature", "temperature", u -> String.valueOf(u.getLocMyLocation().getSensorTemperature())));
-        f.add(cLocusField("speed_vertical", "", u -> String.valueOf(u.getSpeedVertical())));
+        f.add(cLocusField("speed_vertical", null, u -> String.valueOf(u.getSpeedVertical())));
         f.add(cLocusField("slope", "slope", u -> String.valueOf(u.getSlope())));
-        f.add(cLocusField("gps_sat_used", "", u -> String.valueOf(u.getGpsSatsUsed())));
-        f.add(cLocusField("gps_sat_all", "", u -> String.valueOf(u.getGpsSatsAll())));
+        f.add(cLocusField("gps_sat_used", null, u -> String.valueOf(u.getGpsSatsUsed())));
+        f.add(cLocusField("gps_sat_all", null, u -> String.valueOf(u.getGpsSatsAll())));
         f.add(cLocusField("declination", "declination", u -> String.valueOf(u.getDeclination())));
         f.add(cLocusField("heading", "heading", u -> String.valueOf(u.getOrientHeading())));
         f.add(cLocusField("course", "course", u -> String.valueOf(u.getOrientCourse())));
         f.add(cLocusField("roll", "roll", u -> String.valueOf(u.getOrientRoll())));
         f.add(cLocusField("pitch", "orientation_pitch", u -> String.valueOf(u.getOrientPitch())));
-        f.add(cLocusField("rec_total_length", "", u -> String.valueOf(u.getTrackRecStats().getTotalLength())));
-        f.add(cLocusField("rec_eleva_neg_length", "", u -> String.valueOf(u.getTrackRecStats().getEleNegativeDistance())));
-        f.add(cLocusField("rec_eleva_pos_length", "", u -> String.valueOf(u.getTrackRecStats().getElePositiveDistance())));
-        f.add(cLocusField("rec_eleva_neutral_length", "", u -> String.valueOf(u.getTrackRecStats().getEleNeutralDistance())));
-        f.add(cLocusField("rec_eleva_neutral_height", "", u -> String.valueOf(u.getTrackRecStats().getEleNeutralHeight())));
+        f.add(cLocusField("rec_total_length", null, u -> String.valueOf(u.getTrackRecStats().getTotalLength())));
+        f.add(cLocusField("rec_eleva_neg_length", null, u -> String.valueOf(u.getTrackRecStats().getEleNegativeDistance())));
+        f.add(cLocusField("rec_eleva_pos_length", null, u -> String.valueOf(u.getTrackRecStats().getElePositiveDistance())));
+        f.add(cLocusField("rec_eleva_neutral_length", null, u -> String.valueOf(u.getTrackRecStats().getEleNeutralDistance())));
+        f.add(cLocusField("rec_eleva_neutral_height", null, u -> String.valueOf(u.getTrackRecStats().getEleNeutralHeight())));
         f.add(cLocusField("rec_eleva_downhill", "var_elevation_downhill", u -> String.valueOf(u.getTrackRecStats().getEleNegativeHeight())));
         f.add(cLocusField("rec_eleva_uphill", "var_elevation_uphill", u -> String.valueOf(u.getTrackRecStats().getElePositiveHeight())));
         f.add(cLocusField("rec_altitude_min", "min_altitude", u -> String.valueOf(u.getTrackRecStats().getAltitudeMin())));
         f.add(cLocusField("rec_altitude_max", "max_altitude", u -> String.valueOf(u.getTrackRecStats().getAltitudeMax())));
-        f.add(cLocusField("rec_start_time", "", u -> String.valueOf(u.getTrackRecStats().getStartTime())));
-        f.add(cLocusField("rec_stop_time", "", u -> String.valueOf(u.getTrackRecStats().getStopTime())));
-        f.add(cLocusField("rec_time", "", u -> String.valueOf(u.getTrackRecStats().getTotalTime())));
-        f.add(cLocusField("rec_time_move", "", u -> String.valueOf(u.getTrackRecStats().getTotalTimeMove())));
+        f.add(cLocusField("rec_start_time", null, u -> String.valueOf(u.getTrackRecStats().getStartTime())));
+        f.add(cLocusField("rec_stop_time", null, u -> String.valueOf(u.getTrackRecStats().getStopTime())));
+        f.add(cLocusField("rec_time", null, u -> String.valueOf(u.getTrackRecStats().getTotalTime())));
+        f.add(cLocusField("rec_time_move", null, u -> String.valueOf(u.getTrackRecStats().getTotalTimeMove())));
         f.add(cLocusField("rec_average_speed_total", "average_speed", u -> String.valueOf(u.getTrackRecStats().getSpeedAverage(false))));
         f.add(cLocusField("rec_average_speed_move", "average_moving_speed", u -> String.valueOf(u.getTrackRecStats().getSpeedAverage(true))));
         f.add(cLocusField("rec_point_count", "points_count", u -> String.valueOf(u.getTrackRecStats().getNumOfPoints())));
@@ -139,24 +156,24 @@ public class LocusCache {
         f.add(cLocusField("rec_energy_burned", "energy_burned", u -> String.valueOf(u.getTrackRecStats().getEnergy())));
         f.add(cLocusField("rec_hrm_avg", "heart_rate_avg", u -> String.valueOf(u.getTrackRecStats().getHrmAverage())));
         f.add(cLocusField("rec_hrm_max", "heart_rate_max", u -> String.valueOf(u.getTrackRecStats().getHrmMax())));
-        f.add(cLocusField("rec_strides_count", "", u -> String.valueOf(u.getTrackRecStats().getNumOfStrides())));
-        f.add(cLocusField("is_guide_enabled", "", u -> String.valueOf(u.isGuideEnabled())));
-        f.add(cLocusField("is_new_zoom_level", "", u -> String.valueOf(u.isNewZoomLevel())));
-        f.add(cLocusField("is_new_map_center", "", u -> String.valueOf(u.isNewMapCenter())));
-        f.add(cLocusField("is_track_rec_recording", "", u -> String.valueOf(u.isTrackRecRecording())));
-        f.add(cLocusField("is_track_rec_paused", "", u -> String.valueOf(u.isTrackRecPaused())));
-        f.add(cLocusField("is_enabled_my_location", "", u -> String.valueOf(u.isEnabledMyLocation())));
-        f.add(cLocusField("is_map_visible", "", u -> String.valueOf(u.isMapVisible())));
-        f.add(cLocusField("map_zoom_level", "", u -> String.valueOf(u.getMapZoomLevel())));
+        f.add(cLocusField("rec_strides_count", null, u -> String.valueOf(u.getTrackRecStats().getNumOfStrides())));
+        f.add(cLocusField("is_guide_enabled", null, u -> String.valueOf(u.isGuideEnabled())));
+        f.add(cLocusField("is_new_zoom_level", null, u -> String.valueOf(u.isNewZoomLevel())));
+        f.add(cLocusField("is_new_map_center", null, u -> String.valueOf(u.isNewMapCenter())));
+        f.add(cLocusField("is_track_rec_recording", null, u -> String.valueOf(u.isTrackRecRecording())));
+        f.add(cLocusField("is_track_rec_paused", null, u -> String.valueOf(u.isTrackRecPaused())));
+        f.add(cLocusField("is_enabled_my_location", null, u -> String.valueOf(u.isEnabledMyLocation())));
+        f.add(cLocusField("is_map_visible", null, u -> String.valueOf(u.isMapVisible())));
+        f.add(cLocusField("map_zoom_level", null, u -> String.valueOf(u.getMapZoomLevel())));
         f.add(cLocusField("map_distance_to_gps", "distance_to_gps", u -> String.valueOf(u.getLocMapCenter().distanceTo(u.getLocMyLocation()))));
-        f.add(cLocusField("map_rotate_angle", "", u -> String.valueOf(u.getMapRotate())));
-        f.add(cLocusField("map_bottom_right_lon", "", u -> String.valueOf(u.getMapBottomRight().longitude)));
-        f.add(cLocusField("map_bottom_right_lat", "", u -> String.valueOf(u.getMapBottomRight().latitude)));
-        f.add(cLocusField("map_top_left_lon", "", u -> String.valueOf(u.getMapTopLeft().longitude)));
-        f.add(cLocusField("map_top_left_lat", "", u -> String.valueOf(u.getMapTopLeft().latitude)));
-        f.add(cLocusField("map_center_lon", "", u -> String.valueOf(u.getLocMapCenter().longitude)));
-        f.add(cLocusField("map_center_lat", "", u -> String.valueOf(u.getLocMapCenter().latitude)));
-        f.add(cLocusField(CALC_REMAIN_UPHILL_ELEVATION, "", new CalculateElevationToTarget()));
+        f.add(cLocusField("map_rotate_angle", null, u -> String.valueOf(u.getMapRotate())));
+        f.add(cLocusField("map_bottom_right_lon", null, u -> String.valueOf(u.getMapBottomRight().longitude)));
+        f.add(cLocusField("map_bottom_right_lat", null, u -> String.valueOf(u.getMapBottomRight().latitude)));
+        f.add(cLocusField("map_top_left_lon", null, u -> String.valueOf(u.getMapTopLeft().longitude)));
+        f.add(cLocusField("map_top_left_lat", null, u -> String.valueOf(u.getMapTopLeft().latitude)));
+        f.add(cLocusField("map_center_lon", null, u -> String.valueOf(u.getLocMapCenter().longitude)));
+        f.add(cLocusField("map_center_lat", null, u -> String.valueOf(u.getLocMapCenter().latitude)));
+        f.add(cLocusField(CALC_REMAIN_UPHILL_ELEVATION, null, new CalculateElevationToTarget()));
 
         //TODO Navigation points
 
@@ -178,5 +195,14 @@ public class LocusCache {
             if (key.startsWith("rec")) trackRecordingKeys.add(key); //NON-NLS
         }
         return trackRecordingKeys;
+    }
+
+    public Track getLastSelectedTrack() {
+        return lastSelectedTrack;
+    }
+
+    public void setLastSelectedTrack(Track lastSelectedTrack) {
+        this.lastSelectedTrack = lastSelectedTrack;
+        remainingTrackElevation = CalculateElevationToTarget.calculateRemainingElevation(lastSelectedTrack);
     }
 }

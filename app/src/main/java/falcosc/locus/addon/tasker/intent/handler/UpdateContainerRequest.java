@@ -1,5 +1,6 @@
 package falcosc.locus.addon.tasker.intent.handler;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
@@ -12,6 +13,7 @@ import falcosc.locus.addon.tasker.utils.LocusField;
 import locus.api.android.ActionTools;
 import locus.api.android.features.periodicUpdates.UpdateContainer;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
+import locus.api.objects.extra.Track;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -54,6 +56,10 @@ public class UpdateContainerRequest extends AbstractTaskerAction {
                 selectedFields.removeAll(locusCache.trackRecordingKeys);
             }
 
+            if (isNavigationTrackNeeded(locusCache, selectedFields, update)) {
+                locusCache.setLastSelectedTrack(searchNavigationTrack(locusCache, context));
+            }
+
             Bundle varsBundle = new Bundle();
             for (String field : selectedFields) {
                 //Don't need to check updateContainerMethodMap, illegal intents creates exceptions
@@ -64,5 +70,32 @@ public class UpdateContainerRequest extends AbstractTaskerAction {
 
             receiver.setResultCode(TaskerPlugin.Setting.RESULT_CODE_OK);
         }
+    }
+
+    private boolean isNavigationTrackNeeded(LocusCache locusCache, Set<String> selectedFields, UpdateContainer update) {
+        if (locusCache.getLastSelectedTrack() == null) {
+            if (selectedFields.contains(LocusCache.CALC_REMAIN_UPHILL_ELEVATION)) {
+                if (update.isGuideEnabled()) {
+                    UpdateContainer.GuideTypeTrack guideTypeTrack = update.getGuideTypeTrack();
+                    //don't check guideTypeTrack.isValid because it is false if we are guiding to track
+                    return guideTypeTrack != null;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static Track searchNavigationTrack(LocusCache locusCache, Context context) throws RequiredVersionMissingException {
+
+        Track track = ActionTools.getLocusTrack(context, locusCache.locusVersion, 1000000001);
+        if(track != null && !track.getName().equalsIgnoreCase(locusCache.navigationTrackName)){
+            //track found but is not navigation, check if there is a better one
+            Track track2 = ActionTools.getLocusTrack(context, locusCache.locusVersion, 1000000002);
+            if(track2 != null && track.getName().equalsIgnoreCase(locusCache.navigationTrackName)){
+                //use track 2 only if it is a Navigation track, if both are not, then take the first one
+                track = track2;
+            }
+        }
+        return track;
     }
 }

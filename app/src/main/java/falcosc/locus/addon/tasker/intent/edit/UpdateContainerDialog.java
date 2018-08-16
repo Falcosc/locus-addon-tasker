@@ -69,32 +69,49 @@ public class UpdateContainerDialog extends AbstractDialogFragment {
         builder.setTitle(R.string.act_request_stats_sensors);
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> requireActivity().finish());
         builder.setNeutralButton(R.string.back, null);
-        builder.setPositiveButton(R.string.ok, (dialog, which) -> {
-            storedFieldSelection = new LinkedHashMap<>();
-            for (int i = 0; i < fieldChecks.length; i++) {
-                if (fieldChecks[i]) {
-                    LocusField field = locusFields.get(i);
-                    storedFieldSelection.put(field.taskerName, field);
-                }
-            }
-            setGetUpdateContainerResult();
-        });
+        builder.setPositiveButton(R.string.ok, (dialog, which) -> onFieldSelectionOK(fieldChecks, locusFields));
 
         return builder.create();
     }
 
-    private void setGetUpdateContainerResult() {
+    private void onFieldSelectionOK(boolean[] fieldChecks, ArrayList<LocusField> locusFields) {
+        Set<String> previousFieldSelection = storedFieldSelection.keySet();
+        storedFieldSelection = new LinkedHashMap<>();
+        for (int i = 0; i < fieldChecks.length; i++) {
+            if (fieldChecks[i]) {
+                LocusField field = locusFields.get(i);
+                storedFieldSelection.put(field.taskerName, field);
+            }
+        }
+
+        finish(createResultIntent(), createHintsDialog(previousFieldSelection));
+    }
+
+    private Dialog createHintsDialog(Set<String> previousFieldSelection) {
+        Dialog hintsDialog = null;
+        if (!previousFieldSelection.contains(LocusCache.CALC_REMAIN_UPHILL_ELEVATION)
+                && storedFieldSelection.containsKey(LocusCache.CALC_REMAIN_UPHILL_ELEVATION)) {
+            //track required was not selected and got selected this time, create hint:
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+            builder.setView(R.layout.help_set_track);
+            builder.setPositiveButton(R.string.ok, null);
+            hintsDialog = builder.create();
+        }
+        return hintsDialog;
+    }
+
+    private Intent createResultIntent() {
 
         Bundle hostExtras = requireActivity().getIntent().getExtras();
 
         if (!TaskerPlugin.hostSupportsRelevantVariables(hostExtras)) {
             Toast.makeText(requireContext(), R.string.err_no_support_relevant_variables, Toast.LENGTH_LONG).show();
-            return;
+            return null;
         }
 
         if (!TaskerPlugin.Setting.hostSupportsSynchronousExecution(hostExtras)) {
             Toast.makeText(requireContext(), R.string.err_no_support_sync_exec, Toast.LENGTH_LONG).show();
-            return;
+            return null;
         }
 
         String[] fieldKeyList = storedFieldSelection.keySet().toArray(new String[0]);
@@ -117,10 +134,11 @@ public class UpdateContainerDialog extends AbstractDialogFragment {
         TaskerPlugin.addRelevantVariableList(resultIntent, fieldDesc.toArray(new String[0]));
 
         //force synchronous execution by set a timeout to handle variables
-        //TODO set this only if timeout is missing
-        TaskerPlugin.Setting.requestTimeoutMS(resultIntent, 3000);
+        if (TaskerPlugin.Setting.getHintTimeoutMS(hostExtras) == TaskerPlugin.Setting.REQUESTED_TIMEOUT_MS_NONE) {
+            TaskerPlugin.Setting.requestTimeoutMS(resultIntent, 5000);
+        }
 
-        finish(resultIntent);
+        return resultIntent;
     }
 
 }

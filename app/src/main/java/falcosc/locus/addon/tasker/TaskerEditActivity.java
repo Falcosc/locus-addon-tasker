@@ -1,10 +1,12 @@
 package falcosc.locus.addon.tasker;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 
 import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +20,18 @@ import falcosc.locus.addon.tasker.utils.LocusCache;
 
 public final class TaskerEditActivity extends AppCompatActivity implements AbstractDialogFragment.EditTaskFinish {
 
+    private static final String TAG = "TaskerEditActivity";
+
     @Override
-    public void onFinish(Intent resultIntent) {
+    public void onFinish(Intent resultIntent, Dialog hints) {
         setResult(RESULT_OK, resultIntent);
-        finish();
+
+        if (hints != null) {
+            hints.setOnDismissListener(dialog -> finish());
+            hints.show();
+        } else {
+            finish();
+        }
     }
 
 
@@ -48,7 +58,6 @@ public final class TaskerEditActivity extends AppCompatActivity implements Abstr
         //start reading locus resources files in background to speed up UI
         LocusCache.initAsync(this);
 
-        //TODO try to hide the dialog if we did open 2nd level dialog
         setContentView(layout.task_selection);
 
         addActionButtons(findViewById(R.id.linearContent));
@@ -63,7 +72,7 @@ public final class TaskerEditActivity extends AppCompatActivity implements Abstr
                     LocusActionType type = LocusActionType.valueOf(taskerBundle.getString(Const.INTEND_EXTRA_ADDON_ACTION_TYPE));
                     type.createFragment().show(getSupportFragmentManager(), type.name());
                 } catch (IllegalArgumentException e) {
-                    //TODO log
+                    Log.e(TAG, "Can't open action type", e); //NON-NLS
                 }
             }
         }

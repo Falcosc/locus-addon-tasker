@@ -1,18 +1,17 @@
 package falcosc.locus.addon.tasker;
 
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import falcosc.locus.addon.tasker.intent.handler.UpdateContainerRequest;
 import falcosc.locus.addon.tasker.utils.LocusCache;
 import falcosc.locus.addon.tasker.utils.LocusField;
 import locus.api.android.utils.LocusUtils;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
-import locus.api.objects.extra.Location;
 import locus.api.objects.extra.Track;
-
-import java.util.List;
 
 public class LocusSetGuideTrackActivity extends AppCompatActivity {
 
@@ -23,18 +22,46 @@ public class LocusSetGuideTrackActivity extends AppCompatActivity {
         LocusCache locusCache = LocusCache.getInstance(this);
 
         try {
-            locusCache.lastSelectedTrack = LocusUtils.handleIntentTrackTools(this, getIntent());
-            locusCache.remainingTrackElevation = calculateRemainingElevation(locusCache.lastSelectedTrack);
+            Track track = LocusUtils.handleIntentTrackTools(this, getIntent());
+            final Track suggestedTrack = getSuggestedTrack(track, locusCache);
+
+            if (track != null && suggestedTrack != null) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(R.string.suggest_navigation_track);
+                builder.setPositiveButton(suggestedTrack.getName(), (dialog, which) -> setTrack(suggestedTrack));
+                builder.setNegativeButton(track.getName(), (dialog, which) -> setTrack(track));
+                builder.create().show();
+            } else {
+                //track is null or we don't have a suggestion
+                setTrack(track);
+            }
         } catch (RequiredVersionMissingException e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
 
         setContentView(R.layout.calc_remain_elevation);
 
+
+        Button closeButton = findViewById(R.id.btnClose);
+        closeButton.setOnClickListener(v -> finish());
+    }
+
+    private Track getSuggestedTrack(Track currentSelection, LocusCache locusCache) throws RequiredVersionMissingException {
+        if (currentSelection != null && !currentSelection.getName().equalsIgnoreCase(locusCache.navigationTrackName)) {
+            return UpdateContainerRequest.searchNavigationTrack(locusCache, this);
+        }
+
+        return null;
+    }
+
+    private void setTrack(Track track) {
+        LocusCache locusCache = LocusCache.getInstance(this);
+        locusCache.setLastSelectedTrack(track);
+
         String trackName = "not found"; //NON-NLS it's just an workaround
-        if (locusCache.lastSelectedTrack != null) {
-            trackName = locusCache.lastSelectedTrack.getName();
-            trackName += " (" + locusCache.lastSelectedTrack.getId() + ")";
+        if (track != null) {
+            trackName = track.getName();
+            trackName += " (" + track.getId() + ")";
         }
         TextView text = findViewById(R.id.text_desc);
 
@@ -47,31 +74,7 @@ public class LocusSetGuideTrackActivity extends AppCompatActivity {
 
         text.setText(getString(R.string.calc_remain_elev_description,
                 trackName, getString(R.string.act_request_stats_sensors), calcFieldText));
-
-        Button closeButton = findViewById(R.id.btnClose);
-        closeButton.setOnClickListener(v -> finish());
     }
 
-    private static int[] calculateRemainingElevation(Track track) {
-        //TODO reverse track calculation but track with name "navigation" is never reverse
 
-        List<Location> points = track.getPoints();
-        int size = points.size();
-        //make array one point larger because we assign remaining elevation to point+1 because remain is current target point -1
-        int[] remainingUphill = new int[size + 1];
-        Double uphillElevation = 0.0;
-        double nextAltitude = points.get(size - 1).getAltitude();
-        for (int i = size - 1; i >= 0; i--) {
-            double currentAltitude = points.get(i).getAltitude();
-            if (nextAltitude > currentAltitude) {
-                uphillElevation += nextAltitude - currentAltitude;
-            }
-            remainingUphill[i + 1] = uphillElevation.intValue();
-            nextAltitude = currentAltitude;
-        }
-        //assign remaining altitude of point 0 because we have no values at 0 because we read 1 point ahead.
-        remainingUphill[0] = remainingUphill[1];
-
-        return remainingUphill;
-    }
 }
