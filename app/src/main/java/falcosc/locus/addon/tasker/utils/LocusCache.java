@@ -2,7 +2,6 @@ package falcosc.locus.addon.tasker.utils;
 
 import android.arch.core.util.Function;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.util.Log;
 import locus.api.android.features.periodicUpdates.UpdateContainer;
@@ -36,13 +35,13 @@ public class LocusCache {
         Log.d(TAG, "init Locus cache");
 
         locusVersion = LocusUtils.getActiveVersion(context);
-        Log.d(TAG, "Locus version: " + locusVersion.getPackageName());
+        Log.d(TAG, "Locus version: " + locusVersion);
 
         Resources locusRes = null;
         try {
             locusRes = context.getPackageManager().getResourcesForApplication(locusVersion.getPackageName());
             Log.d(TAG, "Found Locus resources");
-        } catch (PackageManager.NameNotFoundException e) {
+        } catch (Exception e) {
             Log.d(TAG, "Missing Locus resources", e);
         }
         locusResources = locusRes;
@@ -173,6 +172,8 @@ public class LocusCache {
         f.add(cLocusField("map_top_left_lat", null, u -> String.valueOf(u.getMapTopLeft().latitude)));
         f.add(cLocusField("map_center_lon", null, u -> String.valueOf(u.getLocMapCenter().longitude)));
         f.add(cLocusField("map_center_lat", null, u -> String.valueOf(u.getLocMapCenter().latitude)));
+        f.add(cLocusField("active_live_track_id", null, u -> String.valueOf(u.getActiveLiveTrackId())));
+        f.add(cLocusField("active_dashboard_id", null, u -> String.valueOf(u.getActiveDashboardId())));
         f.add(cLocusField(CALC_REMAIN_UPHILL_ELEVATION, null, new CalculateElevationToTarget()));
 
         //TODO Navigation points

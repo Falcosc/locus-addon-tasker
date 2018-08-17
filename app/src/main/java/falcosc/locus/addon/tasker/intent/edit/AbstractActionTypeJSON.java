@@ -89,9 +89,9 @@ abstract class AbstractActionTypeJSON {
         return json;
     }
 
+    @SuppressWarnings("unchecked")
     static void setSpinnerValue(Spinner spinner, Object value) {
         if (value != null) {
-            //noinspection unchecked because all project spinners use Array Adapters
             spinner.setSelection(((ArrayAdapter<Object>) spinner.getAdapter()).getPosition(value));
         }
     }

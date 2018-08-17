@@ -87,6 +87,7 @@ public class UpdateContainerDialog extends AbstractDialogFragment {
         finish(createResultIntent(), createHintsDialog(previousFieldSelection));
     }
 
+    //TODO remove this after beta test
     private Dialog createHintsDialog(Set<String> previousFieldSelection) {
         Dialog hintsDialog = null;
         if (!previousFieldSelection.contains(LocusCache.CALC_REMAIN_UPHILL_ELEVATION)

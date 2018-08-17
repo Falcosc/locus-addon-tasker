@@ -3,6 +3,7 @@ package falcosc.locus.addon.tasker.intent.handler;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.widget.Toast;
 import falcosc.locus.addon.tasker.R;
 import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
@@ -19,6 +20,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class UpdateContainerRequest extends AbstractTaskerAction {
+
+    private static final String TAG = "UpdateContainerRequest";
 
     private Set<String> getSelectedFields(@NonNull Bundle apiExtraBundle) {
 
@@ -55,8 +58,8 @@ public class UpdateContainerRequest extends AbstractTaskerAction {
                 selectedFields.removeAll(locusCache.trackRecordingKeys);
             }
 
-            if (isNavigationTrackNeeded(locusCache, selectedFields, update)) {
-                locusCache.setLastSelectedTrack(searchNavigationTrack(locusCache, context));
+            if (isLiveTrackNeeded(locusCache, selectedFields, update)) {
+                setLiveTrack(locusCache, context, update.getActiveLiveTrackId());
             }
 
             Bundle varsBundle = new Bundle();
@@ -71,7 +74,7 @@ public class UpdateContainerRequest extends AbstractTaskerAction {
         }
     }
 
-    private boolean isNavigationTrackNeeded(LocusCache locusCache, Set<String> selectedFields, UpdateContainer update) {
+    private static boolean isLiveTrackNeeded(LocusCache locusCache, Set<String> selectedFields, UpdateContainer update) {
         if (locusCache.getLastSelectedTrack() == null) {
             if (selectedFields.contains(LocusCache.CALC_REMAIN_UPHILL_ELEVATION)) {
                 if (update.isGuideEnabled()) {
@@ -84,17 +87,13 @@ public class UpdateContainerRequest extends AbstractTaskerAction {
         return false;
     }
 
-    public static Track searchNavigationTrack(LocusCache locusCache, Context context) throws RequiredVersionMissingException {
-
-        Track track = ActionTools.getLocusTrack(context, locusCache.locusVersion, 1000000001);
-        if(track != null && !track.getName().equalsIgnoreCase(locusCache.navigationTrackName)){
-            //track found but is not navigation, check if there is a better one
-            Track track2 = ActionTools.getLocusTrack(context, locusCache.locusVersion, 1000000002);
-            if(track2 != null && track.getName().equalsIgnoreCase(locusCache.navigationTrackName)){
-                //use track 2 only if it is a Navigation track, if both are not, then take the first one
-                track = track2;
-            }
+    private static void setLiveTrack(LocusCache locusCache, Context context, String id) {
+        try {
+            int liveTrackId = Integer.valueOf(id);
+            Track liveTrack = ActionTools.getLocusTrack(context, locusCache.locusVersion, liveTrackId);
+            locusCache.setLastSelectedTrack(liveTrack);
+        } catch (Exception e) {
+            Log.w(TAG, "can't get live track", e); //NON-NLS logging message
         }
-        return track;
     }
 }

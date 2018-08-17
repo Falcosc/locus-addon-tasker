@@ -3,7 +3,6 @@ package falcosc.locus.addon.tasker.intent.handler;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
 import falcosc.locus.addon.tasker.utils.Const;
 import falcosc.locus.addon.tasker.utils.LocusCache;
 

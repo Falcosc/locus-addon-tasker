@@ -121,7 +121,7 @@ public class ActionTaskDialog extends AbstractDialogFragment {
             final Spinner wptSpinner = view.findViewById(R.id.track_record_wpt_spinner);
             bindKey(ACTION, (v) -> setSpinnerValue(spinner, v), spinner::getSelectedItem);
             bindKey(NAME, (v) -> text.setText((String) v), text::getText);
-            bindKey(AUTO_SAVE, (v) -> checkbox.setChecked((boolean) v), () -> checkbox.isChecked());
+            bindKey(AUTO_SAVE, (v) -> checkbox.setChecked((boolean) v), checkbox::isChecked);
             bindKey(ACTION_AFTER, (v) -> setSpinnerValue(wptSpinner, v), wptSpinner::getSelectedItem);
         }
     }

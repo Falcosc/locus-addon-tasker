@@ -1,14 +1,15 @@
 package falcosc.locus.addon.tasker;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import falcosc.locus.addon.tasker.intent.handler.UpdateContainerRequest;
 import falcosc.locus.addon.tasker.utils.LocusCache;
 import falcosc.locus.addon.tasker.utils.LocusField;
+import locus.api.android.ActionTools;
 import locus.api.android.utils.LocusUtils;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 import locus.api.objects.extra.Track;
@@ -48,10 +49,24 @@ public class LocusSetGuideTrackActivity extends AppCompatActivity {
 
     private Track getSuggestedTrack(Track currentSelection, LocusCache locusCache) throws RequiredVersionMissingException {
         if (currentSelection != null && !currentSelection.getName().equalsIgnoreCase(locusCache.navigationTrackName)) {
-            return UpdateContainerRequest.searchNavigationTrack(locusCache, this);
+            return searchNavigationTrack(locusCache, this);
         }
 
         return null;
+    }
+
+    private static Track searchNavigationTrack(LocusCache locusCache, Context context) throws RequiredVersionMissingException {
+
+        Track track = ActionTools.getLocusTrack(context, locusCache.locusVersion, 1000000001);
+        if(track != null && !track.getName().equalsIgnoreCase(locusCache.navigationTrackName)){
+            //track found but is not navigation, check if there is a better one
+            Track track2 = ActionTools.getLocusTrack(context, locusCache.locusVersion, 1000000002);
+            if(track2 != null && track.getName().equalsIgnoreCase(locusCache.navigationTrackName)){
+                //use track 2 only if it is a Navigation track, if both are not, then take the first one
+                track = track2;
+            }
+        }
+        return track;
     }
 
     private void setTrack(Track track) {

@@ -12,7 +12,8 @@
         android:layout_height="96dp"
         android:layout_gravity="center_horizontal"
         android:src="@drawable/launcher_large"
-        android:contentDescription="@string/app_icon" />
+        android:contentDescription="@string/app_icon"
+        android:id="@+id/imageView"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -40,9 +41,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="8dp"
+        android:minHeight="48dp"
         android:autoLink="web"
         android:gravity="start"
+        android:paddingTop="20dp"
         android:text="@string/privacy_policy_link" />
 
 </LinearLayout>

@@ -10,14 +10,15 @@ import java.util.List;
 
 class CalculateElevationToTarget implements Function<UpdateContainer, String> {
     private static final String NO_TRK = "noTRK";
-    private static final String OFF_TRK = "offTRK";
+    private static final String RESET = "RESET";
     private static final String TAG = "CalcElevationToTarget";
 
     @Override
     public String apply(UpdateContainer updateContainer) {
 
+        LocusCache locusCache = LocusCache.getInstanceNullable();
+
         try {
-            LocusCache locusCache = LocusCache.getInstanceNullable();
             Track track = locusCache.getLastSelectedTrack();
 
             if (track == null) {
@@ -41,8 +42,10 @@ class CalculateElevationToTarget implements Function<UpdateContainer, String> {
             Log.e(TAG, "Can not get remaining elevation", e); //NON-NLS
         }
 
+        locusCache.setLastSelectedTrack(null);
+
         //tracking is off on exception or we are not on track
-        return OFF_TRK;
+        return RESET;
     }
 
     private int findMatchingPointIndex(List<Location> points, Location current, int previousIndex) {
@@ -77,6 +80,10 @@ class CalculateElevationToTarget implements Function<UpdateContainer, String> {
     }
 
     public static int[] calculateRemainingElevation(Track track) {
+        if (track == null) {
+            return new int[0];
+        }
+
         List<Location> points = track.getPoints();
         int size = points.size();
         //make array one point larger because we assign remaining elevation to point+1 because remain is current target point -1
