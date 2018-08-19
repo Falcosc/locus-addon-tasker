@@ -57,10 +57,10 @@ public class LocusSetGuideTrackActivity extends AppCompatActivity {
     private static Track searchNavigationTrack(LocusCache locusCache, Context context) throws RequiredVersionMissingException {
 
         Track track = ActionTools.getLocusTrack(context, locusCache.locusVersion, 1000000001);
-        if(track != null && !track.getName().equalsIgnoreCase(locusCache.navigationTrackName)){
+        if (track != null && !track.getName().equalsIgnoreCase(locusCache.navigationTrackName)) {
             //track found but is not navigation, check if there is a better one
             Track track2 = ActionTools.getLocusTrack(context, locusCache.locusVersion, 1000000002);
-            if(track2 != null && track.getName().equalsIgnoreCase(locusCache.navigationTrackName)){
+            if (track2 != null && track.getName().equalsIgnoreCase(locusCache.navigationTrackName)) {
                 //use track 2 only if it is a Navigation track, if both are not, then take the first one
                 track = track2;
             }

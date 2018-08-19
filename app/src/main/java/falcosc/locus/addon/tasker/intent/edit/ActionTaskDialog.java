@@ -163,9 +163,9 @@ public class ActionTaskDialog extends AbstractDialogFragment {
         }
     }
 
-
+    @SuppressLint("InflateParams") //because we don't need to look for AlertDialog view NON-NLS
     private View createView(@NotNull LayoutInflater inflater, Bundle savedInstanceState) {
-        @SuppressLint("InflateParams") //because we don't need to look for AlertDialog view NON-NLS
+
         View dialogView = inflater.inflate(R.layout.edit_action_task, null);
         initActionMapping(dialogView);
 

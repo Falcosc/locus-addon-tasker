@@ -11,21 +11,21 @@
         android:padding="10dp">
 
         <TextView
+            android:id="@+id/text_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/text_desc"
             android:text="@string/calc_remain_elev_description" />
 
         <TextView
+            style="@style/textBullet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/textBullet"
             android:text="@string/calc_remain_elev_offtrk" />
 
         <TextView
+            style="@style/textBullet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/textBullet"
             android:text="@string/calc_remain_elev_notrk" />
     </LinearLayout>
 

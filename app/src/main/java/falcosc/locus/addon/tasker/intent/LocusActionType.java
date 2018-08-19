@@ -45,7 +45,7 @@ public enum LocusActionType {
         return labelStringId;
     }
 
-    public boolean isNotImplemented(){
+    public boolean isNotImplemented() {
         return handler == null || editFragment == null;
     }
 

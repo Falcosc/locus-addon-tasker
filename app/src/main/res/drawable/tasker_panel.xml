@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <inset xmlns:android="http://schemas.android.com/apk/res/android"
     android:drawable="@color/colorPrimaryLight"
-    android:insetTop="5dp"
-    android:insetBottom="5dp" />
+    android:insetBottom="5dp"
+    android:insetTop="5dp" />

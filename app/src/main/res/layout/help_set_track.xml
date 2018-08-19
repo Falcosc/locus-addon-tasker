@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,16 +14,17 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/help_set_track" android:padding="8dp" />
+            android:padding="8dp"
+            android:text="@string/help_set_track" />
 
         <ImageView
             android:layout_width="wrap_content"
-            android:maxWidth="300dp"
             android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
             android:layout_gravity="center"
-            android:src="@drawable/set_track"
-            android:contentDescription="@string/select_navigation_track"/>
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/select_navigation_track"
+            android:maxWidth="300dp"
+            android:src="@drawable/set_track" />
 
     </LinearLayout>
 </ScrollView>

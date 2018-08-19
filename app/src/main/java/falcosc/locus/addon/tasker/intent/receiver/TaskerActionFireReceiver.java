@@ -12,7 +12,6 @@ import falcosc.locus.addon.tasker.utils.Const;
 import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
 
 
-
 public final class TaskerActionFireReceiver extends BroadcastReceiver {
 
     private static final String TAG = "TaskerActionFire";

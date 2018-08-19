@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="wrap_content"
-    android:layout_width="wrap_content">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
     <!-- some styles like padding do only work if you load the element from an existing layout -->
     <Button
-        android:text="@string/act_request_stats_sensors"
         android:id="@+id/listBtn"
+        style="@style/listButton"
         android:drawableLeft="@drawable/launcher_small"
         android:drawablePadding="20dp"
-        style="@style/listButton"
+        android:text="@string/act_request_stats_sensors"
         tools:ignore="RtlHardcoded" />
 </RelativeLayout>
