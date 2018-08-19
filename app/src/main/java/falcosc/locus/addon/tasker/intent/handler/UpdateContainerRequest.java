@@ -51,10 +51,10 @@ public class UpdateContainerRequest extends AbstractTaskerAction {
 
             LocusCache locusCache = LocusCache.getInstance(context);
 
-            UpdateContainer update = ActionTools.getDataUpdateContainer(context, locusCache.locusVersion);
+            UpdateContainer update = locusCache.getUpdateContainer();
 
             if (!update.isTrackRecRecording()) {
-                //remove track recording fields
+                //remove track recording fields to skip null checks
                 selectedFields.removeAll(locusCache.trackRecordingKeys);
             }
 

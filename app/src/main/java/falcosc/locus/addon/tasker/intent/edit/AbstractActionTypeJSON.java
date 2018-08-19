@@ -41,7 +41,16 @@ abstract class AbstractActionTypeJSON {
         this.content = content;
         this.checkbox = checkbox;
         keyBindMap = new HashMap<>();
-        checkbox.setOnCheckedChangeListener((buttonView, isChecked) -> content.setVisibility(isChecked ? View.VISIBLE : View.GONE));
+        checkbox.setOnCheckedChangeListener((buttonView, isChecked) -> setContentVisibility(isChecked));
+    }
+
+    private void setContentVisibility(boolean visible) {
+        if (visible) {
+            content.setVisibility(View.VISIBLE);
+            content.getParent().requestChildFocus(content, content);
+        } else {
+            content.setVisibility(View.GONE);
+        }
     }
 
 

@@ -1,11 +1,14 @@
 package falcosc.locus.addon.tasker.utils;
 
+import android.annotation.SuppressLint;
 import android.arch.core.util.Function;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.Log;
+import locus.api.android.ActionTools;
 import locus.api.android.features.periodicUpdates.UpdateContainer;
 import locus.api.android.utils.LocusUtils;
+import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 import locus.api.objects.extra.Track;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.WordUtils;
@@ -16,7 +19,11 @@ public class LocusCache {
     private static final String TAG = "LocusCache";
     public static final String CALC_REMAIN_UPHILL_ELEVATION = "calc_remain_uphill_elevation";
     private static final Object syncObj = new Object();
+
+    @SuppressLint("StaticFieldLeak") //cased by applicationContext but this is validated to be leek free
     private static LocusCache instance;
+
+    private final Context applicationContext;
 
     public final HashSet<String> trackRecordingKeys;
     public final Map<String, LocusField> updateContainerFieldMap;
@@ -30,9 +37,15 @@ public class LocusCache {
     public int[] remainingTrackElevation;
     public int lastIndexOnRemainingTrack;
 
+    //update container
+    private UpdateContainer updateContainer = null;
+    private long updateContainerExpiration = 0L;
+
     @SuppressWarnings("HardCodedStringLiteral")
     private LocusCache(Context context) {
         Log.d(TAG, "init Locus cache");
+
+        applicationContext = context.getApplicationContext();
 
         locusVersion = LocusUtils.getActiveVersion(context);
         Log.d(TAG, "Locus version: " + locusVersion);
@@ -205,5 +218,18 @@ public class LocusCache {
     public void setLastSelectedTrack(Track lastSelectedTrack) {
         this.lastSelectedTrack = lastSelectedTrack;
         remainingTrackElevation = CalculateElevationToTarget.calculateRemainingElevation(lastSelectedTrack);
+    }
+
+    public UpdateContainer getUpdateContainer() throws RequiredVersionMissingException {
+        long requestTime = System.currentTimeMillis();
+        if (requestTime > updateContainerExpiration) {
+            updateContainer = ActionTools.getDataUpdateContainer(applicationContext, locusVersion);
+            updateContainerExpiration = requestTime + 950; //don't care about 1 second offset for manual update requests
+        } else {
+            Log.d(TAG, "getUpdateContainer cache hit, time to expiration: " //NON-NLS
+                    + (updateContainerExpiration - requestTime));
+        }
+
+        return updateContainer;
     }
 }

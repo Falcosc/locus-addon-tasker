@@ -22,6 +22,7 @@ class CalculateElevationToTarget implements Function<UpdateContainer, String> {
             Track track = locusCache.getLastSelectedTrack();
 
             if (track == null) {
+                //Don't search for the current track, this is done at the entry point of a new update request
                 return NO_TRK;
             }
 
@@ -43,6 +44,7 @@ class CalculateElevationToTarget implements Function<UpdateContainer, String> {
         }
 
         locusCache.setLastSelectedTrack(null);
+        //Don't search for the current track, this is done at the entry point of a new update request
 
         //tracking is off on exception or we are not on track
         return RESET;
