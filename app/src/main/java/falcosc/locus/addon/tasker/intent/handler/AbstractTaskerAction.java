@@ -10,7 +10,7 @@ import falcosc.locus.addon.tasker.R;
 import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 
-public abstract class AbstractTaskerAction implements TaskerAction {
+abstract class AbstractTaskerAction implements TaskerAction {
 
     @SuppressWarnings("RedundantThrows")
     protected abstract void doHandle(@NonNull Bundle apiExtraBundle) throws RequiredVersionMissingException;

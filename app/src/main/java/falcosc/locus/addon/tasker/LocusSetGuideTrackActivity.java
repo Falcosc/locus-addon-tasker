@@ -22,6 +22,8 @@ public class LocusSetGuideTrackActivity extends AppCompatActivity {
 
         LocusCache locusCache = LocusCache.getInstance(this);
 
+        setContentView(R.layout.calc_remain_elevation);
+
         try {
             Track track = LocusUtils.handleIntentTrackTools(this, getIntent());
             final Track suggestedTrack = getSuggestedTrack(track, locusCache);
@@ -39,9 +41,6 @@ public class LocusSetGuideTrackActivity extends AppCompatActivity {
         } catch (RequiredVersionMissingException e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
-
-        setContentView(R.layout.calc_remain_elevation);
-
 
         Button closeButton = findViewById(R.id.btnClose);
         closeButton.setOnClickListener(v -> finish());

@@ -41,7 +41,7 @@
     <string name="back">Back</string>
     <string name="share">Share</string>
     <string name="ok">OK</string>
-    <string name="help_set_track">You did select one or more fields which need to know your current navigation track. Currently Locus API don\'t return the current navigation track. This app try to guess which track is your navigation but if you have any problems you need to manually select which track is your Navigation.</string>
+    <string name="help_set_track">You did select one or more fields which need to know your current navigation track. If the recently added Locus API field does not work reliably you need to manually select which track is your Navigation.</string>
     <string name="suggest_navigation_track">It is suggested to select the virtual navigation track.</string>
     <string name="select_navigation_track">select navigation track</string>
 </resources>

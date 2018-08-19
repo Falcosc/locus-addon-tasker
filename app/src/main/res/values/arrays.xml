@@ -55,6 +55,7 @@
         <item>add_wpt</item>
     </string-array>
     <string-array name="track_record_wpt_after">
+        <item>@null</item>
         <item>photo</item>
         <item>video</item>
         <item>audio</item>

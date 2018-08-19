@@ -13,162 +13,167 @@
         tools:ignore="HardcodedText">
 
         <CheckBox
+            android:id="@+id/map_center"
+            style="@style/listCheckbox"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Map Center Action"
-            android:id="@+id/map_center"
-            style="@style/listCheckbox" />
+            android:labelFor="@id/map_center_content"
+            android:text="Map Center Action" />
 
         <Spinner
             android:id="@+id/map_center_content"
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:entries="@array/on_off_toggle" />
+            android:entries="@array/on_off_toggle"
+            android:visibility="gone" />
 
         <CheckBox
+            android:id="@+id/live_tracking_asamm"
+            style="@style/listCheckbox"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Live Tracking ASAMM"
-            android:id="@+id/live_tracking_asamm"
-            style="@style/listCheckbox" />
+            android:labelFor="@id/live_tracking_asamm_spinner"
+            android:text="Live Tracking ASAMM" />
 
         <LinearLayout
+            android:id="@+id/live_tracking_asamm_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:id="@+id/live_tracking_asamm_content"
             android:visibility="gone">
 
             <Spinner
+                android:id="@+id/live_tracking_asamm_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/live_tracking_asamm_spinner"
                 android:entries="@array/start_stop" />
 
             <EditText
                 android:id="@+id/live_tracking_asamm_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="ASAMM tracking config name (optional)"
                 android:imeOptions="actionDone"
-                android:inputType="text"
-                android:hint="Name of configuration (optional)" />
+                android:inputType="text" />
         </LinearLayout>
 
         <CheckBox
+            android:id="@+id/live_tracking_custom"
+            style="@style/listCheckbox"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Live Tracking Custom"
-            android:id="@+id/live_tracking_custom"
-            style="@style/listCheckbox" />
+            android:labelFor="@id/live_tracking_custom_spinner"
+            android:text="Live Tracking Custom" />
 
         <LinearLayout
+            android:id="@+id/live_tracking_custom_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:id="@+id/live_tracking_custom_content"
             android:visibility="gone">
 
             <Spinner
+                android:id="@+id/live_tracking_custom_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/live_tracking_custom_spinner"
                 android:entries="@array/start_stop" />
 
             <EditText
                 android:id="@+id/live_tracking_custom_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="Custom tracking config name (optional)"
                 android:imeOptions="actionDone"
-                android:inputType="text"
-                android:hint="Name of configuration (optional)" />
+                android:inputType="text" />
         </LinearLayout>
 
         <CheckBox
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Map Move X"
             android:id="@+id/map_move_x"
-            style="@style/listCheckbox" />
+            style="@style/listCheckbox"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:labelFor="@id/map_move_x_spinner"
+            android:text="Map Move X" />
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="end"
             android:id="@+id/map_move_x_content"
-            android:visibility="gone">
-
-            <EditText
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:hint="+/- amount"
-                android:gravity="end"
-                android:id="@+id/map_move_x_text"
-                android:inputType="numberSigned"
-                android:imeOptions="actionDone"
-                android:layout_weight="1" />
-
-            <Spinner
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/map_move_x_spinner"
-                android:entries="@array/map_move_units" />
-        </LinearLayout>
-
-        <CheckBox
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Map Move Y"
-            android:id="@+id/map_move_y"
-            style="@style/listCheckbox" />
-
-        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="end"
-            android:id="@+id/map_move_y_content"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <EditText
+                android:id="@+id/map_move_x_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="+/- amount"
+                android:layout_weight="1"
                 android:gravity="end"
-                android:id="@+id/map_move_y_text"
-                android:inputType="numberSigned"
+                android:hint="horizontal amount"
                 android:imeOptions="actionDone"
-                android:layout_weight="1" />
+                android:inputType="numberSigned" />
 
             <Spinner
+                android:id="@+id/map_move_x_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/map_move_y_spinner"
                 android:entries="@array/map_move_units" />
         </LinearLayout>
 
         <CheckBox
+            android:id="@+id/map_move_y"
+            style="@style/listCheckbox"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Map Zoom Action"
+            android:labelFor="@id/map_move_y_spinner"
+            android:text="Map Move Y" />
+
+        <LinearLayout
+            android:id="@+id/map_move_y_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/map_move_y_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:gravity="end"
+                android:hint="vertical amount"
+                android:imeOptions="actionDone"
+                android:inputType="numberSigned" />
+
+            <Spinner
+                android:id="@+id/map_move_y_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:entries="@array/map_move_units" />
+        </LinearLayout>
+
+        <CheckBox
             android:id="@+id/map_zoom"
-            style="@style/listCheckbox" />
+            style="@style/listCheckbox"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:labelFor="@id/map_zoom_content"
+            android:text="Map Zoom Action" />
 
         <Spinner
+            android:id="@+id/map_zoom_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/map_zoom_content"
             android:entries="@array/map_zoom"
             android:visibility="gone" />
 
         <CheckBox
+            android:id="@+id/open"
+            style="@style/listCheckbox"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Open Action"
-            android:id="@+id/open"
-            style="@style/listCheckbox" />
+            android:labelFor="@id/open_content"
+            android:text="Open Action" />
 
         <Spinner
             android:id="@+id/open_content"
@@ -178,27 +183,29 @@
             android:visibility="gone" />
 
         <CheckBox
+            android:id="@+id/preset"
+            style="@style/listCheckbox"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Preset apply"
-            android:id="@+id/preset"
-            style="@style/listCheckbox" />
+            android:labelFor="@id/preset_content"
+            android:text="Preset apply" />
 
         <EditText
             android:id="@+id/preset_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="Name of preset"
             android:imeOptions="actionDone"
             android:inputType="text"
-            android:hint="Name of preset"
             android:visibility="gone" />
 
         <CheckBox
+            android:id="@+id/screen"
+            style="@style/listCheckbox"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Screen Action"
-            android:id="@+id/screen"
-            style="@style/listCheckbox" />
+            android:labelFor="@id/screen_content"
+            android:text="Screen Action" />
 
         <Spinner
             android:id="@+id/screen_content"
@@ -208,57 +215,65 @@
             android:visibility="gone" />
 
         <CheckBox
+            android:id="@+id/track_record"
+            style="@style/listCheckbox"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Track record"
-            android:id="@+id/track_record"
-            style="@style/listCheckbox" />
+            android:text="Track record" />
 
-        <LinearLayout
+        <RelativeLayout
+            android:id="@+id/track_record_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:id="@+id/track_record_content"
             android:visibility="gone">
 
             <Spinner
+                android:id="@+id/track_record_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/track_record_spinner"
                 android:entries="@array/track_record" />
 
             <EditText
                 android:id="@+id/track_record_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/track_record_spinner"
+                android:hint="Profile name / Point name (Optional)"
                 android:imeOptions="actionDone"
-                android:inputType="text"
-                android:hint="Profile name / Point name (Optional)" />
+                android:inputType="text" />
 
             <CheckBox
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:id="@+id/track_record_checkbox"
-                android:text="auto save" />
-
-            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_below="@id/track_record_text"
+                android:text="auto save recording" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Action after add wpt: " />
+            <TextView
+                android:id="@+id/track_record_wpt_spinner_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/track_record_checkbox"
+                android:gravity="center"
+                android:minHeight="48dp"
+                android:padding="5dp"
+                android:text="Action after add wpt: " />
 
-                <Spinner
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/track_record_wpt_spinner"
-                    android:entries="@array/track_record_wpt_after" />
-            </LinearLayout>
+            <Spinner
+                android:id="@+id/track_record_wpt_spinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/track_record_checkbox"
+                android:layout_toEndOf="@id/track_record_wpt_spinner_label"
+                android:layout_toRightOf="@id/track_record_wpt_spinner_label"
+                android:entries="@array/track_record_wpt_after" />
 
-        </LinearLayout>
+        </RelativeLayout>
 
     </LinearLayout>
 

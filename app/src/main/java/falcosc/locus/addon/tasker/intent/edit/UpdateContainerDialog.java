@@ -135,9 +135,7 @@ public class UpdateContainerDialog extends AbstractDialogFragment {
         TaskerPlugin.addRelevantVariableList(resultIntent, fieldDesc.toArray(new String[0]));
 
         //force synchronous execution by set a timeout to handle variables
-        if (TaskerPlugin.Setting.getHintTimeoutMS(hostExtras) == TaskerPlugin.Setting.REQUESTED_TIMEOUT_MS_NONE) {
-            TaskerPlugin.Setting.requestTimeoutMS(resultIntent, 5000);
-        }
+        TaskerPlugin.Setting.requestTimeoutMS(resultIntent, 10000);
 
         return resultIntent;
     }

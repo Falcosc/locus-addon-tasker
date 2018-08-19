@@ -7,6 +7,9 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textColorLink">@color/linkColor</item>
+        <item name="android:spinnerStyle">@style/SpinnerStyle</item>
+        <item name="android:checkboxStyle">@style/CheckboxStyle</item>
+        <item name="editTextStyle">@style/EditTextStyle</item>
     </style>
 
     <!--suppress AndroidDomInspection -->
@@ -14,14 +17,29 @@
         <item name="colorAccent">@color/colorPrimaryDark</item>
         <item name="colorPrimary">@color/colorPrimaryDark</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:textColorLink">@color/linkColor</item>
+        <item name="android:spinnerStyle">@style/SpinnerStyle</item>
+        <item name="android:checkboxStyle">@style/CheckboxStyle</item>
+        <item name="editTextStyle">@style/EditTextStyle</item>
+    </style>
+
+    <style name="SpinnerStyle" parent="@style/Widget.AppCompat.Spinner">
+        <item name="android:minHeight">48dp</item>
+    </style>
+
+    <style name="CheckboxStyle" parent="@style/Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:minHeight">48dp</item>
+    </style>
+
+    <style name="EditTextStyle" parent="@style/Widget.AppCompat.EditText">
+        <item name="android:minHeight">49dp</item> <!-- use 49 because sometimes it get rendered -1dp? -->
     </style>
 
     <style name="listButton">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
-        <item name="android:background">@color/colorPrimaryLight</item>
-        <item name="android:minHeight">0dp</item>
-        <item name="android:layout_marginTop">@dimen/fab_margin</item>
+        <item name="android:background">@drawable/tasker_panel</item>
+        <item name="android:minHeight">48dp</item>
         <item name="android:padding">6dp</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:gravity">center_vertical</item>
@@ -31,8 +49,7 @@
     <style name="listCheckbox">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
-        <item name="android:background">@color/colorPrimaryLight</item>
-        <item name="android:layout_marginTop">@dimen/fab_margin</item>
+        <item name="android:background">@drawable/tasker_panel</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:button">@null</item>
         <item name="android:textSize">18sp</item>
