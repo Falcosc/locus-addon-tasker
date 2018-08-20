@@ -1,33 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="EntryPointsManager">
-    <pattern value="falcosc.locus.addon.tasker.intent.handler.ActionTask" />
-    <pattern value="falcosc.locus.addon.tasker.intent.handler.ActionTask" method="handle" />
-    <pattern value="falcosc.locus.addon.tasker.LocusRunTaskerActivity" />
-    <pattern value="falcosc.locus.addon.tasker.LocusSetGuideTrackActivity" />
-    <pattern value="falcosc.locus.addon.tasker.MainActivity" />
-    <pattern value="falcosc.locus.addon.tasker.intent.receiver.TaskerActionFireReceiver" />
-    <pattern value="falcosc.locus.addon.tasker.TaskerEditActivity" />
-    <pattern value="falcosc.locus.addon.tasker.intent.receiver.TrackToolReceiver" />
-    <pattern value="falcosc.locus.addon.tasker.utils.LocusCache" />
-    <pattern value="falcosc.locus.addon.tasker.utils.LocusCache" method="reset" />
-    <pattern value="falcosc.locus.addon.tasker.intent.edit.NotImplementedDialog" />
-    <pattern value="falcosc.locus.addon.tasker.intent.edit.UpdateContainerDialog" />
-    <pattern value="falcosc.locus.addon.tasker.intent.handler.UpdateContainerRequest" />
-    <pattern value="falcosc.locus.addon.tasker.LocusRunTaskerActivity" method="onCreate" />
-    <pattern value="falcosc.locus.addon.tasker.LocusSetGuideTrackActivity" method="onCreate" />
-    <pattern value="falcosc.locus.addon.tasker.MainActivity" method="onCreate" />
-    <pattern value="falcosc.locus.addon.tasker.TaskerEditActivity" method="onCreate" />
-    <pattern value="falcosc.locus.addon.tasker.TaskerEditActivity" method="onFinish" />
-    <pattern value="falcosc.locus.addon.tasker.intent.receiver.TaskerActionFireReceiver" method="onReceive" />
-    <pattern value="falcosc.locus.addon.tasker.intent.receiver.TrackToolReceiver" method="onReceive" />
-    <pattern value="falcosc.locus.addon.tasker.intent.receiver.AbstractTaskerAction" method="handle" />
-    <pattern value="falcosc.locus.addon.tasker.intent.edit.NotImplementedDialog" method="onCreateDialog" />
-    <pattern value="falcosc.locus.addon.tasker.intent.handler.UpdateContainerRequest" method="doHandle" />
-    <pattern value="falcosc.locus.addon.tasker.intent.edit.UpdateContainerDialog" method="onCreateDialog" />
-    <pattern value="falcosc.locus.addon.tasker.intent.handler.AbstractTaskerAction" method="handle" />
-    <pattern value="falcosc.locus.addon.tasker.intent.handler.ActionTask" method="doHandle" />
-  </component>
   <component name="NullableNotNullManager">
     <option name="myDefaultNullable" value="android.support.annotation.Nullable" />
     <option name="myDefaultNotNull" value="android.support.annotation.NonNull" />
@@ -53,7 +25,7 @@
       </value>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="false" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

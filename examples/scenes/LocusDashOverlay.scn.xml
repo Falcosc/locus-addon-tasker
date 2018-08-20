@@ -1,0 +1,60 @@
+<!--suppress XmlUnboundNsPrefix -->
+<TaskerData sr="" dvi="1" tv="5.2.bf1">
+	<dmetric>540.0,960.0</dmetric>
+	<Scene sr="sceneLocusDashOverlay">
+		<cdate>1533132490265</cdate>
+		<edate>1533134241367</edate>
+		<gridSize>10</gridSize>
+		<heightLand>148</heightLand>
+		<heightPort>100</heightPort>
+		<nme>LocusDashOverlay</nme>
+		<widthLand>292</widthLand>
+		<widthPort>250</widthPort>
+		<TextElement sr="elements0" ve="3">
+			<clickTask>15</clickTask>
+			<flags>4</flags>
+			<geom>0,0,250,100,0,0,158,59</geom>
+			<Str sr="arg0" ve="3">ElevationUp</Str>
+			<Str sr="arg1" ve="3">1000m</Str>
+			<Int sr="arg2" val="50"/>
+			<Int sr="arg3" val="100"/>
+			<Str sr="arg4" ve="3">#FF000000</Str>
+			<Str sr="arg5" ve="3"/>
+			<Int sr="arg6" val="6"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+			<RectElement sr="background">
+				<flags>4</flags>
+				<geom>-1,-1,-1,-1,-1,-1,-1,-1</geom>
+				<Str sr="arg0" ve="3"/>
+				<Int sr="arg1" val="0"/>
+				<Str sr="arg2" ve="3">#FFFFFFFF</Str>
+				<Str sr="arg3" ve="3"/>
+				<Int sr="arg4" val="0"/>
+				<Str sr="arg5" ve="3">#FF000000</Str>
+				<Int sr="arg6" val="0"/>
+				<Int sr="arg7" val="0"/>
+			</RectElement>
+		</TextElement>
+		<PropertiesElement sr="props">
+			<Int sr="arg0" val="0"/>
+			<Int sr="arg1" val="2"/>
+			<Str sr="arg2" ve="3">#00FFFFFF</Str>
+			<Int sr="arg3" val="0"/>
+			<Str sr="arg4" ve="3">LocusDashOverlay</Str>
+			<Str sr="arg5" ve="3"/>
+			<Img sr="arg6" ve="2"/>
+			<Str sr="arg7" ve="3"/>
+		</PropertiesElement>
+	</Scene>
+	<Task sr="task15">
+		<cdate>1533134198959</cdate>
+		<edate>1533134198959</edate>
+		<id>15</id>
+		<pri>102</pri>
+		<Action sr="act0" ve="7">
+			<code>49</code>
+			<Str sr="arg0" ve="3">%scene_name</Str>
+		</Action>
+	</Task>
+</TaskerData>

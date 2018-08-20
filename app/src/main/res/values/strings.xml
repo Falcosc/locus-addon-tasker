@@ -23,7 +23,7 @@
     <string name="app_main_notice">Currently only some parts of the Locus API are implemented in this plugin. Please share your Tasker project idea if you miss any API implementations to make me able to create a proper translation to Tasker variables: \nhttps://github.com/Falcosc/locus-addon-tasker/issues</string>
     <string name="privacy_policy_link">https://github.com/Falcosc/locus-addon-tasker/wiki/Privacy-Policy</string>
     <string name="calc_remain_elev_description">Track \'%1$s\' is set, now you could use the Tasker field \'%2$s\' from \'%3$s\'. Reverse tracks are not supported. If something goes wrong you get the following returns values:</string>
-    <string name="calc_remain_elev_offtrk">RESET - track got reset because of track mismatch</string>
+    <string name="calc_remain_elev_reset">RESET - track got reset because of track mismatch</string>
     <string name="calc_remain_elev_notrk">noTRK - No track selected</string>
     <string name="run_task_description">This event is not properly implemented, if you want to use it please ask for a Tasker event implementation by sharing your Tasker project idea to tell which data you need.</string>
     <string name="run_task_execute">For now you can manually execute one of your tasks and get all event data as \'\%data\' in form of useless IDs to preview:</string>

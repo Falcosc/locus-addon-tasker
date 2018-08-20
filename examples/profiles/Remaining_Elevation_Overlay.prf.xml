@@ -1,0 +1,143 @@
+<!--suppress CheckTagEmptyBody, XmlUnboundNsPrefix -->
+<TaskerData sr="" dvi="1" tv="5.2.bf1">
+	<Profile sr="prof8" ve="2">
+		<cdate>1534609865261</cdate>
+		<clp>true</clp>
+		<edate>1534747268842</edate>
+		<id>8</id>
+		<limit>true</limit>
+		<mid0>16</mid0>
+		<nme>Remaining Elevation Overlay</nme>
+		<Time sr="con0">
+			<fh>-1</fh>
+			<fm>-1</fm>
+			<rep>2</rep>
+			<repval>2</repval>
+			<th>-1</th>
+			<tm>-1</tm>
+		</Time>
+		<App sr="con1" ve="2">
+			<cls0>com.asamm.locus.core.StartScreen</cls0>
+			<flags>2</flags>
+			<label0>Locus Map</label0>
+			<pkg0>menion.android.locus.pro</pkg0>
+		</App>
+	</Profile>
+	<Task sr="task16">
+		<cdate>1534609882066</cdate>
+		<edate>1534747522092</edate>
+		<id>16</id>
+		<nme>UpdateElevationOverlay</nme>
+		<pri>100</pri>
+		<Action sr="act0" ve="7">
+			<code>194</code>
+			<Str sr="arg0" ve="3">LocusDashOverlay</Str>
+			<Int sr="arg1" val="0"/>
+			<Str sr="arg2" ve="3">%scene_status</Str>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>891186576</code>
+			<Bundle sr="arg0">
+				<Vals sr="val">
+					<INTENT_EXTRA_FIELD_LIST>&lt;StringArray sr=""&gt;&lt;_array_INTENT_EXTRA_FIELD_LIST0&gt;active_dashboard_id&lt;/_array_INTENT_EXTRA_FIELD_LIST0&gt;&lt;_array_INTENT_EXTRA_FIELD_LIST1&gt;calc_remain_uphill_elevation&lt;/_array_INTENT_EXTRA_FIELD_LIST1&gt;&lt;/StringArray&gt;</INTENT_EXTRA_FIELD_LIST>
+					<INTENT_EXTRA_FIELD_LIST-type>[Ljava.lang.String;</INTENT_EXTRA_FIELD_LIST-type>
+					<LOCUS_ADDON_ACTION_TYPE>UPDATE_CONTAINER_REQUEST</LOCUS_ADDON_ACTION_TYPE>
+					<LOCUS_ADDON_ACTION_TYPE-type>java.lang.String</LOCUS_ADDON_ACTION_TYPE-type>
+					<com.twofortyfouram.locale.intent.extra.BLURB>Get Sensor/Stats: active_dashboard_id, calc_remain_uphill_elevation</com.twofortyfouram.locale.intent.extra.BLURB>
+					<com.twofortyfouram.locale.intent.extra.BLURB-type>java.lang.String</com.twofortyfouram.locale.intent.extra.BLURB-type>
+					<net.dinglisch.android.tasker.RELEVANT_VARIABLES>&lt;StringArray sr=""&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES0&gt;%active_dashboard_id
+Active Dashboard Id
+&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES0&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES1&gt;%calc_remain_uphill_elevation
+Calc Remain Uphill Elevation
+&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES1&gt;&lt;/StringArray&gt;</net.dinglisch.android.tasker.RELEVANT_VARIABLES>
+					<net.dinglisch.android.tasker.RELEVANT_VARIABLES-type>[Ljava.lang.String;</net.dinglisch.android.tasker.RELEVANT_VARIABLES-type>
+					<net.dinglisch.android.tasker.subbundled>true</net.dinglisch.android.tasker.subbundled>
+					<net.dinglisch.android.tasker.subbundled-type>java.lang.Boolean</net.dinglisch.android.tasker.subbundled-type>
+				</Vals>
+			</Bundle>
+			<Str sr="arg1" ve="3">falcosc.locus.addon.tasker</Str>
+			<Str sr="arg2" ve="3">falcosc.locus.addon.tasker.TaskerEditActivity</Str>
+			<Int sr="arg3" val="5"/>
+		</Action>
+		<Action sr="act2" ve="7">
+			<code>547</code>
+			<label>mock for dashboard status because this is locus beta feature</label>
+			<Str sr="arg0" ve="3">%active_dashboard_id</Str>
+			<Str sr="arg1" ve="3">1234</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+		</Action>
+		<Action sr="act3" ve="7">
+			<code>37</code>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%scene_status</lhs>
+					<op>0</op>
+					<rhs>visible</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+		<Action sr="act4" ve="7">
+			<code>49</code>
+			<Str sr="arg0" ve="3">LocusDashOverlay</Str>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%active_dashboard_id</lhs>
+					<op>13</op>
+					<rhs></rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+		<Action sr="act5" ve="7">
+			<code>43</code>
+		</Action>
+		<Action sr="act6" ve="7">
+			<code>47</code>
+			<label>adjust dashboard overlay position here</label>
+			<Str sr="arg0" ve="3">LocusDashOverlay</Str>
+			<Int sr="arg1" val="1"/>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="94"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="1"/>
+			<Int sr="arg6" val="1"/>
+			<Int sr="arg7" val="1"/>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%active_dashboard_id</lhs>
+					<op>12</op>
+					<rhs></rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+		<Action sr="act7" ve="7">
+			<code>38</code>
+		</Action>
+		<Action sr="act8" ve="7">
+			<code>547</code>
+			<label>add unit to output</label>
+			<Str sr="arg0" ve="3">%calc_remain_uphill_elevation</Str>
+			<Str sr="arg1" ve="3">m</Str>
+			<Int sr="arg2" val="0"/>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="1"/>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%calc_remain_uphill_elevation</lhs>
+					<op>7</op>
+					<rhs>0</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+		<Action sr="act9" ve="7">
+			<code>51</code>
+			<label>set remain uphill elevation</label>
+			<Str sr="arg0" ve="3">LocusDashOverlay</Str>
+			<Str sr="arg1" ve="3">ElevationUp</Str>
+			<Int sr="arg2" val="0"/>
+			<Str sr="arg3" ve="3">%calc_remain_uphill_elevation</Str>
+			<Str sr="arg4" ve="3"/>
+		</Action>
+	</Task>
+</TaskerData>

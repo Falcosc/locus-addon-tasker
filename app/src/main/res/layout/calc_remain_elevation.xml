@@ -20,7 +20,7 @@
             style="@style/textBullet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/calc_remain_elev_offtrk" />
+            android:text="@string/calc_remain_elev_reset" />
 
         <TextView
             style="@style/textBullet"
