@@ -8,8 +8,8 @@ android {
     defaultConfig {
         minSdkVersion Integer.valueOf(PARAM_MIN_SDK_VERSION)
         targetSdkVersion Integer.valueOf(PARAM_TARGET_SDK_VERSION)
-        versionCode 3
-        versionName "0.3"
+        versionCode 7
+        versionName "0.3.4"
         vectorDrawables.useSupportLibrary = true
     }
 

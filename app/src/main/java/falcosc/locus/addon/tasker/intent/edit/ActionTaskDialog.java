@@ -35,6 +35,7 @@ public class ActionTaskDialog extends AbstractDialogFragment {
         MapCenter(View view) {
             super(view.findViewById(R.id.map_center), view.findViewById(R.id.map_center_content));
             final Spinner spinner = (Spinner) content;
+            spinner.setOnItemSelectedListener(onItemSelected);
             bindKey(ACTION, (v) -> setSpinnerValue(spinner, v), spinner::getSelectedItem);
         }
     }
@@ -43,6 +44,7 @@ public class ActionTaskDialog extends AbstractDialogFragment {
         LiveTrackingAsamm(View view) {
             super(view.findViewById(R.id.live_tracking_asamm), view.findViewById(R.id.live_tracking_asamm_content));
             final Spinner spinner = view.findViewById(R.id.live_tracking_asamm_spinner);
+            spinner.setOnItemSelectedListener(onItemSelected);
             final EditText text = view.findViewById(R.id.live_tracking_asamm_text);
             bindKey(ACTION, (v) -> setSpinnerValue(spinner, v), spinner::getSelectedItem);
             bindKey(NAME, (v) -> text.setText((String) v), text::getText);
@@ -53,6 +55,7 @@ public class ActionTaskDialog extends AbstractDialogFragment {
         LiveTrackingCustom(View view) {
             super(view.findViewById(R.id.live_tracking_custom), view.findViewById(R.id.live_tracking_custom_content));
             final Spinner spinner = view.findViewById(R.id.live_tracking_custom_spinner);
+            spinner.setOnItemSelectedListener(onItemSelected);
             final EditText text = view.findViewById(R.id.live_tracking_custom_text);
             bindKey(ACTION, (v) -> setSpinnerValue(spinner, v), spinner::getSelectedItem);
             bindKey(NAME, (v) -> text.setText((String) v), text::getText);
@@ -63,6 +66,7 @@ public class ActionTaskDialog extends AbstractDialogFragment {
         MapMoveX(View view) {
             super(view.findViewById(R.id.map_move_x), view.findViewById(R.id.map_move_x_content));
             final Spinner spinner = view.findViewById(R.id.map_move_x_spinner);
+            spinner.setOnItemSelectedListener(onItemSelected);
             final EditText text = view.findViewById(R.id.map_move_x_text);
             bindKey(UNIT, (v) -> setSpinnerValue(spinner, v), spinner::getSelectedItem);
             bindKey(VALUE, (v) -> text.setText(String.valueOf((int) v)), () -> Integer.valueOf(text.getText().toString()));
@@ -73,6 +77,7 @@ public class ActionTaskDialog extends AbstractDialogFragment {
         MapMoveY(View view) {
             super(view.findViewById(R.id.map_move_y), view.findViewById(R.id.map_move_y_content));
             final Spinner spinner = view.findViewById(R.id.map_move_y_spinner);
+            spinner.setOnItemSelectedListener(onItemSelected);
             final EditText text = view.findViewById(R.id.map_move_y_text);
             bindKey(UNIT, (v) -> setSpinnerValue(spinner, v), spinner::getSelectedItem);
             bindKey(VALUE, (v) -> text.setText(String.valueOf((int) v)), () -> Integer.valueOf(text.getText().toString()));
@@ -83,6 +88,7 @@ public class ActionTaskDialog extends AbstractDialogFragment {
         MapZoom(View view) {
             super(view.findViewById(R.id.map_zoom), view.findViewById(R.id.map_zoom_content));
             final Spinner spinner = (Spinner) content;
+            spinner.setOnItemSelectedListener(onItemSelected);
             bindKey(ACTION, (v) -> setSpinnerValue(spinner, v), spinner::getSelectedItem);
         }
     }
@@ -91,6 +97,7 @@ public class ActionTaskDialog extends AbstractDialogFragment {
         Open(View view) {
             super(view.findViewById(R.id.open), view.findViewById(R.id.open_content));
             final Spinner spinner = (Spinner) content;
+            spinner.setOnItemSelectedListener(onItemSelected);
             bindKey(ACTION, (v) -> setSpinnerValue(spinner, v), spinner::getSelectedItem);
         }
     }
@@ -108,6 +115,7 @@ public class ActionTaskDialog extends AbstractDialogFragment {
         ScreenOnOff(View view) {
             super(view.findViewById(R.id.screen), view.findViewById(R.id.screen_content));
             final Spinner spinner = (Spinner) content;
+            spinner.setOnItemSelectedListener(onItemSelected);
             bindKey(ACTION, (v) -> setSpinnerValue(spinner, v), spinner::getSelectedItem);
         }
     }
@@ -116,6 +124,7 @@ public class ActionTaskDialog extends AbstractDialogFragment {
         TrackRecord(View view) {
             super(view.findViewById(R.id.track_record), view.findViewById(R.id.track_record_content));
             final Spinner spinner = view.findViewById(R.id.track_record_spinner);
+            spinner.setOnItemSelectedListener(onItemSelected);
             final EditText text = view.findViewById(R.id.track_record_text);
             final CheckBox checkbox = view.findViewById(R.id.track_record_checkbox);
             final Spinner wptSpinner = view.findViewById(R.id.track_record_wpt_spinner);

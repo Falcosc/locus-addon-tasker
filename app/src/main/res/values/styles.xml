@@ -32,7 +32,7 @@
     </style>
 
     <style name="EditTextStyle" parent="@style/Widget.AppCompat.EditText">
-        <item name="android:minHeight">49dp</item> <!-- use 49 because sometimes it get rendered -1dp? -->
+        <item name="android:minHeight">48dp</item>
     </style>
 
     <style name="listButton">

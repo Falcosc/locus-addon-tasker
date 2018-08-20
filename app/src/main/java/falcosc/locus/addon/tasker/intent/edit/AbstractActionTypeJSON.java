@@ -2,9 +2,7 @@ package falcosc.locus.addon.tasker.intent.edit;
 
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.Spinner;
+import android.widget.*;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 
@@ -52,6 +50,23 @@ abstract class AbstractActionTypeJSON {
             content.setVisibility(View.GONE);
         }
     }
+
+    final AdapterView.OnItemSelectedListener onItemSelected = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            String selection = parent.getSelectedItem().toString();
+            //set spinner description
+            parent.setContentDescription(checkbox.getText() + ": " + selection);
+            //the inside text is not important anymore because of duplicate information
+            view.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
+            //view.setContentDescription(checkbox.getText() + ": " + selection);
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+            parent.setContentDescription(checkbox.getText() + ": - ");
+        }
+    };
 
 
     void bindKey(String key, Setter<Object> setter, Getter<Object> getter) {
