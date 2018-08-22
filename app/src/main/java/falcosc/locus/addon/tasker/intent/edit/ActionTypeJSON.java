@@ -66,12 +66,16 @@ class ActionTypeJSON {
     final OnItemSelectedListener onItemSelected = new OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            //selection can't be null;
             String selection = parent.getSelectedItem().toString();
             //set spinner description
             parent.setContentDescription(mCheckbox.getText() + ": " + selection);
-            //the inside text is not important anymore because of duplicate information
-            view.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
-            //view.setContentDescription(mCheckbox.getText() + ": " + selection);
+            //view could be null during view recreation
+            if (view != null) {
+                //the inside text is not important anymore because of duplicate information
+                view.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
+                //view.setContentDescription(mCheckbox.getText() + ": " + selection);
+            }
         }
 
         @Override
