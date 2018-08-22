@@ -1,6 +1,7 @@
 package falcosc.locus.addon.tasker.utils;
 
-public class Const {
+@SuppressWarnings("HardCodedStringLiteral")
+public final class Const {
     /**
      * field list key for get update container
      */
@@ -11,4 +12,7 @@ public class Const {
     public static final String INTEND_EXTRA_ADDON_ACTION_TYPE = "LOCUS_ADDON_ACTION_TYPE";
 
     public static final String INTENT_ACTION_TASK_EXTRA_KEY = "tasks";
+
+    private Const() {
+    }
 }

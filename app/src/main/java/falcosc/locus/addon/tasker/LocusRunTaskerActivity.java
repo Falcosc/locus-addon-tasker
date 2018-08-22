@@ -11,13 +11,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
+
 import falcosc.locus.addon.tasker.thridparty.TaskerIntent;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class LocusRunTaskerActivity extends AppCompatActivity {
 
-    private static final String TAG = "LocusRunTaskerActivity";
+    private static final String TAG = "LocusRunTaskerActivity"; //NON-NLS
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,13 +41,13 @@ public class LocusRunTaskerActivity extends AppCompatActivity {
 
         LayoutInflater inflater = LayoutInflater.from(this);
 
-        Cursor c = getContentResolver().query(Uri.parse("content://net.dinglisch.android.tasker/tasks"), //NON-NLS
-                null, null, null, null);
-        if (c != null) {
-            int nameCol = c.getColumnIndex("name"); //NON-NLS
+        try (Cursor cursor = getContentResolver().query(Uri.parse("content://net.dinglisch.android.tasker/tasks"), //NON-NLS
+                null, null, null, null)) {
+            assert cursor != null;
+            int nameCol = cursor.getColumnIndex("name"); //NON-NLS
 
-            while (c.moveToNext()) {
-                String task = c.getString(nameCol);
+            while (cursor.moveToNext()) {
+                String task = cursor.getString(nameCol);
 
                 View view = inflater.inflate(R.layout.list_btn, viewGroup, false);
                 Button taskBtn = view.findViewById(R.id.listBtn);
@@ -54,7 +56,8 @@ public class LocusRunTaskerActivity extends AppCompatActivity {
                 viewGroup.addView(view);
             }
 
-            c.close();
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
         }
     }
 
@@ -68,18 +71,18 @@ public class LocusRunTaskerActivity extends AppCompatActivity {
 
     private void startTask(String taskName) {
         TaskerIntent.Status taskerStatus = TaskerIntent.testStatus(this);
-        if (taskerStatus.equals(TaskerIntent.Status.OK)) {
-            TaskerIntent i = new TaskerIntent(taskName);
+        if (taskerStatus == TaskerIntent.Status.OK) {
+            TaskerIntent intent = new TaskerIntent(taskName);
             //TODO translate intend to tasker variables
-            i.addLocalVariable("%data", getAllIntentFieldsAsJSON(getIntent())); //NON-NLS
-            sendBroadcast(i);
+            intent.addLocalVariable("%data", getAllIntentFieldsAsJSON(getIntent())); //NON-NLS
+            sendBroadcast(intent);
         } else {
-            Toast.makeText(this, getString(R.string.err_cant_start_task) + taskerStatus.name(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.err_cant_start_task) + " " + taskerStatus.name(), Toast.LENGTH_LONG).show();
         }
         finish();
     }
 
-    private String getAllIntentFieldsAsJSON(Intent intent) {
+    private static String getAllIntentFieldsAsJSON(Intent intent) {
         JSONObject json = new JSONObject();
 
         Bundle bundle = intent.getExtras();

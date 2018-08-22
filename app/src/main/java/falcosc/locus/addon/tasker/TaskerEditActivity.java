@@ -11,16 +11,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import falcosc.locus.addon.tasker.R.id;
-import falcosc.locus.addon.tasker.R.layout;
+
 import falcosc.locus.addon.tasker.intent.LocusActionType;
-import falcosc.locus.addon.tasker.intent.edit.AbstractDialogFragment;
+import falcosc.locus.addon.tasker.intent.edit.AbstractDialogFragment.EditTaskFinish;
 import falcosc.locus.addon.tasker.utils.Const;
 import falcosc.locus.addon.tasker.utils.LocusCache;
 
-public final class TaskerEditActivity extends AppCompatActivity implements AbstractDialogFragment.EditTaskFinish {
+public class TaskerEditActivity extends AppCompatActivity implements EditTaskFinish {
 
-    private static final String TAG = "TaskerEditActivity";
+    private static final String TAG = "TaskerEditActivity"; //NON-NLS
 
     @Override
     public void onFinish(Intent resultIntent, Dialog hints) {
@@ -40,8 +39,8 @@ public final class TaskerEditActivity extends AppCompatActivity implements Abstr
         LayoutInflater inflater = LayoutInflater.from(this);
 
         for (LocusActionType type : LocusActionType.values()) {
-            View view = inflater.inflate(layout.list_btn_launcher, viewGroup, false);
-            Button button = view.findViewById(id.listBtn);
+            View view = inflater.inflate(R.layout.list_btn_launcher, viewGroup, false);
+            Button button = view.findViewById(R.id.listBtn);
             button.setText(type.getLabelStringId());
             if (type.isNotImplemented()) {
                 TextViewCompat.setTextAppearance(button, R.style.textRed);
@@ -52,20 +51,20 @@ public final class TaskerEditActivity extends AppCompatActivity implements Abstr
     }
 
     @Override
-    protected void onCreate(final Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         //start reading locus resources files in background to speed up UI
         LocusCache.initAsync(this);
 
-        setContentView(layout.task_selection);
+        setContentView(R.layout.task_selection);
 
         addActionButtons(findViewById(R.id.linearContent));
 
         setTitle(R.string.select_locus_action);
 
         if (savedInstanceState == null) {
-            final Bundle taskerBundle = getIntent().getBundleExtra(com.twofortyfouram.locale.api.Intent.EXTRA_BUNDLE);
+            Bundle taskerBundle = getIntent().getBundleExtra(com.twofortyfouram.locale.api.Intent.EXTRA_BUNDLE);
 
             if (taskerBundle != null) {
                 try {

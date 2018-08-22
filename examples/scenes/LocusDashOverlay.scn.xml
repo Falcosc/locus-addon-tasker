@@ -1,4 +1,4 @@
-<!--suppress XmlUnboundNsPrefix -->
+<!--suppress XmlUnboundNsPrefix, ProblematicWhitespace -->
 <TaskerData sr="" dvi="1" tv="5.2.bf1">
 	<dmetric>540.0,960.0</dmetric>
 	<Scene sr="sceneLocusDashOverlay">

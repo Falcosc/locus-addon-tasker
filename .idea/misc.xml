@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="EntryPointsManager">
+    <pattern value="falcosc.locus.addon.tasker.intent.LocusActionType" method="writeObject" />
+    <pattern value="falcosc.locus.addon.tasker.intent.LocusActionType" method="readObject" />
+    <pattern value="falcosc.locus.addon.tasker.intent.LocusActionType" />
+  </component>
   <component name="NullableNotNullManager">
     <option name="myDefaultNullable" value="android.support.annotation.Nullable" />
     <option name="myDefaultNotNull" value="android.support.annotation.NonNull" />

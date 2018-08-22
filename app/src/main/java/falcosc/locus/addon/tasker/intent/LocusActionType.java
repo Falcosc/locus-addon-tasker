@@ -1,16 +1,14 @@
 package falcosc.locus.addon.tasker.intent;
 
 import android.support.v4.app.DialogFragment;
-import falcosc.locus.addon.tasker.R;
-import falcosc.locus.addon.tasker.intent.edit.ActionTaskDialog;
-import falcosc.locus.addon.tasker.intent.edit.NotImplementedDialog;
-import falcosc.locus.addon.tasker.intent.edit.UpdateContainerDialog;
-import falcosc.locus.addon.tasker.intent.handler.ActionTask;
-import falcosc.locus.addon.tasker.intent.handler.TaskerAction;
-import falcosc.locus.addon.tasker.intent.handler.UpdateContainerRequest;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.Callable;
+
+import falcosc.locus.addon.tasker.R;
+import falcosc.locus.addon.tasker.intent.edit.*;
+import falcosc.locus.addon.tasker.intent.handler.*;
 
 public enum LocusActionType {
     UPDATE_CONTAINER_REQUEST(R.string.act_request_stats_sensors, UpdateContainerRequest::new, UpdateContainerDialog::new),
@@ -30,48 +28,60 @@ public enum LocusActionType {
     ADD_WMS_MAP(R.string.act_add_wms_map, null, null),
     DISPLAY_CIRCLES(R.string.act_display_circles, null, null);
 
-    LocusActionType(int label, Callable<TaskerAction> handler, Callable<DialogFragment> editFragment) {
+    LocusActionType(int labelStringId, Callable<TaskerAction> handler, Callable<DialogFragment> editFragment) {
 
-        this.labelStringId = label;
-        this.handler = handler;
-        this.editFragment = editFragment;
+        mLabelStringId = labelStringId;
+        mHandler = handler;
+        mEditFragment = editFragment;
     }
 
-    private final int labelStringId;
-    private final Callable<TaskerAction> handler;
-    private final Callable<DialogFragment> editFragment;
+    private final int mLabelStringId;
+    private final Callable<TaskerAction> mHandler;
+    private final Callable<DialogFragment> mEditFragment;
 
     public int getLabelStringId() {
-        return labelStringId;
+        return mLabelStringId;
     }
 
     public boolean isNotImplemented() {
-        return handler == null || editFragment == null;
+        return (mHandler == null) || (mEditFragment == null);
     }
 
     @NotNull
     public TaskerAction createHandler() {
+
+        TaskerAction handlerInstance;
         try {
-            TaskerAction handlerInstance = handler.call();
-            if (handlerInstance == null) {
-                throw new IllegalArgumentException("Handler required for " + name());
-            }
-            return handlerInstance;
+            handlerInstance = mHandler.call();
         } catch (Exception e) {
             throw new IllegalArgumentException("Handler required for " + name(), e);
         }
+
+        if (handlerInstance == null) {
+            throw new IllegalArgumentException("Handler required for " + name());
+        }
+        return handlerInstance;
+
     }
 
     @NotNull
     public DialogFragment createFragment() {
         try {
-            if (editFragment == null) {
-                return NotImplementedDialog.newInstance(labelStringId);
+            if (mEditFragment == null) {
+                return NotImplementedDialog.newInstance(mLabelStringId);
             }
 
-            return editFragment.call();
+            return mEditFragment.call();
         } catch (Exception e) {
             throw new IllegalArgumentException("Dialog Fragment required for " + name(), e);
         }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.NotSerializableException {
+        throw new java.io.NotSerializableException("");
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.NotSerializableException {
+        throw new java.io.NotSerializableException("");
     }
 }

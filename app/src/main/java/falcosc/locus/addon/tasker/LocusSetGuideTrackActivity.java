@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import falcosc.locus.addon.tasker.utils.LocusCache;
 import falcosc.locus.addon.tasker.utils.LocusField;
 import locus.api.android.ActionTools;
@@ -15,6 +16,8 @@ import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 import locus.api.objects.extra.Track;
 
 public class LocusSetGuideTrackActivity extends AppCompatActivity {
+
+    private static final long VIRTUAL_TRACK_ID_OFFSET = 1000000000L;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,9 +29,9 @@ public class LocusSetGuideTrackActivity extends AppCompatActivity {
 
         try {
             Track track = LocusUtils.handleIntentTrackTools(this, getIntent());
-            final Track suggestedTrack = getSuggestedTrack(track, locusCache);
+            Track suggestedTrack = getSuggestedTrack(track, locusCache);
 
-            if (track != null && suggestedTrack != null) {
+            if ((track != null) && (suggestedTrack != null)) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage(R.string.suggest_navigation_track);
                 builder.setPositiveButton(suggestedTrack.getName(), (dialog, which) -> setTrack(suggestedTrack));
@@ -47,7 +50,7 @@ public class LocusSetGuideTrackActivity extends AppCompatActivity {
     }
 
     private Track getSuggestedTrack(Track currentSelection, LocusCache locusCache) throws RequiredVersionMissingException {
-        if (currentSelection != null && !currentSelection.getName().equalsIgnoreCase(locusCache.navigationTrackName)) {
+        if ((currentSelection != null) && !currentSelection.getName().equalsIgnoreCase(locusCache.mNavigationTrackName)) { //NON-NLS
             return searchNavigationTrack(locusCache, this);
         }
 
@@ -56,11 +59,11 @@ public class LocusSetGuideTrackActivity extends AppCompatActivity {
 
     private static Track searchNavigationTrack(LocusCache locusCache, Context context) throws RequiredVersionMissingException {
 
-        Track track = ActionTools.getLocusTrack(context, locusCache.locusVersion, 1000000001);
-        if (track != null && !track.getName().equalsIgnoreCase(locusCache.navigationTrackName)) {
+        Track track = ActionTools.getLocusTrack(context, locusCache.mLocusVersion, VIRTUAL_TRACK_ID_OFFSET + 1L);
+        if ((track != null) && !track.getName().equalsIgnoreCase(locusCache.mNavigationTrackName)) { //NON-NLS
             //track found but is not navigation, check if there is a better one
-            Track track2 = ActionTools.getLocusTrack(context, locusCache.locusVersion, 1000000002);
-            if (track2 != null && track.getName().equalsIgnoreCase(locusCache.navigationTrackName)) {
+            Track track2 = ActionTools.getLocusTrack(context, locusCache.mLocusVersion, VIRTUAL_TRACK_ID_OFFSET + 2L);
+            if ((track2 != null) && track.getName().equalsIgnoreCase(locusCache.mNavigationTrackName)) { //NON-NLS
                 //use track 2 only if it is a Navigation track, if both are not, then take the first one
                 track = track2;
             }
@@ -81,9 +84,9 @@ public class LocusSetGuideTrackActivity extends AppCompatActivity {
 
         String calcFieldText = "";
 
-        LocusField field = locusCache.updateContainerFieldMap.get(LocusCache.CALC_REMAIN_UPHILL_ELEVATION);
+        LocusField field = locusCache.mUpdateContainerFieldMap.get(LocusCache.CALC_REMAIN_UPHILL_ELEVATION);
         if (field != null) {
-            calcFieldText = field.label + "(%" + field.taskerName + ")";
+            calcFieldText = field.mLabel + "(%" + field.mTaskerName + ")";
         }
 
         text.setText(getString(R.string.calc_remain_elev_description,

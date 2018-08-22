@@ -14,13 +14,14 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.imageView).setOnLongClickListener((v) -> mockTaskerEditStart());
     }
 
-    @SuppressWarnings("HardCodedStringLiteral")
+    @SuppressWarnings({"HardCodedStringLiteral", "MagicNumber"}) //because it is just a mock
     private boolean mockTaskerEditStart() {
         try {
             Intent intent = new Intent(this, TaskerEditActivity.class);
-            intent.setPackage(this.getPackageName());
+            intent.setPackage(getPackageName());
             intent.putExtra(com.twofortyfouram.locale.api.Intent.EXTRA_STRING_BREADCRUMB, "Tasker");
             intent.putExtra("net.dinglisch.android.tasker.extras.HOST_CAPABILITIES", 254);
+            intent.putExtra("net.dinglisch.android.tasker.RELEVANT_VARIABLES", new String[]{"%my_local_var", "%MY_GLOBAL_VAR"});
             startActivity(intent);
             return true;
         } catch (Exception ignored) {

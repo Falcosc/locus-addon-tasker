@@ -46,6 +46,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.ResultReceiver;
 import android.util.Log;
 
 public class TaskerPlugin {
@@ -168,6 +169,7 @@ public class TaskerPlugin {
      *  @see #getRelevantVariableList(Bundle)
      */
     private final static String	BUNDLE_KEY_RELEVANT_VARIABLES = BASE_KEY + ".RELEVANT_VARIABLES";
+
 
     public static boolean hostSupportsRelevantVariables( Bundle extrasFromHost ) {
         return hostSupports( extrasFromHost,  EXTRA_HOST_CAPABILITY_RELEVANT_VARIABLES );
@@ -325,7 +327,7 @@ public class TaskerPlugin {
 
         /**
          *  @see #signalFinish(Context, Intent, int, Bundle)
-         *  @see Host#addCompletionIntent(Intent, Intent)
+         *  @see #addCompletionIntent(Intent, Intent,ComponentName, boolean)
          */
         private final static String 	EXTRA_PLUGIN_COMPLETION_INTENT = EXTRAS_PREFIX + "COMPLETION_INTENT";
 
@@ -335,6 +337,14 @@ public class TaskerPlugin {
          */
         public final static String 		EXTRA_RESULT_CODE = EXTRAS_PREFIX + "RESULT_CODE";
 
+        /**
+         *
+         *	@see #signalFinish(Context, Intent, int, Bundle)
+         *  @see #addCompletionIntent(Intent, Intent,ComponentName, boolean)
+         */
+        public final static String EXTRA_CALL_SERVICE_PACKAGE = BASE_KEY + ".EXTRA_CALL_SERVICE_PACKAGE";
+        public final static String EXTRA_CALL_SERVICE = BASE_KEY + ".EXTRA_CALL_SERVICE";
+        public final static String EXTRA_CALL_SERVICE_FOREGROUND = BASE_KEY + ".EXTRA_CALL_SERVICE_FOREGROUND";
         /**
          *  @see #signalFinish(Context, Intent, int, Bundle)
          *  @see Host#getSettingResultCode(Intent)
@@ -430,7 +440,7 @@ public class TaskerPlugin {
                 if (
                         ( timeoutMS > REQUESTED_TIMEOUT_MS_MAX ) &&
                                 ( timeoutMS != REQUESTED_TIMEOUT_MS_NEVER )
-                ) {
+                        ) {
                     Log.w( TAG, "requestTimeoutMS: requested timeout " + timeoutMS + " exceeds maximum, setting to max (" + REQUESTED_TIMEOUT_MS_MAX + ")" );
                     timeoutMS = REQUESTED_TIMEOUT_MS_MAX;
                 }
@@ -507,7 +517,19 @@ public class TaskerPlugin {
                         if ( vars != null )
                             completionIntent.putExtra( EXTRA_VARIABLES_BUNDLE, vars );
 
-                        context.sendBroadcast( completionIntent );
+                        String callServicePackage = (String) getExtraValueSafe(completionIntent, Setting.EXTRA_CALL_SERVICE_PACKAGE, String.class, "signalFinish");
+                        String callService = (String) getExtraValueSafe(completionIntent, Setting.EXTRA_CALL_SERVICE, String.class, "signalFinish");
+                        Boolean foreground = (Boolean) getExtraValueSafe(completionIntent, Setting.EXTRA_CALL_SERVICE_FOREGROUND, Boolean.class, "signalFinish");
+                        if (callServicePackage != null && callService != null && foreground != null) {
+                            completionIntent.setComponent(new ComponentName(callServicePackage, callService));
+                            if (foreground && android.os.Build.VERSION.SDK_INT >= 26) {
+                                context.startForegroundService(completionIntent);
+                            } else {
+                                context.startService(completionIntent);
+                            }
+                        } else {
+                            context.sendBroadcast(completionIntent);
+                        }
 
                         okFlag = true;
                     }
@@ -553,6 +575,10 @@ public class TaskerPlugin {
     public static class Condition {
 
         /**
+         * @see #getResultReceiver(Intent)
+         */
+        public final static String EXTRA_RESULT_RECEIVER = BASE_KEY + ".EXTRA_RESULT_RECEIVER";
+        /**
          * Used by: plugin QueryReceiver
          *
          * Indicates to plugin whether the host will process variables which it passes back
@@ -562,6 +588,14 @@ public class TaskerPlugin {
          */
         public static boolean hostSupportsVariableReturn( Bundle extrasFromHost ) {
             return hostSupports( extrasFromHost,  EXTRA_HOST_CAPABILITY_CONDITION_RETURN_VARIABLES );
+        }
+
+        public static ResultReceiver getResultReceiver(Intent intentFromHost) {
+            if (intentFromHost == null) {
+                return null;
+            }
+            return (ResultReceiver) getExtraValueSafe(intentFromHost, EXTRA_RESULT_RECEIVER, ResultReceiver.class, "getResultReceiver");
+
         }
     }
 
@@ -731,10 +765,15 @@ public class TaskerPlugin {
          * @param completionIntent intent which will signal the host that the plugin is finished.
          * Implementation is host-dependent.
          */
-        public static void addCompletionIntent( Intent fireIntent, Intent completionIntent ) {
+        public static void addCompletionIntent(Intent fireIntent, Intent completionIntent, ComponentName callService, boolean foreground) {
+            if (callService != null) {
+                completionIntent.putExtra(Setting.EXTRA_CALL_SERVICE_PACKAGE, callService.getPackageName());
+                completionIntent.putExtra(Setting.EXTRA_CALL_SERVICE, callService.getClassName());
+                completionIntent.putExtra(Setting.EXTRA_CALL_SERVICE_FOREGROUND, foreground);
+            }
             fireIntent.putExtra(
                     Setting.EXTRA_PLUGIN_COMPLETION_INTENT,
-                    completionIntent.toUri( Intent.URI_INTENT_SCHEME )
+                    completionIntent.toUri(Intent.URI_INTENT_SCHEME)
             );
         }
 
@@ -998,4 +1037,3 @@ public class TaskerPlugin {
     }
 
 }
-

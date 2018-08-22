@@ -5,13 +5,15 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.app.AlertDialog;
-import falcosc.locus.addon.tasker.R;
+import android.support.v7.app.AlertDialog.Builder;
+
 import org.jetbrains.annotations.NotNull;
+
+import falcosc.locus.addon.tasker.R;
 
 public class NotImplementedDialog extends DialogFragment {
 
-    private static final String TITLE_ID = "titleId";
+    private static final String TITLE_ID = "titleId"; //NON-NLS
 
     public static NotImplementedDialog newInstance(int titleId) {
 
@@ -27,10 +29,10 @@ public class NotImplementedDialog extends DialogFragment {
     @NotNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        Builder builder = new Builder(requireContext());
         Bundle args = getArguments();
         if (args != null) {
-            builder.setTitle(getArguments().getInt(TITLE_ID));
+            builder.setTitle(args.getInt(TITLE_ID));
         }
         builder.setMessage(R.string.action_not_implemented_desc);
         builder.setNegativeButton(R.string.back, null);

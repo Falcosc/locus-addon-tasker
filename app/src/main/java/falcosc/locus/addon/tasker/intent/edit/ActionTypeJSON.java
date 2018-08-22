@@ -1,17 +1,21 @@
 package falcosc.locus.addon.tasker.intent.edit;
 
+import android.app.Dialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.*;
+import android.widget.AdapterView.OnItemSelectedListener;
+
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
-import static android.content.ContentValues.TAG;
+class ActionTypeJSON {
+    private static final String TAG = "ActionTypeJSON"; //NON-NLS
 
-abstract class AbstractActionTypeJSON {
     interface Setter<T> {
         void set(T value);
     }
@@ -20,69 +24,77 @@ abstract class AbstractActionTypeJSON {
         T get();
     }
 
-    final View content;
-    private final CheckBox checkbox;
+    final View mContent;
+    @SuppressWarnings("WeakerAccess") //not private because of anonymous access
+    final CheckBox mCheckbox;
 
     static class Bind {
-        final Setter<Object> setter;
-        final Getter<Object> getter;
+        final Setter<Object> mSetter;
+        final Getter<Object> mGetter;
 
         Bind(Setter<Object> setter, Getter<Object> getter) {
-            this.setter = setter;
-            this.getter = getter;
+            mSetter = setter;
+            mGetter = getter;
         }
     }
 
-    private final Map<String, Bind> keyBindMap;
+    private final Map<String, Bind> mKeyBindMap;
 
-    AbstractActionTypeJSON(final CheckBox checkbox, final View content) {
-        this.content = content;
-        this.checkbox = checkbox;
-        keyBindMap = new HashMap<>();
+    ActionTypeJSON(CheckBox checkbox, View content) {
+        mContent = content;
+        mCheckbox = checkbox;
+        mKeyBindMap = new HashMap<>();
         checkbox.setOnCheckedChangeListener((buttonView, isChecked) -> setContentVisibility(isChecked));
     }
 
     private void setContentVisibility(boolean visible) {
         if (visible) {
-            content.setVisibility(View.VISIBLE);
-            content.getParent().requestChildFocus(content, content);
+            mContent.setVisibility(View.VISIBLE);
+            mContent.getParent().requestChildFocus(mContent, mContent);
         } else {
-            content.setVisibility(View.GONE);
+            mContent.setVisibility(View.GONE);
         }
     }
 
-    final AdapterView.OnItemSelectedListener onItemSelected = new AdapterView.OnItemSelectedListener() {
+    static void setVarSelectDialog(Dialog varSelectDialog, EditText text, View varSelectBtn) {
+        if (varSelectDialog != null) {
+            text.setOnFocusChangeListener((v, hasFocus) -> varSelectBtn.setVisibility(hasFocus ? View.VISIBLE : View.GONE));
+            varSelectBtn.setOnClickListener(v -> varSelectDialog.show());
+        }
+    }
+
+    final OnItemSelectedListener onItemSelected = new OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             String selection = parent.getSelectedItem().toString();
             //set spinner description
-            parent.setContentDescription(checkbox.getText() + ": " + selection);
+            parent.setContentDescription(mCheckbox.getText() + ": " + selection);
             //the inside text is not important anymore because of duplicate information
             view.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
-            //view.setContentDescription(checkbox.getText() + ": " + selection);
+            //view.setContentDescription(mCheckbox.getText() + ": " + selection);
         }
 
         @Override
         public void onNothingSelected(AdapterView<?> parent) {
-            parent.setContentDescription(checkbox.getText() + ": - ");
+            parent.setContentDescription(mCheckbox.getText() + ": - ");
         }
     };
 
 
     void bindKey(String key, Setter<Object> setter, Getter<Object> getter) {
-        keyBindMap.put(key, new Bind(setter, getter));
+        mKeyBindMap.put(key, new Bind(setter, getter));
     }
 
     void setJSON(JSONObject json) {
         if (json != null) {
-            content.setVisibility(View.VISIBLE);
-            checkbox.setChecked(true);
-            for (Map.Entry<String, Bind> entry : keyBindMap.entrySet()) {
+            mContent.setVisibility(View.VISIBLE);
+            mCheckbox.setChecked(true);
+            for (Entry<String, Bind> entry : mKeyBindMap.entrySet()) {
                 try {
                     Object value = json.opt(entry.getKey());
                     Bind bind = entry.getValue();
-                    if (bind.setter != null) {
-                        bind.setter.set(value);
+                    if (bind.mSetter != null) {
+                        bind.mSetter.set(value);
                     }
                 } catch (Exception e) {
                     Log.w(TAG, e.getMessage(), e);
@@ -92,15 +104,15 @@ abstract class AbstractActionTypeJSON {
     }
 
     boolean isChecked() {
-        return checkbox.isChecked();
+        return mCheckbox.isChecked();
     }
 
     JSONObject getJSON() {
         JSONObject json = new JSONObject();
-        for (Map.Entry<String, Bind> entry : keyBindMap.entrySet()) {
+        for (Entry<String, Bind> entry : mKeyBindMap.entrySet()) {
             try {
-                Object value = entry.getValue().getter.get();
-                if (value instanceof CharSequence && StringUtils.isEmpty((CharSequence) value)) {
+                Object value = entry.getValue().mGetter.get();
+                if ((value instanceof CharSequence) && StringUtils.isEmpty((CharSequence) value)) {
                     value = null;
                 }
                 //null get removed by put

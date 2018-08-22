@@ -8,8 +8,8 @@ android {
     defaultConfig {
         minSdkVersion Integer.valueOf(PARAM_MIN_SDK_VERSION)
         targetSdkVersion Integer.valueOf(PARAM_TARGET_SDK_VERSION)
-        versionCode 7
-        versionName "0.3.4"
+        versionCode 8
+        versionName "0.4.0"
         vectorDrawables.useSupportLibrary = true
     }
 
@@ -30,7 +30,7 @@ dependencies {
     implementation 'com.asamm:locus-api-android:' + LOCUS_API_VERSION
     implementation 'com.asamm:locus-api:' + LOCUS_API_VERSION
     implementation 'com.twofortyfouram:android-plugin-api-for-locale:' + LOCALE_API_VERSION
-    implementation 'org.apache.commons:commons-lang3:3.7'
+    implementation 'org.apache.commons:commons-lang3:3.8'
     implementation 'org.apache.commons:commons-text:1.4'
 
 }

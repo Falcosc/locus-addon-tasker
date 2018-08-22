@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -33,7 +34,7 @@
             android:layout_height="match_parent"
             android:text="Live Tracking ASAMM" />
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/live_tracking_asamm_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -46,14 +47,31 @@
                 android:layout_height="wrap_content"
                 android:entries="@array/start_stop" />
 
+            <ImageButton
+                android:id="@+id/live_tracking_asamm_var"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/live_tracking_asamm_spinner"
+                android:contentDescription="Variable Selection"
+                android:visibility="gone"
+                app:srcCompat="@drawable/var_select" />
+
             <EditText
                 android:id="@+id/live_tracking_asamm_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignWithParentIfMissing="true"
+                android:layout_below="@id/live_tracking_asamm_spinner"
+                android:layout_toLeftOf="@id/live_tracking_asamm_var"
+                android:layout_toStartOf="@id/live_tracking_asamm_var"
                 android:hint="ASAMM tracking config name (optional)"
                 android:imeOptions="actionDone"
                 android:inputType="text" />
-        </LinearLayout>
+        </RelativeLayout>
 
         <CheckBox
             android:id="@+id/live_tracking_custom"
@@ -62,7 +80,7 @@
             android:layout_height="match_parent"
             android:text="Live Tracking Custom" />
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/live_tracking_custom_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -75,14 +93,31 @@
                 android:layout_height="wrap_content"
                 android:entries="@array/start_stop" />
 
+            <ImageButton
+                android:id="@+id/live_tracking_custom_var"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/live_tracking_custom_spinner"
+                android:contentDescription="Variable Selection"
+                android:visibility="gone"
+                app:srcCompat="@drawable/var_select" />
+
             <EditText
                 android:id="@+id/live_tracking_custom_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignWithParentIfMissing="true"
+                android:layout_below="@id/live_tracking_custom_spinner"
+                android:layout_toLeftOf="@id/live_tracking_custom_var"
+                android:layout_toStartOf="@id/live_tracking_custom_var"
                 android:hint="Custom tracking config name (optional)"
                 android:imeOptions="actionDone"
                 android:inputType="text" />
-        </LinearLayout>
+        </RelativeLayout>
 
         <CheckBox
             android:id="@+id/map_move_x"
@@ -102,8 +137,8 @@
                 android:id="@+id/map_move_x_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
                 android:entries="@array/map_move_units" />
 
             <EditText
@@ -138,8 +173,8 @@
                 android:id="@+id/map_move_y_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
                 android:entries="@array/map_move_units" />
 
             <EditText
@@ -191,14 +226,36 @@
             android:layout_height="match_parent"
             android:text="Preset apply" />
 
-        <EditText
+        <RelativeLayout
             android:id="@+id/preset_content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Name of preset"
-            android:imeOptions="actionDone"
-            android:inputType="text"
-            android:visibility="gone" />
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <ImageButton
+                android:id="@+id/preset_var"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:contentDescription="Variable Selection"
+                android:visibility="gone"
+                app:srcCompat="@drawable/var_select" />
+
+            <EditText
+                android:id="@+id/preset_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignWithParentIfMissing="true"
+                android:layout_toLeftOf="@id/preset_var"
+                android:layout_toStartOf="@id/preset_var"
+                android:hint="Name of preset"
+                android:imeOptions="actionDone"
+                android:inputType="text" />
+        </RelativeLayout>
+
 
         <CheckBox
             android:id="@+id/screen"
@@ -234,11 +291,27 @@
                 android:layout_height="wrap_content"
                 android:entries="@array/track_record" />
 
+            <ImageButton
+                android:id="@+id/track_record_var"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/track_record_spinner"
+                android:contentDescription="Variable Selection"
+                android:visibility="gone"
+                app:srcCompat="@drawable/var_select" />
+
             <EditText
                 android:id="@+id/track_record_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignWithParentIfMissing="true"
                 android:layout_below="@id/track_record_spinner"
+                android:layout_toLeftOf="@id/track_record_var"
+                android:layout_toStartOf="@id/track_record_var"
                 android:hint="Profile name / Point name (Optional)"
                 android:imeOptions="actionDone"
                 android:inputType="text" />

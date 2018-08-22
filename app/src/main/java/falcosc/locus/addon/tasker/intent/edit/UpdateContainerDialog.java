@@ -5,20 +5,24 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AlertDialog.Builder;
 import android.widget.Toast;
-import falcosc.locus.addon.tasker.R;
-import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
-import falcosc.locus.addon.tasker.intent.LocusActionType;
-import falcosc.locus.addon.tasker.utils.Const;
-import falcosc.locus.addon.tasker.utils.LocusCache;
-import falcosc.locus.addon.tasker.utils.LocusField;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
+import java.util.Map.Entry;
+
+import falcosc.locus.addon.tasker.R;
+import falcosc.locus.addon.tasker.intent.LocusActionType;
+import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
+import falcosc.locus.addon.tasker.utils.Const;
+import falcosc.locus.addon.tasker.utils.LocusCache;
+import falcosc.locus.addon.tasker.utils.LocusField;
 
 public class UpdateContainerDialog extends AbstractDialogFragment {
 
+    private static final int DEFAULT_REQUEST_TIMEOUT_MS = 10000;
     private LinkedHashMap<String, LocusField> storedFieldSelection;
 
     @NonNull
@@ -33,7 +37,7 @@ public class UpdateContainerDialog extends AbstractDialogFragment {
 
         if (savedInstanceState == null) {
 
-            final Bundle taskerBundle = activity.getIntent().getBundleExtra(com.twofortyfouram.locale.api.Intent.EXTRA_BUNDLE);
+            Bundle taskerBundle = activity.getIntent().getBundleExtra(com.twofortyfouram.locale.api.Intent.EXTRA_BUNDLE);
             if (taskerBundle != null) {
 
                 String[] savedSelectedFieldsArray = taskerBundle.getStringArray(Const.INTENT_EXTRA_FIELD_LIST);
@@ -41,26 +45,26 @@ public class UpdateContainerDialog extends AbstractDialogFragment {
 
                     for (String fieldKey : savedSelectedFieldsArray) {
 
-                        LocusField field = locusCache.updateContainerFieldMap.get(fieldKey);
+                        LocusField field = locusCache.mUpdateContainerFieldMap.get(fieldKey);
                         if (field != null) {
-                            storedFieldSelection.put(field.taskerName, field);
+                            storedFieldSelection.put(field.mTaskerName, field);
                         }
                     }
                 }
             }
         }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        Builder builder = new Builder(activity);
 
-        ArrayList<LocusField> locusFields = locusCache.updateContainerFields;
+        ArrayList<LocusField> locusFields = locusCache.mUpdateContainerFields;
         int fieldCount = locusFields.size();
-        final String[] fieldLabels = new String[fieldCount];
-        final boolean[] fieldChecks = new boolean[fieldCount];
+        String[] fieldLabels = new String[fieldCount];
+        boolean[] fieldChecks = new boolean[fieldCount];
 
         for (int i = 0; i < locusFields.size(); i++) {
             LocusField field = locusFields.get(i);
-            fieldLabels[i] = field.label;
-            fieldChecks[i] = storedFieldSelection.keySet().contains(field.taskerName);
+            fieldLabels[i] = field.mLabel;
+            fieldChecks[i] = storedFieldSelection.keySet().contains(field.mTaskerName);
         }
 
         builder.setMultiChoiceItems(fieldLabels, fieldChecks,
@@ -80,7 +84,7 @@ public class UpdateContainerDialog extends AbstractDialogFragment {
         for (int i = 0; i < fieldChecks.length; i++) {
             if (fieldChecks[i]) {
                 LocusField field = locusFields.get(i);
-                storedFieldSelection.put(field.taskerName, field);
+                storedFieldSelection.put(field.mTaskerName, field);
             }
         }
 
@@ -93,7 +97,7 @@ public class UpdateContainerDialog extends AbstractDialogFragment {
         if (!previousFieldSelection.contains(LocusCache.CALC_REMAIN_UPHILL_ELEVATION)
                 && storedFieldSelection.containsKey(LocusCache.CALC_REMAIN_UPHILL_ELEVATION)) {
             //track required was not selected and got selected this time, create hint:
-            AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+            Builder builder = new Builder(requireActivity());
             builder.setView(R.layout.help_set_track);
             builder.setPositiveButton(R.string.ok, null);
             hintsDialog = builder.create();
@@ -128,14 +132,14 @@ public class UpdateContainerDialog extends AbstractDialogFragment {
         resultIntent.putExtra(com.twofortyfouram.locale.api.Intent.EXTRA_STRING_BLURB, blurb);
 
         List<String> fieldDesc = new ArrayList<>();
-        for (Map.Entry<String, LocusField> entry : storedFieldSelection.entrySet()) {
+        for (Entry<String, LocusField> entry : storedFieldSelection.entrySet()) {
             LocusField field = entry.getValue();
-            fieldDesc.add("%" + field.taskerName + "\n" + field.label + "\n");
+            fieldDesc.add("%" + field.mTaskerName + "\n" + field.mLabel + "\n");
         }
         TaskerPlugin.addRelevantVariableList(resultIntent, fieldDesc.toArray(new String[0]));
 
         //force synchronous execution by set a timeout to handle variables
-        TaskerPlugin.Setting.requestTimeoutMS(resultIntent, 10000);
+        TaskerPlugin.Setting.requestTimeoutMS(resultIntent, DEFAULT_REQUEST_TIMEOUT_MS);
 
         return resultIntent;
     }

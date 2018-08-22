@@ -8,10 +8,10 @@ import locus.api.objects.extra.Track;
 
 import java.util.List;
 
-class CalculateElevationToTarget implements Function<UpdateContainer, String> {
-    private static final String NO_TRK = "noTRK";
-    private static final String RESET = "RESET";
-    private static final String TAG = "CalcElevationToTarget";
+class CalculateElevationToTarget implements Function<UpdateContainer, Object> {
+    private static final String NO_TRK = "noTRK"; //NON-NLS
+    private static final String RESET = "RESET"; //NON-NLS
+    private static final String TAG = "CalcElevationToTarget"; //NON-NLS
 
     @Override
     public String apply(UpdateContainer updateContainer) {
@@ -27,16 +27,16 @@ class CalculateElevationToTarget implements Function<UpdateContainer, String> {
             }
 
             Location nextPoint = updateContainer.getGuideTypeTrack().getTargetLoc();
-            int currentIndex = findMatchingPointIndex(track.getPoints(), nextPoint, locusCache.lastIndexOnRemainingTrack);
+            int currentIndex = findMatchingPointIndex(track.getPoints(), nextPoint, locusCache.mLastIndexOnRemainingTrack);
             if (currentIndex < 0) {
                 //point not found on track, try to find the nav point because this may align because the selected track has less points
                 Location nextNavPoint = updateContainer.getGuideTypeTrack().getNavPoint1Loc();
-                currentIndex = findMatchingPointIndex(track.getPoints(), nextNavPoint, locusCache.lastIndexOnRemainingTrack);
+                currentIndex = findMatchingPointIndex(track.getPoints(), nextNavPoint, locusCache.mLastIndexOnRemainingTrack);
             }
 
             if (currentIndex >= 0) {
-                locusCache.lastIndexOnRemainingTrack = currentIndex;
-                return String.valueOf(locusCache.remainingTrackElevation[currentIndex]);
+                locusCache.mLastIndexOnRemainingTrack = currentIndex;
+                return String.valueOf(locusCache.mRemainingTrackElevation[currentIndex]);
             }
 
         } catch (Exception e) {
@@ -50,30 +50,31 @@ class CalculateElevationToTarget implements Function<UpdateContainer, String> {
         return RESET;
     }
 
-    private int findMatchingPointIndex(List<Location> points, Location current, int previousIndex) {
+    @SuppressWarnings("FloatingPointEquality")
+    private static int findMatchingPointIndex(List<Location> points, Location current, int previousIndex) {
         //go back 5 points in case of wrong position
-        previousIndex -= 5;
+        int prevIndex = previousIndex - 5;
 
         int lastIndex = points.size() - 1;
 
-        if (previousIndex < 0) {
-            previousIndex = 0;
+        if (prevIndex < 0) {
+            prevIndex = 0;
         }
-        if (previousIndex > lastIndex) {
-            previousIndex = lastIndex;
+        if (prevIndex > lastIndex) {
+            prevIndex = lastIndex;
         }
 
-        for (int i = previousIndex; i <= lastIndex; i++) {
+        for (int i = prevIndex; i <= lastIndex; i++) {
             Location loc = points.get(i);
-            if (current.longitude == loc.longitude && current.latitude == loc.latitude) {
+            if ((current.longitude == loc.longitude) && (current.latitude == loc.latitude)) {
                 return i;
             }
         }
 
         //not found ahead, go backwards
-        for (int i = previousIndex; i >= 0; i--) {
+        for (int i = prevIndex; i >= 0; i--) {
             Location loc = points.get(i);
-            if (current.longitude == loc.longitude && current.latitude == loc.latitude) {
+            if ((current.longitude == loc.longitude) && (current.latitude == loc.latitude)) {
                 return i;
             }
         }

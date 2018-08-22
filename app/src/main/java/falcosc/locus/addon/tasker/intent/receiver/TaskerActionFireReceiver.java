@@ -6,18 +6,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
+
 import falcosc.locus.addon.tasker.intent.LocusActionType;
 import falcosc.locus.addon.tasker.intent.handler.TaskerAction;
-import falcosc.locus.addon.tasker.utils.Const;
 import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
+import falcosc.locus.addon.tasker.utils.Const;
 
 
-public final class TaskerActionFireReceiver extends BroadcastReceiver {
+public class TaskerActionFireReceiver extends BroadcastReceiver {
 
-    private static final String TAG = "TaskerActionFire";
+    private static final String TAG = "TaskerActionFire"; //NON-NLS
 
     @Override
-    public void onReceive(@NonNull final Context context, @NonNull final Intent intent) {
+    public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         Bundle apiExtraBundle = intent.getBundleExtra(com.twofortyfouram.locale.api.Intent.EXTRA_BUNDLE);
         if (apiExtraBundle == null) {
             Log.i(TAG, "onReceive EXTRA_BUNDLE missing"); //NON-NLS
@@ -35,6 +36,7 @@ public final class TaskerActionFireReceiver extends BroadcastReceiver {
 
             action.handle(context, intent, apiExtraBundle, this);
         } catch (Exception e) {
+            Log.e(TAG, e.getMessage(), e);
             //TODO check how to throw exception to tasker
             setResultCode(TaskerPlugin.Setting.RESULT_CODE_FAILED);
         }
