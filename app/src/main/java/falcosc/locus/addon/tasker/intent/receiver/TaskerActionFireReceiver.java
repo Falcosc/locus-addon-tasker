@@ -33,13 +33,14 @@ public class TaskerActionFireReceiver extends BroadcastReceiver {
 
         try {
             TaskerAction action = LocusActionType.valueOf(actionType).createHandler();
-
-            action.handle(context, intent, apiExtraBundle, this);
+            action.setContext(context, this);
+            action.handle(intent, apiExtraBundle);
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
             //TODO check how to throw exception to tasker
             setResultCode(TaskerPlugin.Setting.RESULT_CODE_FAILED);
         }
+
 
 
     }

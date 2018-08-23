@@ -6,6 +6,8 @@ import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.View;
@@ -21,18 +23,18 @@ public abstract class AbstractDialogFragment extends DialogFragment {
 
     public interface EditTaskFinish {
 
-        void onFinish(Intent resultIntent, Dialog hints);
+        void onFinish(@Nullable Intent resultIntent, @Nullable Dialog hints);
 
     }
 
-    void finish(Intent resultIntent, Dialog hints) {
+    void finish(@Nullable Intent resultIntent, @Nullable Dialog hints) {
         EditTaskFinish activity = (EditTaskFinish) requireActivity();
         activity.onFinish(resultIntent, hints);
     }
 
     private ArrayAdapter<String> varSelectAdapter;
 
-    Dialog createVarSelectDialog() {
+    @Nullable Dialog createVarSelectDialog() {
         try {
             Activity activity = requireActivity();
             Bundle hostExtras = activity.getIntent().getExtras();
@@ -56,7 +58,7 @@ public abstract class AbstractDialogFragment extends DialogFragment {
         return null;
     }
 
-    private void insertTextAtFocus(Activity activity, CharSequence text) {
+    private void insertTextAtFocus(@NonNull Activity activity, CharSequence text) {
         View v = activity.getCurrentFocus();
         if ((v == null) && (getDialog() != null)) {
             v = getDialog().getCurrentFocus();

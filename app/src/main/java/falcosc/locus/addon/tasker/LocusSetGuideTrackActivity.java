@@ -2,8 +2,9 @@ package falcosc.locus.addon.tasker;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,19 +16,19 @@ import locus.api.android.utils.LocusUtils;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 import locus.api.objects.extra.Track;
 
-public class LocusSetGuideTrackActivity extends AppCompatActivity {
+public class LocusSetGuideTrackActivity extends ProjectActivity {
 
     private static final long VIRTUAL_TRACK_ID_OFFSET = 1000000000L;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        LocusCache locusCache = LocusCache.getInstance(this);
 
         setContentView(R.layout.calc_remain_elevation);
 
         try {
+            LocusCache locusCache = LocusCache.getInstance(getApplication());
+
             Track track = LocusUtils.handleIntentTrackTools(this, getIntent());
             Track suggestedTrack = getSuggestedTrack(track, locusCache);
 
@@ -49,21 +50,25 @@ public class LocusSetGuideTrackActivity extends AppCompatActivity {
         closeButton.setOnClickListener(v -> finish());
     }
 
-    private Track getSuggestedTrack(Track currentSelection, LocusCache locusCache) throws RequiredVersionMissingException {
-        if ((currentSelection != null) && !currentSelection.getName().equalsIgnoreCase(locusCache.mNavigationTrackName)) { //NON-NLS
+    @Nullable
+    private Track getSuggestedTrack(@Nullable Track currentSelection, @NonNull LocusCache locusCache) throws RequiredVersionMissingException {
+        //noinspection CallToSuspiciousStringMethod getName and mNavigationTrackName are on same language context
+        if ((currentSelection != null) && !currentSelection.getName().equalsIgnoreCase(locusCache.mNavigationTrackName)) {
             return searchNavigationTrack(locusCache, this);
         }
 
         return null;
     }
 
-    private static Track searchNavigationTrack(LocusCache locusCache, Context context) throws RequiredVersionMissingException {
+    private static Track searchNavigationTrack(@NonNull LocusCache locusCache, @NonNull Context context) throws RequiredVersionMissingException {
 
         Track track = ActionTools.getLocusTrack(context, locusCache.mLocusVersion, VIRTUAL_TRACK_ID_OFFSET + 1L);
-        if ((track != null) && !track.getName().equalsIgnoreCase(locusCache.mNavigationTrackName)) { //NON-NLS
+        //noinspection CallToSuspiciousStringMethod  getName and mNavigationTrackName are on same language context
+        if ((track != null) && !track.getName().equalsIgnoreCase(locusCache.mNavigationTrackName)) {
             //track found but is not navigation, check if there is a better one
             Track track2 = ActionTools.getLocusTrack(context, locusCache.mLocusVersion, VIRTUAL_TRACK_ID_OFFSET + 2L);
-            if ((track2 != null) && track.getName().equalsIgnoreCase(locusCache.mNavigationTrackName)) { //NON-NLS
+            //noinspection CallToSuspiciousStringMethod  getName and mNavigationTrackName are on same language context
+            if ((track2 != null) && track.getName().equalsIgnoreCase(locusCache.mNavigationTrackName)) {
                 //use track 2 only if it is a Navigation track, if both are not, then take the first one
                 track = track2;
             }
@@ -71,8 +76,8 @@ public class LocusSetGuideTrackActivity extends AppCompatActivity {
         return track;
     }
 
-    private void setTrack(Track track) {
-        LocusCache locusCache = LocusCache.getInstance(this);
+    private void setTrack(@Nullable Track track) {
+        LocusCache locusCache = LocusCache.getInstance(getApplication());
         locusCache.setLastSelectedTrack(track);
 
         String trackName = "not found"; //NON-NLS it's just an workaround

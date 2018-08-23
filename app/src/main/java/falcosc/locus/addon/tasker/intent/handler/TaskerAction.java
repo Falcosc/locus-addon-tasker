@@ -7,6 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 public interface TaskerAction {
-    void handle(@NonNull Context context, @NonNull Intent intent, @NonNull Bundle apiExtraBundle, @NonNull BroadcastReceiver receiver);
-
+    void setContext(@NonNull Context context, @NonNull BroadcastReceiver receiver);
+    void handle(@NonNull Intent intent, @NonNull Bundle apiExtraBundle);
 }

@@ -1,9 +1,11 @@
 package falcosc.locus.addon.tasker.utils;
 
-import android.annotation.SuppressLint;
+import android.app.Application;
 import android.arch.core.util.Function;
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import locus.api.android.ActionTools;
@@ -15,7 +17,6 @@ import locus.api.objects.extra.Track;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.WordUtils;
-import org.jetbrains.annotations.NonNls;
 
 import java.util.*;
 
@@ -25,17 +26,15 @@ public final class LocusCache {
     private static final Object mSyncObj = new Object();
     private static final long UPDATE_CONTAINER_EXPIRATION = 950L;
 
-    @SuppressLint("StaticFieldLeak") //cased by mApplicationContext but this is validated to be leek free
     private static LocusCache mInstance;
 
-    private final Context mApplicationContext;
+    private final Application mApplicationContext;
 
     public final HashSet<String> mTrackRecordingKeys;
     public final Map<String, LocusField> mUpdateContainerFieldMap;
     public final ArrayList<LocusField> mUpdateContainerFields;
     public final LocusVersion mLocusVersion;
     private final Resources mLocusResources;
-    @NonNls
     public final String mNavigationTrackName;
 
     //selected track fields
@@ -48,10 +47,10 @@ public final class LocusCache {
     private long mUpdateContainerExpiration;
 
     @SuppressWarnings("HardCodedStringLiteral")
-    private LocusCache(Context context) {
+    private LocusCache(Application context) {
         Log.d(TAG, "init Locus cache");
 
-        mApplicationContext = context.getApplicationContext();
+        mApplicationContext = context;
 
         mLocusVersion = LocusUtils.getActiveVersion(context);
         Log.d(TAG, "Locus version: " + mLocusVersion);
@@ -76,7 +75,8 @@ public final class LocusCache {
         Log.d(TAG, "Locus navigation track name: " + mNavigationTrackName);
     }
 
-    public static LocusCache getInstance(Context context) {
+    @NonNull
+    public static LocusCache getInstance(@NonNull Application context) {
 
         if (mInstance == null) {
             synchronized (mSyncObj) {
@@ -88,15 +88,30 @@ public final class LocusCache {
         return mInstance;
     }
 
-    public static void initAsync(Context context) {
+    @NonNull
+    public static LocusCache getInstanceUnsafe(@NonNull Context context) throws MissingAppContextException {
+        if (mInstance == null) {
+            Context appContext = context.getApplicationContext();
+            //TODO test this with broadcast receiver
+            if (appContext instanceof Application) {
+                return getInstance((Application) appContext);
+            } else {
+                throw new MissingAppContextException();
+            }
+        }
+        return mInstance;
+    }
+
+    @Nullable
+    public static LocusCache getInstanceNullable() {
+        return mInstance;
+    }
+
+    public static void initAsync(@NonNull Application context) {
         if (mInstance == null) {
             Thread thread = new Thread(() -> getInstance(context));
             thread.start();
         }
-    }
-
-    public static LocusCache getInstanceNullable() {
-        return mInstance;
     }
 
     /**
@@ -107,7 +122,8 @@ public final class LocusCache {
         mInstance = null;
     }
 
-    private LocusField cField(String taskerVar, String locusResName, Function<UpdateContainer, Object> updateContainerGetter) {
+    @NonNull
+    private LocusField cField(@NonNull String taskerVar, @Nullable String locusResName, @NonNull Function<UpdateContainer, Object> updateContainerGetter) {
         String label = getLocusLabelByName(locusResName);
 
         if (StringUtils.isBlank(label)) {
@@ -118,7 +134,8 @@ public final class LocusCache {
 
     }
 
-    private String getLocusLabelByName(String locusResName) {
+    @Nullable
+    private String getLocusLabelByName(@Nullable String locusResName) {
         if ((mLocusResources != null) && (locusResName != null)) {
             int id = mLocusResources.getIdentifier(locusResName, "string", mLocusVersion.getPackageName()); //NON-NLS
             if (id != 0) {
@@ -130,6 +147,7 @@ public final class LocusCache {
 
 
     @SuppressWarnings({"HardCodedStringLiteral", "OverlyLongMethod"})
+    @NonNull
     private ArrayList<LocusField> createUpdateContainerFields() {
         ArrayList<LocusField> list = new ArrayList<>();
         //this is a custom order
@@ -200,6 +218,7 @@ public final class LocusCache {
         return list;
     }
 
+    @NonNull
     private Map<String, LocusField> createUpdateContainerFieldMap() {
         Map<String, LocusField> updateContainerFieldMap = new HashMap<>();
         for (LocusField field : mUpdateContainerFields) {
@@ -209,6 +228,7 @@ public final class LocusCache {
         return updateContainerFieldMap;
     }
 
+    @NonNull
     private HashSet<String> createUpdateContainerTrackRecKeys() {
         HashSet<String> trackRecordingKeys = new HashSet<>();
         for (String key : mUpdateContainerFieldMap.keySet()) {
@@ -217,15 +237,17 @@ public final class LocusCache {
         return trackRecordingKeys;
     }
 
+    @Nullable
     public Track getLastSelectedTrack() {
         return mLastSelectedTrack;
     }
 
-    public void setLastSelectedTrack(Track lastSelectedTrack) {
+    public void setLastSelectedTrack(@Nullable Track lastSelectedTrack) {
         mLastSelectedTrack = lastSelectedTrack;
         mRemainingTrackElevation = CalculateElevationToTarget.calculateRemainingElevation(mLastSelectedTrack);
     }
 
+    @NonNull
     public UpdateContainer getUpdateContainer() throws RequiredVersionMissingException {
         long requestTime = System.currentTimeMillis();
         if (requestTime > mUpdateContainerExpiration) {
@@ -237,5 +259,14 @@ public final class LocusCache {
         }
 
         return mUpdateContainer;
+    }
+
+    public static class MissingAppContextException extends Exception {
+
+        private static final long serialVersionUID = -1817542570335055712L;
+
+        MissingAppContextException() {
+            super("Please start the Locus Tasker Plugin before you use it.");
+        }
     }
 }

@@ -3,6 +3,7 @@ package falcosc.locus.addon.tasker.intent.handler;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -45,13 +46,13 @@ public class UpdateContainerRequest extends AbstractTaskerAction {
     }
 
     @Override
-    protected void doHandle(@NonNull Bundle apiExtraBundle) throws RequiredVersionMissingException {
+    protected void doHandle(@NonNull Bundle apiExtraBundle) throws RequiredVersionMissingException, LocusCache.MissingAppContextException {
 
         Set<String> selectedFields = getSelectedFields(apiExtraBundle);
 
         if (isSupportingVariables() && (selectedFields != null)) {
 
-            LocusCache locusCache = LocusCache.getInstance(mContext);
+            LocusCache locusCache = LocusCache.getInstanceUnsafe(mContext);
 
             UpdateContainer update = locusCache.getUpdateContainer();
 
@@ -76,7 +77,7 @@ public class UpdateContainerRequest extends AbstractTaskerAction {
         }
     }
 
-    private static boolean isLiveTrackNeeded(LocusCache locusCache, Set<String> selectedFields, UpdateContainer update) {
+    private static boolean isLiveTrackNeeded(@NonNull LocusCache locusCache, @NonNull Set<String> selectedFields, @NonNull UpdateContainer update) {
         if (locusCache.getLastSelectedTrack() == null) {
             if (selectedFields.contains(LocusCache.CALC_REMAIN_UPHILL_ELEVATION)) {
                 if (update.isGuideEnabled()) {
@@ -89,7 +90,7 @@ public class UpdateContainerRequest extends AbstractTaskerAction {
         return false;
     }
 
-    private static void setLiveTrack(LocusCache locusCache, Context context, String id) {
+    private static void setLiveTrack(@NonNull LocusCache locusCache, @NonNull Context context, @Nullable String id) {
         try {
             long liveTrackId = Long.valueOf(id);
             Track liveTrack = ActionTools.getLocusTrack(context, locusCache.mLocusVersion, liveTrackId);

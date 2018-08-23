@@ -1,6 +1,8 @@
 package falcosc.locus.addon.tasker.utils;
 
 import android.arch.core.util.Function;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import locus.api.android.features.periodicUpdates.UpdateContainer;
 import locus.api.objects.extra.Location;
@@ -14,9 +16,14 @@ class CalculateElevationToTarget implements Function<UpdateContainer, Object> {
     private static final String TAG = "CalcElevationToTarget"; //NON-NLS
 
     @Override
-    public String apply(UpdateContainer updateContainer) {
+    public String apply(@NonNull UpdateContainer updateContainer) {
 
         LocusCache locusCache = LocusCache.getInstanceNullable();
+
+        if(locusCache == null){
+            Log.e(TAG, "locus cache missing"); //NON-NLS
+            return "";
+        }
 
         try {
             Track track = locusCache.getLastSelectedTrack();
@@ -51,7 +58,7 @@ class CalculateElevationToTarget implements Function<UpdateContainer, Object> {
     }
 
     @SuppressWarnings("FloatingPointEquality")
-    private static int findMatchingPointIndex(List<Location> points, Location current, int previousIndex) {
+    private static int findMatchingPointIndex(@NonNull List<Location> points, @NonNull Location current, int previousIndex) {
         //go back 5 points in case of wrong position
         int prevIndex = previousIndex - 5;
 
@@ -82,7 +89,7 @@ class CalculateElevationToTarget implements Function<UpdateContainer, Object> {
         return -1;
     }
 
-    public static int[] calculateRemainingElevation(Track track) {
+    public static int[] calculateRemainingElevation(@Nullable Track track) {
         if (track == null) {
             return new int[0];
         }

@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog.Builder;
 import android.widget.Toast;
 
@@ -27,11 +28,11 @@ public class UpdateContainerDialog extends AbstractDialogFragment {
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
 
         Activity activity = requireActivity();
 
-        LocusCache locusCache = LocusCache.getInstance(activity);
+        LocusCache locusCache = LocusCache.getInstance(activity.getApplication());
 
         storedFieldSelection = new LinkedHashMap<>();
 
@@ -78,7 +79,7 @@ public class UpdateContainerDialog extends AbstractDialogFragment {
         return builder.create();
     }
 
-    private void onFieldSelectionOK(boolean[] fieldChecks, ArrayList<LocusField> locusFields) {
+    private void onFieldSelectionOK(@NonNull boolean[] fieldChecks, @NonNull ArrayList<LocusField> locusFields) {
         Set<String> previousFieldSelection = storedFieldSelection.keySet();
         storedFieldSelection = new LinkedHashMap<>();
         for (int i = 0; i < fieldChecks.length; i++) {
@@ -92,7 +93,8 @@ public class UpdateContainerDialog extends AbstractDialogFragment {
     }
 
     //TODO remove this after beta test
-    private Dialog createHintsDialog(Set<String> previousFieldSelection) {
+    @Nullable
+    private Dialog createHintsDialog(@NonNull Set<String> previousFieldSelection) {
         Dialog hintsDialog = null;
         if (!previousFieldSelection.contains(LocusCache.CALC_REMAIN_UPHILL_ELEVATION)
                 && storedFieldSelection.containsKey(LocusCache.CALC_REMAIN_UPHILL_ELEVATION)) {
@@ -105,6 +107,7 @@ public class UpdateContainerDialog extends AbstractDialogFragment {
         return hintsDialog;
     }
 
+    @Nullable
     private Intent createResultIntent() {
 
         Bundle hostExtras = requireActivity().getIntent().getExtras();

@@ -1,20 +1,20 @@
 package falcosc.locus.addon.tasker.intent.edit;
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,7 +39,7 @@ public class ActionTaskDialog extends AbstractDialogFragment {
     private static final String UNIT = "unit"; //NON-NLS
 
     static class MapCenter extends ActionTypeJSON {
-        MapCenter(View view) {
+        MapCenter(@NonNull View view) {
             super(view.findViewById(R.id.map_center), view.findViewById(R.id.map_center_content));
             Spinner spinner = (Spinner) mContent;
             spinner.setOnItemSelectedListener(onItemSelected);
@@ -48,7 +48,7 @@ public class ActionTaskDialog extends AbstractDialogFragment {
     }
 
     static class LiveTrackingAsamm extends ActionTypeJSON {
-        LiveTrackingAsamm(View view, Dialog varSelectDialog) {
+        LiveTrackingAsamm(@NonNull View view, @Nullable Dialog varSelectDialog) {
             super(view.findViewById(R.id.live_tracking_asamm), view.findViewById(R.id.live_tracking_asamm_content));
             Spinner spinner = view.findViewById(R.id.live_tracking_asamm_spinner);
             spinner.setOnItemSelectedListener(onItemSelected);
@@ -62,7 +62,7 @@ public class ActionTaskDialog extends AbstractDialogFragment {
     }
 
     static class LiveTrackingCustom extends ActionTypeJSON {
-        LiveTrackingCustom(View view, Dialog varSelectDialog) {
+        LiveTrackingCustom(@NonNull View view, @Nullable Dialog varSelectDialog) {
             super(view.findViewById(R.id.live_tracking_custom), view.findViewById(R.id.live_tracking_custom_content));
             Spinner spinner = view.findViewById(R.id.live_tracking_custom_spinner);
             spinner.setOnItemSelectedListener(onItemSelected);
@@ -75,7 +75,7 @@ public class ActionTaskDialog extends AbstractDialogFragment {
     }
 
     static class MapMoveX extends ActionTypeJSON {
-        MapMoveX(View view) {
+        MapMoveX(@NonNull View view) {
             super(view.findViewById(R.id.map_move_x), view.findViewById(R.id.map_move_x_content));
             Spinner spinner = view.findViewById(R.id.map_move_x_spinner);
             spinner.setOnItemSelectedListener(onItemSelected);
@@ -86,7 +86,7 @@ public class ActionTaskDialog extends AbstractDialogFragment {
     }
 
     static class MapMoveY extends ActionTypeJSON {
-        MapMoveY(View view) {
+        MapMoveY(@NonNull View view) {
             super(view.findViewById(R.id.map_move_y), view.findViewById(R.id.map_move_y_content));
             Spinner spinner = view.findViewById(R.id.map_move_y_spinner);
             spinner.setOnItemSelectedListener(onItemSelected);
@@ -97,7 +97,7 @@ public class ActionTaskDialog extends AbstractDialogFragment {
     }
 
     static class MapZoom extends ActionTypeJSON {
-        MapZoom(View view) {
+        MapZoom(@NonNull View view) {
             super(view.findViewById(R.id.map_zoom), view.findViewById(R.id.map_zoom_content));
             Spinner spinner = (Spinner) mContent;
             spinner.setOnItemSelectedListener(onItemSelected);
@@ -106,7 +106,7 @@ public class ActionTaskDialog extends AbstractDialogFragment {
     }
 
     static class Open extends ActionTypeJSON {
-        Open(View view) {
+        Open(@NonNull View view) {
             super(view.findViewById(R.id.open), view.findViewById(R.id.open_content));
             Spinner spinner = (Spinner) mContent;
             spinner.setOnItemSelectedListener(onItemSelected);
@@ -115,7 +115,7 @@ public class ActionTaskDialog extends AbstractDialogFragment {
     }
 
     static class Preset extends ActionTypeJSON {
-        Preset(View view, Dialog varSelectDialog) {
+        Preset(@NonNull View view, @Nullable Dialog varSelectDialog) {
             super(view.findViewById(R.id.preset), view.findViewById(R.id.preset_content));
             EditText text = view.findViewById(R.id.preset_text);
             setVarSelectDialog(varSelectDialog, text, view.findViewById(R.id.preset_var));
@@ -126,7 +126,7 @@ public class ActionTaskDialog extends AbstractDialogFragment {
     }
 
     static class ScreenOnOff extends ActionTypeJSON {
-        ScreenOnOff(View view) {
+        ScreenOnOff(@NonNull View view) {
             super(view.findViewById(R.id.screen), view.findViewById(R.id.screen_content));
             Spinner spinner = (Spinner) mContent;
             spinner.setOnItemSelectedListener(onItemSelected);
@@ -135,7 +135,7 @@ public class ActionTaskDialog extends AbstractDialogFragment {
     }
 
     static class TrackRecord extends ActionTypeJSON {
-        TrackRecord(View view, Dialog varSelectDialog) {
+        TrackRecord(@NonNull View view, @Nullable Dialog varSelectDialog) {
             super(view.findViewById(R.id.track_record), view.findViewById(R.id.track_record_content));
             Spinner spinner = view.findViewById(R.id.track_record_spinner);
             spinner.setOnItemSelectedListener(onItemSelected);
@@ -154,7 +154,7 @@ public class ActionTaskDialog extends AbstractDialogFragment {
     private Map<String, ActionTypeJSON> actionMap;
 
     @SuppressWarnings("HardCodedStringLiteral")
-    private void initActionMapping(View dialogView, Dialog varSelectDialog) {
+    private void initActionMapping(@NonNull View dialogView, @Nullable Dialog varSelectDialog) {
         actionMap = new HashMap<>();
         actionMap.put("map_center", new MapCenter(dialogView));
         actionMap.put("live_tracking_asamm", new LiveTrackingAsamm(dialogView, varSelectDialog));
@@ -168,7 +168,7 @@ public class ActionTaskDialog extends AbstractDialogFragment {
         actionMap.put("track_record", new TrackRecord(dialogView, varSelectDialog));
     }
 
-    private void applyJSONToView(String json) {
+    private void applyJSONToView(@Nullable String json) {
         if (json == null) {
             return;
         }
@@ -188,10 +188,10 @@ public class ActionTaskDialog extends AbstractDialogFragment {
         }
     }
 
-    @SuppressLint("InflateParams") //because we don't need to look for AlertDialog view
-    private View createView(@NotNull LayoutInflater inflater, Bundle savedInstanceState) {
-
-        View dialogView = inflater.inflate(R.layout.edit_action_task, null);
+    @NonNull
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View dialogView = inflater.inflate(R.layout.edit_action_task, container, false); //attach not allowed on dialogFragment
         initActionMapping(dialogView, createVarSelectDialog());
 
         if (savedInstanceState == null) {
@@ -201,24 +201,28 @@ public class ActionTaskDialog extends AbstractDialogFragment {
             }
         }
 
+        AlertDialog alertDialog = (AlertDialog) getDialog();
+        if (alertDialog != null) {
+            //was called as dialog, set view because alertDialog can't call setContentView again
+            alertDialog.setView(dialogView);
+        }
+
         return dialogView;
     }
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
-        builder.setView(createView(requireActivity().getLayoutInflater(), savedInstanceState));
         builder.setTitle(R.string.act_request_stats_sensors);
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> requireActivity().finish());
         builder.setNeutralButton(R.string.back, null);
         builder.setPositiveButton(R.string.ok, (dialog, which) -> finish(createResultIntent(), null));
-
         return builder.create();
     }
 
-    private void handleVariableReplacements(Bundle extraBundle, String jsonString) {
+    private void handleVariableReplacements(@NonNull Bundle extraBundle, @NonNull String jsonString) {
 
         //it is ok to waste some cpu time on false positive actions like "map move x 20%"
         if (jsonString.contains("%")) {
@@ -233,6 +237,7 @@ public class ActionTaskDialog extends AbstractDialogFragment {
         }
     }
 
+    @NonNull
     private Intent createResultIntent() {
 
         Bundle extraBundle = new Bundle();

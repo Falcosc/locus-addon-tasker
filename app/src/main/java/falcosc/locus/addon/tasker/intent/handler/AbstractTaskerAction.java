@@ -9,12 +9,12 @@ import android.widget.Toast;
 
 import falcosc.locus.addon.tasker.R;
 import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
+import falcosc.locus.addon.tasker.utils.LocusCache;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 
 abstract class AbstractTaskerAction implements TaskerAction {
 
-    @SuppressWarnings("RedundantThrows")
-    protected abstract void doHandle(@NonNull Bundle apiExtraBundle) throws RequiredVersionMissingException;
+    protected abstract void doHandle(@NonNull Bundle apiExtraBundle) throws RequiredVersionMissingException, LocusCache.MissingAppContextException;
 
     boolean isSupportingVariables() {
         if (!TaskerPlugin.Condition.hostSupportsVariableReturn(mIntent.getExtras())) {
@@ -35,16 +35,19 @@ abstract class AbstractTaskerAction implements TaskerAction {
     BroadcastReceiver mReceiver;
 
     @Override
-    public void handle(@NonNull Context context, @NonNull Intent intent,
-                       @NonNull Bundle apiExtraBundle, @NonNull BroadcastReceiver receiver) {
+    public void setContext(@NonNull Context context, @NonNull BroadcastReceiver receiver) {
         mContext = context;
-        mIntent = intent;
         mReceiver = receiver;
+    }
+
+    @Override
+    public void handle(@NonNull Intent intent, @NonNull Bundle apiExtraBundle) {
+        mIntent = intent;
 
         try {
             doHandle(apiExtraBundle);
-        } catch (RequiredVersionMissingException e) {
-            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+        } catch (LocusCache.MissingAppContextException | RequiredVersionMissingException e) {
+            Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 }

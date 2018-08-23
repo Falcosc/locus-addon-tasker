@@ -1,8 +1,8 @@
 package falcosc.locus.addon.tasker.intent;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.Callable;
 
@@ -28,8 +28,7 @@ public enum LocusActionType {
     ADD_WMS_MAP(R.string.act_add_wms_map, null, null),
     DISPLAY_CIRCLES(R.string.act_display_circles, null, null);
 
-    LocusActionType(int labelStringId, Callable<TaskerAction> handler, Callable<DialogFragment> editFragment) {
-
+    LocusActionType(int labelStringId, @Nullable Callable<TaskerAction> handler, @Nullable Callable<DialogFragment> editFragment) {
         mLabelStringId = labelStringId;
         mHandler = handler;
         mEditFragment = editFragment;
@@ -47,12 +46,14 @@ public enum LocusActionType {
         return (mHandler == null) || (mEditFragment == null);
     }
 
-    @NotNull
+    @NonNull
     public TaskerAction createHandler() {
 
-        TaskerAction handlerInstance;
+        TaskerAction handlerInstance = null;
         try {
-            handlerInstance = mHandler.call();
+            if (mHandler != null) {
+                handlerInstance = mHandler.call();
+            }
         } catch (Exception e) {
             throw new IllegalArgumentException("Handler required for " + name(), e);
         }
@@ -64,7 +65,7 @@ public enum LocusActionType {
 
     }
 
-    @NotNull
+    @NonNull
     public DialogFragment createFragment() {
         try {
             if (mEditFragment == null) {

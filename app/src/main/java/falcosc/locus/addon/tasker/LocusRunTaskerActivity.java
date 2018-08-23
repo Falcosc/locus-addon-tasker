@@ -4,7 +4,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,12 +18,12 @@ import falcosc.locus.addon.tasker.thridparty.TaskerIntent;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class LocusRunTaskerActivity extends AppCompatActivity {
+public class LocusRunTaskerActivity extends ProjectActivity {
 
     private static final String TAG = "LocusRunTaskerActivity"; //NON-NLS
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.run_task);
@@ -34,10 +35,9 @@ public class LocusRunTaskerActivity extends AppCompatActivity {
 
         Button shareButton = findViewById(R.id.btnShare);
         shareButton.setOnClickListener(v -> openWebPage(getString(R.string.issues_link)));
-
     }
 
-    private void addTaskButtons(ViewGroup viewGroup) {
+    private void addTaskButtons(@NonNull ViewGroup viewGroup) {
 
         LayoutInflater inflater = LayoutInflater.from(this);
 
@@ -61,7 +61,7 @@ public class LocusRunTaskerActivity extends AppCompatActivity {
         }
     }
 
-    private void openWebPage(String url) {
+    private void openWebPage(@NonNull String url) {
         Uri webPage = Uri.parse(url);
         Intent intent = new Intent(Intent.ACTION_VIEW, webPage);
         if (intent.resolveActivity(getPackageManager()) != null) {
@@ -69,7 +69,7 @@ public class LocusRunTaskerActivity extends AppCompatActivity {
         }
     }
 
-    private void startTask(String taskName) {
+    private void startTask(@NonNull String taskName) {
         TaskerIntent.Status taskerStatus = TaskerIntent.testStatus(this);
         if (taskerStatus == TaskerIntent.Status.OK) {
             TaskerIntent intent = new TaskerIntent(taskName);
@@ -82,7 +82,8 @@ public class LocusRunTaskerActivity extends AppCompatActivity {
         finish();
     }
 
-    private static String getAllIntentFieldsAsJSON(Intent intent) {
+    @NonNull
+    private static String getAllIntentFieldsAsJSON(@NonNull Intent intent) {
         JSONObject json = new JSONObject();
 
         Bundle bundle = intent.getExtras();

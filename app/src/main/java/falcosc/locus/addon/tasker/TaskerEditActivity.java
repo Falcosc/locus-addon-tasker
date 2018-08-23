@@ -4,8 +4,9 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.widget.TextViewCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,16 +15,20 @@ import android.widget.Button;
 
 import falcosc.locus.addon.tasker.intent.LocusActionType;
 import falcosc.locus.addon.tasker.intent.edit.AbstractDialogFragment.EditTaskFinish;
+import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
 import falcosc.locus.addon.tasker.utils.Const;
-import falcosc.locus.addon.tasker.utils.LocusCache;
 
-public class TaskerEditActivity extends AppCompatActivity implements EditTaskFinish {
+public class TaskerEditActivity extends ProjectActivity implements EditTaskFinish {
 
     private static final String TAG = "TaskerEditActivity"; //NON-NLS
 
     @Override
-    public void onFinish(Intent resultIntent, Dialog hints) {
-        setResult(RESULT_OK, resultIntent);
+    public void onFinish(@Nullable Intent resultIntent, @Nullable Dialog hints) {
+        if(resultIntent == null){
+            setResult(TaskerPlugin.Setting.RESULT_CODE_FAILED, null);
+        } else {
+            setResult(RESULT_OK, resultIntent);
+        }
 
         if (hints != null) {
             hints.setOnDismissListener(dialog -> finish());
@@ -34,7 +39,7 @@ public class TaskerEditActivity extends AppCompatActivity implements EditTaskFin
     }
 
 
-    private void addActionButtons(ViewGroup viewGroup) {
+    private void addActionButtons(@NonNull ViewGroup viewGroup) {
 
         LayoutInflater inflater = LayoutInflater.from(this);
 
@@ -51,11 +56,8 @@ public class TaskerEditActivity extends AppCompatActivity implements EditTaskFin
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //start reading locus resources files in background to speed up UI
-        LocusCache.initAsync(this);
 
         setContentView(R.layout.task_selection);
 

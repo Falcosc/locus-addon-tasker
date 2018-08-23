@@ -1,6 +1,7 @@
 package falcosc.locus.addon.tasker.intent.edit;
 
 import android.app.Dialog;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.*;
@@ -56,7 +57,7 @@ class ActionTypeJSON {
         }
     }
 
-    static void setVarSelectDialog(Dialog varSelectDialog, EditText text, View varSelectBtn) {
+    static void setVarSelectDialog(@Nullable Dialog varSelectDialog, EditText text, View varSelectBtn) {
         if (varSelectDialog != null) {
             text.setOnFocusChangeListener((v, hasFocus) -> varSelectBtn.setVisibility(hasFocus ? View.VISIBLE : View.GONE));
             varSelectBtn.setOnClickListener(v -> varSelectDialog.show());
@@ -129,10 +130,12 @@ class ActionTypeJSON {
         return json;
     }
 
-    @SuppressWarnings("unchecked")
     static void setSpinnerValue(Spinner spinner, Object value) {
         if (value != null) {
-            spinner.setSelection(((ArrayAdapter<Object>) spinner.getAdapter()).getPosition(value));
+            if (spinner.getAdapter() instanceof ArrayAdapter) {
+                //noinspection unchecked because it is a generic Object Array
+                spinner.setSelection(((ArrayAdapter<Object>) spinner.getAdapter()).getPosition(value));
+            }
         }
     }
 }

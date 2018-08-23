@@ -13,10 +13,9 @@ public class ActionTask extends AbstractTaskerAction {
     private static final String COM_ASAMM_LOCUS_ACTION_TASK = "com.asamm.locus.ACTION_TASK"; //NON-NLS
 
     @Override
-    protected void doHandle(@NonNull Bundle apiExtraBundle) {
-        android.os.Debug.waitForDebugger();
-        LocusCache locusCache = LocusCache.getInstance(mContext);
+    protected void doHandle(@NonNull Bundle apiExtraBundle) throws LocusCache.MissingAppContextException {
 
+        LocusCache locusCache = LocusCache.getInstanceUnsafe(mContext);
         String json = apiExtraBundle.getString(Const.INTENT_EXTRA_FIELD_JSON);
 
         Intent intent = new Intent(COM_ASAMM_LOCUS_ACTION_TASK);
@@ -25,5 +24,6 @@ public class ActionTask extends AbstractTaskerAction {
         mContext.sendBroadcast(intent);
 
         mReceiver.setResultCode(TaskerPlugin.Setting.RESULT_CODE_OK);
+
     }
 }

@@ -4,10 +4,9 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog.Builder;
-
-import org.jetbrains.annotations.NotNull;
 
 import falcosc.locus.addon.tasker.R;
 
@@ -15,6 +14,7 @@ public class NotImplementedDialog extends DialogFragment {
 
     private static final String TITLE_ID = "titleId"; //NON-NLS
 
+    @NonNull
     public static NotImplementedDialog newInstance(int titleId) {
 
         Bundle args = new Bundle();
@@ -25,8 +25,7 @@ public class NotImplementedDialog extends DialogFragment {
         return fragment;
     }
 
-    @SuppressWarnings("unused")
-    @NotNull
+    @NonNull
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
         Builder builder = new Builder(requireContext());
@@ -41,7 +40,7 @@ public class NotImplementedDialog extends DialogFragment {
         return builder.create();
     }
 
-    private void openWebPage(String url) {
+    private void openWebPage(@NonNull String url) {
         Uri webPage = Uri.parse(url);
         Intent intent = new Intent(Intent.ACTION_VIEW, webPage);
         if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
