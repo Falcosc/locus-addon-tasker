@@ -122,6 +122,15 @@ public class ActionTaskEdit extends TaskerEditActivity {
         }
     }
 
+    static class ScreenLock extends ActionTypeJSON {
+        ScreenLock(@NonNull View view) {
+            super(view.findViewById(R.id.screen_lock), view.findViewById(R.id.screen_lock_content));
+            Spinner spinner = (Spinner) mContent;
+            spinner.setOnItemSelectedListener(onItemSelected);
+            bindKey(ACTION, (v) -> setSpinnerValue(spinner, v), spinner::getSelectedItem);
+        }
+    }
+
     static class ScreenOnOff extends ActionTypeJSON {
         ScreenOnOff(@NonNull View view) {
             super(view.findViewById(R.id.screen), view.findViewById(R.id.screen_content));
@@ -162,6 +171,7 @@ public class ActionTaskEdit extends TaskerEditActivity {
         actionMap.put("map_zoom", new MapZoom(view));
         actionMap.put("open", new Open(view));
         actionMap.put("preset", new Preset(view, varSelectDialog));
+        actionMap.put("screen_lock", new ScreenLock(view));
         actionMap.put("screen_on_off", new ScreenOnOff(view));
         actionMap.put("track_record", new TrackRecord(view, varSelectDialog));
     }

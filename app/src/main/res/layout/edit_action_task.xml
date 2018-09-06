@@ -264,6 +264,19 @@
                     android:inputType="text" />
             </RelativeLayout>
 
+            <CheckBox
+                android:id="@+id/screen_lock"
+                style="@style/listCheckbox"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Screen Lock" />
+
+            <Spinner
+                android:id="@+id/screen_lock_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/on_off_toggle"
+                android:visibility="gone" />
 
             <CheckBox
                 android:id="@+id/screen"
