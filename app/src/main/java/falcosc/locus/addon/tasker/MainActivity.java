@@ -4,7 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import falcosc.locus.addon.tasker.intent.edit.ActionTaskEdit;
+import falcosc.locus.addon.tasker.intent.edit.NotImplementedActions;
+import falcosc.locus.addon.tasker.intent.edit.UpdateContainerEdit;
+
 public class MainActivity extends ProjectActivity {
+
+    private int i;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -16,8 +22,14 @@ public class MainActivity extends ProjectActivity {
 
     @SuppressWarnings({"HardCodedStringLiteral", "MagicNumber"}) //because it is just a mock
     private boolean mockTaskerEditStart() {
+        Class<?>[] editClasses = {
+                UpdateContainerEdit.class,
+                ActionTaskEdit.class,
+                NotImplementedActions.class
+        };
+
         try {
-            Intent intent = new Intent(this, TaskerEditActivity.class);
+            Intent intent = new Intent(this, editClasses[i++ % editClasses.length]);
             intent.setPackage(getPackageName());
             intent.putExtra(com.twofortyfouram.locale.api.Intent.EXTRA_STRING_BREADCRUMB, "Tasker");
             intent.putExtra("net.dinglisch.android.tasker.extras.HOST_CAPABILITIES", 254);

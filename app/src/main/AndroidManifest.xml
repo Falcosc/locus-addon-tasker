@@ -86,26 +86,39 @@
                 <action android:name="locus.api.android.INTENT_ITEM_POINTS_SCREEN_TOOLS" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-
-            <!-- TODO get location is async. thanks to this, app can handle incoming locations 
-            <intent-filter>
-                <action
-                    android:name="locus.api.android.ACTION_RECEIVE_LOCATION"/>
-                <category
-                    android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>-->
         </activity>
 
         <!-- listen tasker edit action -->
         <activity
-            android:name=".TaskerEditActivity"
-            android:label="@string/tasker_plugin_name"
+            android:name=".intent.edit.UpdateContainerEdit"
+            android:label="@string/act_request_stats_sensors"
             android:icon="@mipmap/ic_launcher"
             android:theme="@style/AlertDialogTheme">
             <intent-filter>
                 <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".intent.edit.ActionTaskEdit"
+            android:label="@string/act_exec_task"
+            android:icon="@mipmap/ic_launcher"
+            android:theme="@style/AlertDialogTheme">
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".intent.edit.NotImplementedActions"
+            android:label="@string/act_more"
+            android:icon="@mipmap/ic_launcher"
+            android:theme="@style/AlertDialogTheme">
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
+            </intent-filter>
+        </activity>
+
 
         <!-- listen tasker action fire -->
         <receiver

@@ -5,11 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -27,7 +24,7 @@ import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
 import falcosc.locus.addon.tasker.utils.Const;
 
 
-public class ActionTaskDialog extends AbstractDialogFragment {
+public class ActionTaskEdit extends TaskerEditActivity {
 
     private static final String TAG = "ActionTaskDialog"; //NON-NLS
     private static final String ACTION = "action"; //NON-NLS
@@ -154,18 +151,19 @@ public class ActionTaskDialog extends AbstractDialogFragment {
     private Map<String, ActionTypeJSON> actionMap;
 
     @SuppressWarnings("HardCodedStringLiteral")
-    private void initActionMapping(@NonNull View dialogView, @Nullable Dialog varSelectDialog) {
+    private void initActionMapping(@Nullable Dialog varSelectDialog) {
+        View view = findViewById(R.id.content);
         actionMap = new HashMap<>();
-        actionMap.put("map_center", new MapCenter(dialogView));
-        actionMap.put("live_tracking_asamm", new LiveTrackingAsamm(dialogView, varSelectDialog));
-        actionMap.put("live_tracking_custom", new LiveTrackingCustom(dialogView, varSelectDialog));
-        actionMap.put("map_move_x", new MapMoveX(dialogView));
-        actionMap.put("map_move_y", new MapMoveY(dialogView));
-        actionMap.put("map_zoom", new MapZoom(dialogView));
-        actionMap.put("open", new Open(dialogView));
-        actionMap.put("preset", new Preset(dialogView, varSelectDialog));
-        actionMap.put("screen_on_off", new ScreenOnOff(dialogView));
-        actionMap.put("track_record", new TrackRecord(dialogView, varSelectDialog));
+        actionMap.put("map_center", new MapCenter(view));
+        actionMap.put("live_tracking_asamm", new LiveTrackingAsamm(view, varSelectDialog));
+        actionMap.put("live_tracking_custom", new LiveTrackingCustom(view, varSelectDialog));
+        actionMap.put("map_move_x", new MapMoveX(view));
+        actionMap.put("map_move_y", new MapMoveY(view));
+        actionMap.put("map_zoom", new MapZoom(view));
+        actionMap.put("open", new Open(view));
+        actionMap.put("preset", new Preset(view, varSelectDialog));
+        actionMap.put("screen_on_off", new ScreenOnOff(view));
+        actionMap.put("track_record", new TrackRecord(view, varSelectDialog));
     }
 
     private void applyJSONToView(@Nullable String json) {
@@ -184,49 +182,29 @@ public class ActionTaskDialog extends AbstractDialogFragment {
                 }
             }
         } catch (JSONException e) {
-            Toast.makeText(requireContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
-    @NonNull
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View dialogView = inflater.inflate(R.layout.edit_action_task, container, false); //attach not allowed on dialogFragment
-        initActionMapping(dialogView, createVarSelectDialog());
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.edit_action_task);
+        initActionMapping(createVarSelectDialog());
 
         if (savedInstanceState == null) {
-            Bundle taskerBundle = requireActivity().getIntent().getBundleExtra(com.twofortyfouram.locale.api.Intent.EXTRA_BUNDLE);
+            Bundle taskerBundle = getIntent().getBundleExtra(com.twofortyfouram.locale.api.Intent.EXTRA_BUNDLE);
             if (taskerBundle != null) {
                 applyJSONToView(taskerBundle.getString(Const.INTENT_EXTRA_FIELD_JSON));
             }
         }
-
-        AlertDialog alertDialog = (AlertDialog) getDialog();
-        if (alertDialog != null) {
-            //was called as dialog, set view because alertDialog can't call setContentView again
-            alertDialog.setView(dialogView);
-        }
-
-        return dialogView;
-    }
-
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
-        builder.setTitle(R.string.act_request_stats_sensors);
-        builder.setNegativeButton(R.string.cancel, (dialog, which) -> requireActivity().finish());
-        builder.setNeutralButton(R.string.back, null);
-        builder.setPositiveButton(R.string.ok, (dialog, which) -> finish(createResultIntent(), null));
-        return builder.create();
     }
 
     private void handleVariableReplacements(@NonNull Bundle extraBundle, @NonNull String jsonString) {
 
         //it is ok to waste some cpu time on false positive actions like "map move x 20%"
         if (jsonString.contains("%")) {
-            Bundle hostExtras = requireActivity().getIntent().getExtras();
+            Bundle hostExtras = getIntent().getExtras();
             if (TaskerPlugin.Setting.hostSupportsOnFireVariableReplacement(hostExtras)) {
                 TaskerPlugin.Setting.setVariableReplaceKeys(extraBundle, new String[]{Const.INTENT_EXTRA_FIELD_JSON});
 
@@ -251,7 +229,7 @@ public class ActionTaskDialog extends AbstractDialogFragment {
                 try {
                     locusJSON.put(stringActionTypeJSONEntry.getKey(), actionType.getJSON());
                 } catch (JSONException e) {
-                    Toast.makeText(requireContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                 }
             }
         }
@@ -268,5 +246,11 @@ public class ActionTaskDialog extends AbstractDialogFragment {
         resultIntent.putExtra(com.twofortyfouram.locale.api.Intent.EXTRA_STRING_BLURB, blurb);
 
         return resultIntent;
+    }
+
+    @Override
+    void onApply() {
+        finish(createResultIntent(), null);
+
     }
 }

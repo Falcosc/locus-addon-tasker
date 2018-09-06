@@ -1,23 +1,8 @@
 <resources>
     <string name="app_name">Locus Map Addon Tasker Plugin</string>
-    <string name="tasker_plugin_name">Locus Maps</string>
     <string name="act_request_stats_sensors">Request sensors and stats</string>
     <string name="act_exec_task">Execute Action Task</string>
-    <string name="act_import_points">Import points with dialog</string>
-    <string name="act_display_points">Display new points</string>
-    <string name="act_display_geocaches">Display new geocaches</string>
-    <string name="act_get_geocache_field_notes">Get geocaching field notes</string>
-    <string name="act_search_point_by_name">Search point by name</string>
-    <string name="act_display_point_screen">Display point detail screen</string>
-    <string name="act_display_tracks">Display new tracks</string>
-    <string name="act_start_nav_to">Start navigation to</string>
-    <string name="act_import_gpx">Import GPX with dialog</string>
-    <string name="act_pick_location">Pick location from Locus</string>
-    <string name="act_get_root_dir">Get Locus root directory</string>
-    <string name="act_add_wms_map">Add WMS map</string>
-    <string name="act_display_circles">Display circles</string>
-    <string name="select_locus_action">Select Locus Maps Action</string>
-    <string name="act_log_field_notes">Log field notes online</string>
+    <string name="act_more">More Actions</string>
     <string name="app_icon">App Icon</string>
     <string name="app_main_description">You could trigger Locus Map actions in your Tasker task or Tasker can listen for Locus Map events</string>
     <string name="app_main_notice">Currently only some parts of the Locus API are implemented in this plugin. Please share your Tasker project idea if you miss any API implementations to make me able to create a proper translation to Tasker variables: \nhttps://github.com/Falcosc/locus-addon-tasker/issues</string>
@@ -27,7 +12,25 @@
     <string name="calc_remain_elev_notrk">noTRK - No track selected</string>
     <string name="run_task_description">This event is not properly implemented, if you want to use it please ask for a Tasker event implementation by sharing your Tasker project idea to tell which data you need.</string>
     <string name="run_task_execute">For now you can manually execute one of your tasks and get all event data as \'\%data\' in form of useless IDs to preview:</string>
-    <string name="action_not_implemented_desc">This action is currently not implemented because nobody did request this. Please share your Tasker project idea at Github to tell me how I should implement this API to be useful at Tasker.</string>
+    <string name="action_not_implemented_desc">Following API functions are currently not implemented and would be added if somebody request it:
+        \n
+        \n\t• Import points with dialog
+        \n\t• Display new points
+        \n\t• Display new geocaches
+        \n\t• Get geocaching field notes
+        \n\t• Search point by name
+        \n\t• Display point detail screen
+        \n\t• Display new tracks
+        \n\t• Start navigation to
+        \n\t• Import GPX with dialog
+        \n\t• Pick location from Locus
+        \n\t• Get Locus root directory
+        \n\t• Add WMS map
+        \n\t• Display circles
+        \n\t• Log field notes online
+        \n
+        \nPlease share your Tasker project idea at Github to tell me how I should implement one of these to be useful at Tasker.
+    </string>
     <string name="issues_url">https://github.com/Falcosc/locus-addon-tasker/issues</string>
     <string name="issues_link">https://github.com/Falcosc/locus-addon-tasker/issues</string>
     <string name="err_no_support_relevant_variables">Your app setup does not support variables</string>

@@ -56,6 +56,7 @@ Calc Remain Uphill Elevation
 				</Vals>
 			</Bundle>
 			<Str sr="arg1" ve="3">falcosc.locus.addon.tasker</Str>
+			<!-- TODO change acitvity name after go live -->
 			<Str sr="arg2" ve="3">falcosc.locus.addon.tasker.TaskerEditActivity</Str>
 			<Int sr="arg3" val="5"/>
 		</Action>
