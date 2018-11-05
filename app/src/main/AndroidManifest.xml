@@ -33,18 +33,6 @@
             </intent-filter>
         </activity>
 
-        <!-- set Track for calculate remaining elevation http://help.locusmap.eu/topic/elevation-to-target -->
-        <activity
-            android:name=".LocusSetGuideTrackActivity"
-            android:label="Prepare remaining elevation"
-            android:icon="@mipmap/ic_tasker"
-            android:theme="@style/AlertDialogTheme">
-            <intent-filter>
-                <action android:name="locus.api.android.INTENT_ITEM_TRACK_TOOLS" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
         <!-- run Tasker Task -->
         <activity
             android:name=".LocusRunTaskerActivity"

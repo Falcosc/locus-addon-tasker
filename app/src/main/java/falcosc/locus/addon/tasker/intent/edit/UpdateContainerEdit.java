@@ -68,11 +68,9 @@ public class UpdateContainerEdit extends TaskerEditActivity {
             mCheckState.put(i, mStoredFieldSelection.contains(field.mTaskerName));
         }
 
-
         //todo check content view
     }
 
-    //TODO remove this after beta test
     @Nullable
     private Dialog createHintsDialog(@NonNull Set<String> previousFieldSelection) {
         Dialog hintsDialog = null;
@@ -80,12 +78,13 @@ public class UpdateContainerEdit extends TaskerEditActivity {
                 && mStoredFieldSelection.contains(LocusCache.CALC_REMAIN_UPHILL_ELEVATION)) {
             //track required was not selected and got selected this time, create hint:
             Builder builder = new Builder(this);
-            builder.setView(R.layout.help_set_track);
+            builder.setView(R.layout.calc_remain_elevation);
             builder.setPositiveButton(R.string.ok, null);
             hintsDialog = builder.create();
         }
         return hintsDialog;
     }
+
 
     @Nullable
     private Intent createResultIntent(ArrayList<LocusField> locusFields) {

@@ -1,10 +1,14 @@
 package falcosc.locus.addon.tasker.utils;
 
 import android.arch.core.util.Function;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+
+import locus.api.android.ActionTools;
 import locus.api.android.features.periodicUpdates.UpdateContainer;
+import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 import locus.api.objects.extra.Location;
 import locus.api.objects.extra.Track;
 
@@ -14,6 +18,7 @@ class CalculateElevationToTarget implements Function<UpdateContainer, Object> {
     private static final String NO_TRK = "noTRK"; //NON-NLS
     private static final String RESET = "RESET"; //NON-NLS
     private static final String TAG = "CalcElevationToTarget"; //NON-NLS
+    private static final long VIRTUAL_TRACK_ID_OFFSET = 1000000000L;
 
     @Override
     public String apply(@NonNull UpdateContainer updateContainer) {
@@ -26,7 +31,7 @@ class CalculateElevationToTarget implements Function<UpdateContainer, Object> {
         }
 
         try {
-            Track track = locusCache.getLastSelectedTrack();
+            Track track = getNavigationTrack(locusCache);
 
             if (track == null) {
                 //Don't search for the current track, this is done at the entry point of a new update request
@@ -55,6 +60,45 @@ class CalculateElevationToTarget implements Function<UpdateContainer, Object> {
 
         //tracking is off on exception or we are not on track
         return RESET;
+    }
+
+    private static Track getNavigationTrack(@NonNull LocusCache locusCache){
+        try {
+            Track track = searchNavigationTrack(locusCache, locusCache.getApplicationContext());
+            Track lastSelectedTrack = locusCache.getLastSelectedTrack();
+            if(lastSelectedTrack == null){
+                //recalculate
+                locusCache.setLastSelectedTrack(track);
+            } else if(track != null) {
+                float lastTotalLength = lastSelectedTrack.getStats().getTotalLength();
+                float newTotalLength = track.getStats().getTotalLength();
+
+                if(Float.compare(newTotalLength, lastTotalLength) != 0){
+                    //recalculate
+                    locusCache.setLastSelectedTrack(track);
+                }
+            }
+        } catch (RequiredVersionMissingException e) {
+            return null;
+        }
+
+        return locusCache.getLastSelectedTrack();
+    }
+
+    private static Track searchNavigationTrack(@NonNull LocusCache locusCache, @NonNull Context context) throws RequiredVersionMissingException {
+
+        Track track = ActionTools.getLocusTrack(context, locusCache.mLocusVersion, VIRTUAL_TRACK_ID_OFFSET + 1L);
+        //noinspection CallToSuspiciousStringMethod  getName and mNavigationTrackName are on same language context
+        if ((track != null) && !track.getName().equalsIgnoreCase(locusCache.mNavigationTrackName)) {
+            //track found but is not navigation, check if there is a better one
+            Track track2 = ActionTools.getLocusTrack(context, locusCache.mLocusVersion, VIRTUAL_TRACK_ID_OFFSET + 2L);
+            //noinspection CallToSuspiciousStringMethod  getName and mNavigationTrackName are on same language context
+            if ((track2 != null) && track.getName().equalsIgnoreCase(locusCache.mNavigationTrackName)) {
+                //use track 2 only if it is a Navigation track, if both are not, then take the first one
+                track = track2;
+            }
+        }
+        return track;
     }
 
     @SuppressWarnings("FloatingPointEquality")
@@ -93,6 +137,8 @@ class CalculateElevationToTarget implements Function<UpdateContainer, Object> {
         if (track == null) {
             return new int[0];
         }
+
+        Log.i(TAG, "recalculate track elevation of: " + track.getName()); //NON-NLS
 
         List<Location> points = track.getPoints();
         int size = points.size();

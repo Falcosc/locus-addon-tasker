@@ -30,6 +30,11 @@ public final class LocusCache {
 
     private final Application mApplicationContext;
 
+    @NonNull
+    public Application getApplicationContext() {
+        return mApplicationContext;
+    }
+
     public final HashSet<String> mTrackRecordingKeys;
     public final Map<String, LocusField> mUpdateContainerFieldMap;
     public final ArrayList<LocusField> mUpdateContainerFields;
