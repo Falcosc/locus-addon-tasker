@@ -10,6 +10,7 @@
         <item name="android:spinnerStyle">@style/SpinnerStyle</item>
         <item name="android:checkboxStyle">@style/CheckboxStyle</item>
         <item name="editTextStyle">@style/EditTextStyle</item>
+        <item name="android:colorBackground">@android:color/background_light</item>
     </style>
 
     <!--suppress AndroidDomInspection -->
@@ -21,6 +22,7 @@
         <item name="android:spinnerStyle">@style/SpinnerStyle</item>
         <item name="android:checkboxStyle">@style/CheckboxStyle</item>
         <item name="editTextStyle">@style/EditTextStyle</item>
+        <item name="android:colorBackground">@android:color/background_light</item>
     </style>
 
     <style name="SpinnerStyle" parent="@style/Widget.AppCompat.Spinner">
