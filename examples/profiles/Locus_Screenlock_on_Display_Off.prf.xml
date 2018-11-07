@@ -1,0 +1,45 @@
+<!--suppress CheckTagEmptyBody, XmlUnboundNsPrefix, ProblematicWhitespace -->
+<TaskerData sr="" dvi="1" tv="5.2.bf1">
+	<Profile sr="prof27" ve="2">
+		<cdate>1536298412133</cdate>
+		<clp>true</clp>
+		<edate>1541610748395</edate>
+		<id>27</id>
+		<mid0>28</mid0>
+		<nme>Locus Screenlock on Display Off</nme>
+		<Event sr="con0" ve="2">
+			<code>210</code>
+		</Event>
+		<App sr="con1" ve="2">
+			<cls0>com.asamm.locus.core.StartScreen</cls0>
+			<flags>2</flags>
+			<label0>Locus Map</label0>
+			<pkg0>menion.android.locus.pro</pkg0>
+		</App>
+	</Profile>
+	<Task sr="task28">
+		<cdate>1536298429717</cdate>
+		<edate>1541610748395</edate>
+		<id>28</id>
+		<nme>Lock Locus Screen</nme>
+		<pri>100</pri>
+		<Action sr="act0" ve="7">
+			<code>2123374660</code>
+			<Bundle sr="arg0">
+				<Vals sr="val">
+					<INTENT_EXTRA_FIELD_JSON>{"screen_lock":{"action":"on"}}</INTENT_EXTRA_FIELD_JSON>
+					<INTENT_EXTRA_FIELD_JSON-type>java.lang.String</INTENT_EXTRA_FIELD_JSON-type>
+					<LOCUS_ADDON_ACTION_TYPE>ACTION_TASK</LOCUS_ADDON_ACTION_TYPE>
+					<LOCUS_ADDON_ACTION_TYPE-type>java.lang.String</LOCUS_ADDON_ACTION_TYPE-type>
+					<com.twofortyfouram.locale.intent.extra.BLURB>tasks: {"screen_lock":{"action":"on"}}</com.twofortyfouram.locale.intent.extra.BLURB>
+					<com.twofortyfouram.locale.intent.extra.BLURB-type>java.lang.String</com.twofortyfouram.locale.intent.extra.BLURB-type>
+					<net.dinglisch.android.tasker.subbundled>true</net.dinglisch.android.tasker.subbundled>
+					<net.dinglisch.android.tasker.subbundled-type>java.lang.Boolean</net.dinglisch.android.tasker.subbundled-type>
+				</Vals>
+			</Bundle>
+			<Str sr="arg1" ve="3">falcosc.locus.addon.tasker</Str>
+			<Str sr="arg2" ve="3">falcosc.locus.addon.tasker.intent.edit.ActionTaskEdit</Str>
+			<Int sr="arg3" val="0"/>
+		</Action>
+	</Task>
+</TaskerData>

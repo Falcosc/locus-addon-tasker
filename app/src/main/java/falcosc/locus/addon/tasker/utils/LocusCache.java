@@ -36,6 +36,7 @@ public final class LocusCache {
     }
 
     public final HashSet<String> mTrackRecordingKeys;
+    public final HashSet<String>  mTrackGuideKeys;
     public final Map<String, LocusField> mUpdateContainerFieldMap;
     public final ArrayList<LocusField> mUpdateContainerFields;
     public final LocusVersion mLocusVersion;
@@ -74,6 +75,8 @@ public final class LocusCache {
         mUpdateContainerFieldMap = createUpdateContainerFieldMap();
         mTrackRecordingKeys = createUpdateContainerTrackRecKeys();
         Log.d(TAG, "Locus field keys mapped - recording keys: " + mTrackRecordingKeys.size());
+        mTrackGuideKeys = createUpdateContainerTrackGuideKeys();
+        Log.d(TAG, "Locus field keys mapped - guiding keys: " + mTrackGuideKeys.size());
 
 
         mNavigationTrackName = getLocusLabelByName("navigation");
@@ -216,6 +219,8 @@ public final class LocusCache {
         list.add(cField("map_center_lat", null, u -> u.getLocMapCenter().latitude));
         list.add(cField("active_live_track_id", null, UpdateContainer::getActiveLiveTrackId));
         list.add(cField("active_dashboard_id", null, UpdateContainer::getActiveDashboardId));
+        list.add(cField("guide_target_lon", null, u -> u.getGuideTypeWaypoint().getTargetLoc().longitude));
+        list.add(cField("guide_target_lat", null, u -> u.getGuideTypeWaypoint().getTargetLoc().latitude));
         list.add(cField(CALC_REMAIN_UPHILL_ELEVATION, null, new CalculateElevationToTarget()));
 
         //TODO Navigation points
@@ -231,6 +236,16 @@ public final class LocusCache {
         }
 
         return updateContainerFieldMap;
+    }
+
+
+    @NonNull
+    private HashSet<String> createUpdateContainerTrackGuideKeys() {
+        HashSet<String> mTrackGuideKeys = new HashSet<>();
+        for (String key : mUpdateContainerFieldMap.keySet()) {
+            if (key.startsWith("guide")) mTrackGuideKeys.add(key); //NON-NLS
+        }
+        return mTrackGuideKeys;
     }
 
     @NonNull

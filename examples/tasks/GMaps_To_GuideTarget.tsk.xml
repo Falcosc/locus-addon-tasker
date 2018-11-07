@@ -1,0 +1,72 @@
+<!--suppress CheckTagEmptyBody, XmlUnboundNsPrefix, ProblematicWhitespace -->
+<TaskerData sr="" dvi="1" tv="5.2.bf1">
+	<Task sr="task29">
+		<cdate>1541608026849</cdate>
+		<edate>1541610638427</edate>
+		<id>29</id>
+		<nme>GMaps To GuideTarget</nme>
+		<pri>100</pri>
+		<Action sr="act0" ve="7">
+			<code>1120274117</code>
+			<Bundle sr="arg0">
+				<Vals sr="val">
+					<INTENT_EXTRA_FIELD_LIST>&lt;StringArray sr=""&gt;&lt;_array_INTENT_EXTRA_FIELD_LIST0&gt;guide_target_lat&lt;/_array_INTENT_EXTRA_FIELD_LIST0&gt;&lt;_array_INTENT_EXTRA_FIELD_LIST1&gt;guide_target_lon&lt;/_array_INTENT_EXTRA_FIELD_LIST1&gt;&lt;_array_INTENT_EXTRA_FIELD_LIST2&gt;is_guide_enabled&lt;/_array_INTENT_EXTRA_FIELD_LIST2&gt;&lt;/StringArray&gt;</INTENT_EXTRA_FIELD_LIST>
+					<INTENT_EXTRA_FIELD_LIST-type>[Ljava.lang.String;</INTENT_EXTRA_FIELD_LIST-type>
+					<LOCUS_ADDON_ACTION_TYPE>UPDATE_CONTAINER_REQUEST</LOCUS_ADDON_ACTION_TYPE>
+					<LOCUS_ADDON_ACTION_TYPE-type>java.lang.String</LOCUS_ADDON_ACTION_TYPE-type>
+					<com.twofortyfouram.locale.intent.extra.BLURB>guide_target_lat,
+guide_target_lon,
+is_guide_enabled</com.twofortyfouram.locale.intent.extra.BLURB>
+					<com.twofortyfouram.locale.intent.extra.BLURB-type>java.lang.String</com.twofortyfouram.locale.intent.extra.BLURB-type>
+					<net.dinglisch.android.tasker.RELEVANT_VARIABLES>&lt;StringArray sr=""&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES0&gt;%is_guide_enabled
+Is Guide Enabled
+&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES0&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES1&gt;%guide_target_lon
+Guide Target Lon
+&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES1&gt;&lt;_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES2&gt;%guide_target_lat
+Guide Target Lat
+&lt;/_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES2&gt;&lt;/StringArray&gt;</net.dinglisch.android.tasker.RELEVANT_VARIABLES>
+					<net.dinglisch.android.tasker.RELEVANT_VARIABLES-type>[Ljava.lang.String;</net.dinglisch.android.tasker.RELEVANT_VARIABLES-type>
+					<net.dinglisch.android.tasker.subbundled>true</net.dinglisch.android.tasker.subbundled>
+					<net.dinglisch.android.tasker.subbundled-type>java.lang.Boolean</net.dinglisch.android.tasker.subbundled-type>
+				</Vals>
+			</Bundle>
+			<Str sr="arg1" ve="3">falcosc.locus.addon.tasker</Str>
+			<Str sr="arg2" ve="3">falcosc.locus.addon.tasker.intent.edit.UpdateContainerEdit</Str>
+			<Int sr="arg3" val="10"/>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>37</code>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%is_guide_enabled</lhs>
+					<op>0</op>
+					<rhs>true</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+		<Action sr="act2" ve="7">
+			<code>877</code>
+			<Str sr="arg0" ve="3">android.intent.action.VIEW</Str>
+			<Int sr="arg1" val="0"/>
+			<Str sr="arg2" ve="3"/>
+			<Str sr="arg3" ve="3">google.navigation:mode=d&amp;avoid=ft&amp;q=%guide_target_lat,%guide_target_lon</Str>
+			<Str sr="arg4" ve="3"/>
+			<Str sr="arg5" ve="3"/>
+			<Str sr="arg6" ve="3"/>
+			<Str sr="arg7" ve="3">com.google.android.apps.maps</Str>
+			<Str sr="arg8" ve="3"/>
+			<Int sr="arg9" val="1"/>
+		</Action>
+		<Action sr="act3" ve="7">
+			<code>43</code>
+		</Action>
+		<Action sr="act4" ve="7">
+			<code>548</code>
+			<Str sr="arg0" ve="3">No guide target to navigate to</Str>
+			<Int sr="arg1" val="1"/>
+		</Action>
+		<Action sr="act5" ve="7">
+			<code>38</code>
+		</Action>
+	</Task>
+</TaskerData>

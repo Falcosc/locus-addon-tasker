@@ -53,6 +53,11 @@ public class UpdateContainerRequest extends AbstractTaskerAction {
                 selectedFields.removeAll(locusCache.mTrackRecordingKeys);
             }
 
+            if(!update.isGuideEnabled()){
+                //remove guide fields to skip null checks
+                selectedFields.removeAll(locusCache.mTrackGuideKeys);
+            }
+
             Bundle varsBundle = new Bundle();
             for (String field : selectedFields) {
                 //Don't need to check updateContainerMethodMap, illegal intents creates exceptions
