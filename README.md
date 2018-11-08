@@ -26,6 +26,9 @@ After installation you will find this App at Tasker in the plugin section.
 I did create some Tasker example profiles and screen for common use-cases:
 
 - [Remaining elevation to target](https://github.com/Falcosc/locus-addon-tasker/wiki/Examples#remaining-elevation-to-target-as-dashboard-overlay) - as dashboard overlay
+- [Center Map to GPS on move](https://github.com/Falcosc/locus-addon-tasker/wiki/Examples#center-map-to-gps-on-move)
+- [Locus Software display lock as replacement for android display lock](https://github.com/Falcosc/locus-addon-tasker/wiki/Examples#locus-software-display-lock-as-replacement-for-android-display-lock)
+- [Open Navigation in Google Maps](https://github.com/Falcosc/locus-addon-tasker/wiki/Examples#open-navigation-in-google-maps)
 
 # License
 
