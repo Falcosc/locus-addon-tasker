@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import falcosc.locus.addon.tasker.LocusSetActiveTrack;
 import locus.api.android.ActionTools;
 import locus.api.android.features.periodicUpdates.UpdateContainer;
 import locus.api.android.utils.LocusUtils;
@@ -36,7 +37,7 @@ public final class LocusCache {
     }
 
     public final HashSet<String> mTrackRecordingKeys;
-    public final HashSet<String>  mTrackGuideKeys;
+    public final HashSet<String> mTrackGuideKeys;
     public final Map<String, LocusField> mUpdateContainerFieldMap;
     public final ArrayList<LocusField> mUpdateContainerFields;
     public final LocusVersion mLocusVersion;
@@ -263,6 +264,9 @@ public final class LocusCache {
     }
 
     public void setLastSelectedTrack(@Nullable Track lastSelectedTrack) {
+        //enable button on null track and disable button otherwise
+        LocusSetActiveTrack.setVisibility(mApplicationContext.getPackageManager(), lastSelectedTrack == null);
+
         mLastSelectedTrack = lastSelectedTrack;
         mRemainingTrackElevation = CalculateElevationToTarget.calculateRemainingElevation(mLastSelectedTrack);
     }

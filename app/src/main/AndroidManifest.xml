@@ -35,6 +35,22 @@
             </intent-filter>
         </activity>
 
+        <!-- set Track for calculate remaining elevation http://help.locusmap.eu/topic/elevation-to-target -->
+        <activity android:name=".LocusSetActiveTrack" />
+        <activity-alias
+            android:name="LocusSetActiveTrack"
+            android:targetActivity=".LocusSetActiveTrack"
+            android:label="Set to active"
+            android:icon="@mipmap/ic_tasker"
+            android:theme="@android:style/Theme.NoDisplay"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="locus.api.android.INTENT_ITEM_TRACK_TOOLS" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity-alias>
+
         <!-- run Tasker Task -->
         <activity
             android:name=".LocusRunTaskerActivity"

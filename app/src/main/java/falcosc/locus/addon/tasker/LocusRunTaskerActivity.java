@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import falcosc.locus.addon.tasker.thridparty.TaskerIntent;
+import falcosc.locus.addon.tasker.utils.LocusCache;
 
 import org.json.JSONException;
 import org.json.JSONObject;

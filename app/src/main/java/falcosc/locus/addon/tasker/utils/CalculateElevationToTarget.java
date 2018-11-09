@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import falcosc.locus.addon.tasker.LocusSetActiveTrack;
 import locus.api.android.ActionTools;
 import locus.api.android.features.periodicUpdates.UpdateContainer;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
@@ -16,6 +17,8 @@ import java.util.List;
 
 class CalculateElevationToTarget implements Function<UpdateContainer, Object> {
     private static final String NO_TRK = "noTRK"; //NON-NLS
+    private static final String NO_NAV = "noNAV"; //NON-NLS
+    private static final String OFF_TRK = "offTRK"; //NON-NLS
     private static final String RESET = "RESET"; //NON-NLS
     private static final String TAG = "CalcElevationToTarget"; //NON-NLS
     private static final long VIRTUAL_TRACK_ID_OFFSET = 1000000000L;
@@ -31,11 +34,16 @@ class CalculateElevationToTarget implements Function<UpdateContainer, Object> {
         }
 
         try {
-            Track track = getNavigationTrack(locusCache);
+
+            Track track = getActiveTrack(locusCache, updateContainer);
 
             if (track == null) {
-                //Don't search for the current track, this is done at the entry point of a new update request
+                LocusSetActiveTrack.setVisibility(locusCache.getApplicationContext().getPackageManager(), true);
                 return NO_TRK;
+            }
+
+            if (updateContainer.getGuideTypeTrack() == null) {
+                return NO_NAV;
             }
 
             Location nextPoint = updateContainer.getGuideTypeTrack().getTargetLoc();
@@ -46,7 +54,10 @@ class CalculateElevationToTarget implements Function<UpdateContainer, Object> {
                 currentIndex = findMatchingPointIndex(track.getPoints(), nextNavPoint, locusCache.mLastIndexOnRemainingTrack);
             }
 
-            if (currentIndex >= 0) {
+            if (currentIndex < 0) {
+                LocusSetActiveTrack.setVisibility(locusCache.getApplicationContext().getPackageManager(), true);
+                return OFF_TRK;
+            } else {
                 locusCache.mLastIndexOnRemainingTrack = currentIndex;
                 return String.valueOf(locusCache.mRemainingTrackElevation[currentIndex]);
             }
@@ -55,27 +66,31 @@ class CalculateElevationToTarget implements Function<UpdateContainer, Object> {
             Log.e(TAG, "Can not get remaining elevation", e); //NON-NLS
         }
 
-        locusCache.setLastSelectedTrack(null);
+        //Error case
         //Don't search for the current track, this is done at the entry point of a new update request
-
-        //tracking is off on exception or we are not on track
+        //reset track
+        locusCache.setLastSelectedTrack(null);
         return RESET;
     }
 
-    private static Track getNavigationTrack(@NonNull LocusCache locusCache){
+    private static Track getActiveTrack(@NonNull LocusCache locusCache, UpdateContainer updateContainer){
         try {
-            Track track = searchNavigationTrack(locusCache, locusCache.getApplicationContext());
+            Track newTrack = null;
+            if(updateContainer.isGuideEnabled()){
+                newTrack = searchNavigationTrack(locusCache, locusCache.getApplicationContext());
+            }
+
             Track lastSelectedTrack = locusCache.getLastSelectedTrack();
             if(lastSelectedTrack == null){
                 //recalculate
-                locusCache.setLastSelectedTrack(track);
-            } else if(track != null) {
+                locusCache.setLastSelectedTrack(newTrack);
+            } else if(newTrack != null) {
                 float lastTotalLength = lastSelectedTrack.getStats().getTotalLength();
-                float newTotalLength = track.getStats().getTotalLength();
+                float newTotalLength = newTrack.getStats().getTotalLength();
 
                 if(Float.compare(newTotalLength, lastTotalLength) != 0){
-                    //recalculate
-                    locusCache.setLastSelectedTrack(track);
+                    //track does not match, recalculate
+                    locusCache.setLastSelectedTrack(newTrack);
                 }
             }
         } catch (RequiredVersionMissingException e) {

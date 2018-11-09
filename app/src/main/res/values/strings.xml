@@ -46,4 +46,5 @@
     <string name="ok">OK</string>
     <string name="variable_select">Variable Selection</string>
     <string name="app_main_examples">Get example projects for Tasker as quick start: https://github.com/Falcosc/locus-addon-tasker/wiki/Examples</string>
+    <string name="is_active">is active</string>
 </resources>
