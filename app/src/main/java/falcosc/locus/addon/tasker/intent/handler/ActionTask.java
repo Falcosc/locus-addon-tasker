@@ -23,7 +23,9 @@ public class ActionTask extends AbstractTaskerAction {
         intent.setPackage(locusCache.mLocusVersion.getPackageName());
         mContext.sendBroadcast(intent);
 
-        mReceiver.setResultCode(TaskerPlugin.Setting.RESULT_CODE_OK);
+        if (mReceiver.isOrderedBroadcast()) {
+            mReceiver.setResultCode(TaskerPlugin.Setting.RESULT_CODE_OK);
+        }
 
     }
 }

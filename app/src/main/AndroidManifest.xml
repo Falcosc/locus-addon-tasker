@@ -13,6 +13,8 @@
         android:smallScreens="true"
         android:xlargeScreens="true" />
 
+    <uses-permission android:name="net.dinglisch.android.tasker.PERMISSION_RUN_TASKS" />
+
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
@@ -118,5 +120,4 @@
             </intent-filter>
         </receiver>
     </application>
-
 </manifest>
