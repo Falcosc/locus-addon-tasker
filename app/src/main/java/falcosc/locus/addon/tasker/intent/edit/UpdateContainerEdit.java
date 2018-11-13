@@ -3,9 +3,9 @@ package falcosc.locus.addon.tasker.intent.edit;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog.Builder;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog.Builder;
 import android.util.SparseBooleanArray;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
@@ -71,11 +71,18 @@ public class UpdateContainerEdit extends TaskerEditActivity {
         //todo check content view
     }
 
+    private boolean isCalcNavigationProgressNew(@NonNull Set<String> previousFieldSelection){
+        LocusCache locusCache = LocusCache.getInstance(getApplication());
+        boolean isPrevWithoutNavigation = Collections.disjoint(previousFieldSelection, locusCache.mLocationProgressKeys);
+        boolean isNewNavigation = !Collections.disjoint(mStoredFieldSelection, locusCache.mLocationProgressKeys);
+
+        return isPrevWithoutNavigation && isNewNavigation;
+    }
+
     @Nullable
     private Dialog createHintsDialog(@NonNull Set<String> previousFieldSelection) {
         Dialog hintsDialog = null;
-        if (!previousFieldSelection.contains(LocusCache.CALC_REMAIN_UPHILL_ELEVATION)
-                && mStoredFieldSelection.contains(LocusCache.CALC_REMAIN_UPHILL_ELEVATION)) {
+        if (isCalcNavigationProgressNew(previousFieldSelection)) {
             //track required was not selected and got selected this time, create hint:
             Builder builder = new Builder(this);
             builder.setView(R.layout.calc_remain_elevation);

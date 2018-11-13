@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +14,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import falcosc.locus.addon.tasker.thridparty.TaskerIntent;
-import falcosc.locus.addon.tasker.utils.LocusCache;
 
 import org.json.JSONException;
 import org.json.JSONObject;

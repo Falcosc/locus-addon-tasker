@@ -1,14 +1,17 @@
 package falcosc.locus.addon.tasker.utils;
 
 import android.app.Application;
-import android.arch.core.util.Function;
+
+import androidx.arch.core.util.Function;
+
 import android.content.Context;
 import android.content.res.Resources;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import android.util.Log;
 
-import falcosc.locus.addon.tasker.LocusSetActiveTrack;
 import locus.api.android.ActionTools;
 import locus.api.android.features.periodicUpdates.UpdateContainer;
 import locus.api.android.utils.LocusUtils;
@@ -23,7 +26,6 @@ import java.util.*;
 
 public final class LocusCache {
     private static final String TAG = "LocusCache"; //NON-NLS
-    public static final String CALC_REMAIN_UPHILL_ELEVATION = "calc_remain_uphill_elevation"; //NON-NLS
     private static final Object mSyncObj = new Object();
     private static final long UPDATE_CONTAINER_EXPIRATION = 950L;
 
@@ -38,11 +40,11 @@ public final class LocusCache {
 
     public final HashSet<String> mTrackRecordingKeys;
     public final HashSet<String> mTrackGuideKeys;
+    public final Set<String> mLocationProgressKeys;
     public final Map<String, LocusField> mUpdateContainerFieldMap;
     public final ArrayList<LocusField> mUpdateContainerFields;
     public final LocusVersion mLocusVersion;
     private final Resources mLocusResources;
-    public final String mNavigationTrackName;
 
     //selected track fields
     private Track mLastSelectedTrack;
@@ -50,7 +52,8 @@ public final class LocusCache {
     public int mLastIndexOnRemainingTrack;
 
     //update container
-    private UpdateContainer mUpdateContainer;
+    @SuppressWarnings("InstanceVariableOfConcreteClass")
+    private ExtUpdateContainer mExtUpdateContainer;
     private long mUpdateContainerExpiration;
 
     @SuppressWarnings("HardCodedStringLiteral")
@@ -72,16 +75,16 @@ public final class LocusCache {
         mLocusResources = locusRes;
 
         mUpdateContainerFields = createUpdateContainerFields();
+        ArrayList<LocusField> navigationProgressFields = createNavigationProgressFields();
+        mLocationProgressKeys = getLocusFieldKeys(navigationProgressFields);
+        mUpdateContainerFields.addAll(navigationProgressFields);
         Log.d(TAG, "Locus fields created: " + mUpdateContainerFields.size());
+
         mUpdateContainerFieldMap = createUpdateContainerFieldMap();
         mTrackRecordingKeys = createUpdateContainerTrackRecKeys();
-        Log.d(TAG, "Locus field keys mapped - recording keys: " + mTrackRecordingKeys.size());
+        Log.d(TAG, "Locus Field keys mapped - recording keys: " + mTrackRecordingKeys.size());
         mTrackGuideKeys = createUpdateContainerTrackGuideKeys();
-        Log.d(TAG, "Locus field keys mapped - guiding keys: " + mTrackGuideKeys.size());
-
-
-        mNavigationTrackName = getLocusLabelByName("navigation");
-        Log.d(TAG, "Locus navigation track name: " + mNavigationTrackName);
+        Log.d(TAG, "Locus Field keys mapped - guiding keys: " + mTrackGuideKeys.size());
     }
 
     @NonNull
@@ -140,6 +143,13 @@ public final class LocusCache {
             label = WordUtils.capitalize(label);
         }
         return new LocusField(taskerVar, label, updateContainerGetter);
+    }
+
+    @NonNull
+    private static ExtendedLocusField extField(@NonNull String taskerVar, @NonNull Function<ExtUpdateContainer, Object> extUpdateContainerGetter) {
+        String label = taskerVar.replace('_', ' ');
+        label = WordUtils.capitalize(label);
+        return new ExtendedLocusField(taskerVar, label, extUpdateContainerGetter);
 
     }
 
@@ -222,9 +232,21 @@ public final class LocusCache {
         list.add(cField("active_dashboard_id", null, UpdateContainer::getActiveDashboardId));
         list.add(cField("guide_target_lon", null, u -> u.getGuideTypeWaypoint().getTargetLoc().longitude));
         list.add(cField("guide_target_lat", null, u -> u.getGuideTypeWaypoint().getTargetLoc().latitude));
-        list.add(cField(CALC_REMAIN_UPHILL_ELEVATION, null, new CalculateElevationToTarget()));
+
 
         //TODO Navigation points
+
+        return list;
+    }
+
+    @SuppressWarnings("HardCodedStringLiteral")
+    @NonNull
+    private static ArrayList<LocusField> createNavigationProgressFields() {
+        ArrayList<LocusField> list = new ArrayList<>();
+        list.add(extField("calc_remain_uphill_elevation", u -> u.getNavigationProgress().getRemainingUphill()));
+        list.add(extField("calc_remain_downhill_elevation", u -> u.getNavigationProgress().getRemainingDownhill()));
+        list.add(extField("navigation_point_index", u -> u.getNavigationProgress().pointIndex));
+        list.add(extField("navigation_track_name", u -> u.getNavigationProgress().trackName));
 
         return list;
     }
@@ -239,14 +261,23 @@ public final class LocusCache {
         return updateContainerFieldMap;
     }
 
+    @NonNull
+    private static Set<String> getLocusFieldKeys(List<LocusField> fields) {
+        Set<String> keys = new HashSet<>();
+        for (LocusField field : fields) {
+            keys.add(field.mTaskerName);
+        }
+        return keys;
+    }
+
 
     @NonNull
     private HashSet<String> createUpdateContainerTrackGuideKeys() {
-        HashSet<String> mTrackGuideKeys = new HashSet<>();
+        HashSet<String> trackGuideKeys = new HashSet<>();
         for (String key : mUpdateContainerFieldMap.keySet()) {
-            if (key.startsWith("guide")) mTrackGuideKeys.add(key); //NON-NLS
+            if (key.startsWith("guide")) trackGuideKeys.add(key); //NON-NLS
         }
-        return mTrackGuideKeys;
+        return trackGuideKeys;
     }
 
     @NonNull
@@ -259,30 +290,27 @@ public final class LocusCache {
     }
 
     @Nullable
-    public Track getLastSelectedTrack() {
+    Track getLastSelectedTrack() {
         return mLastSelectedTrack;
     }
 
-    public void setLastSelectedTrack(@Nullable Track lastSelectedTrack) {
-        //enable button on null track and disable button otherwise
-        LocusSetActiveTrack.setVisibility(mApplicationContext.getPackageManager(), lastSelectedTrack == null);
-
+    void setLastSelectedTrack(@Nullable Track lastSelectedTrack) {
         mLastSelectedTrack = lastSelectedTrack;
-        mRemainingTrackElevation = CalculateElevationToTarget.calculateRemainingElevation(mLastSelectedTrack);
+        mRemainingTrackElevation = NavigationProgress.calculateRemainingElevation(mLastSelectedTrack);
     }
 
     @NonNull
-    public UpdateContainer getUpdateContainer() throws RequiredVersionMissingException {
+    public ExtUpdateContainer getUpdateContainer() throws RequiredVersionMissingException {
         long requestTime = System.currentTimeMillis();
         if (requestTime > mUpdateContainerExpiration) {
-            mUpdateContainer = ActionTools.getDataUpdateContainer(mApplicationContext, mLocusVersion);
+            mExtUpdateContainer = new ExtUpdateContainer(ActionTools.getDataUpdateContainer(mApplicationContext, mLocusVersion));
             mUpdateContainerExpiration = requestTime + UPDATE_CONTAINER_EXPIRATION; //don't care about 1 second offset for manual update requests
         } else {
             Log.d(TAG, "getUpdateContainer cache hit, time to expiration: " //NON-NLS
                     + (mUpdateContainerExpiration - requestTime));
         }
 
-        return mUpdateContainer;
+        return mExtUpdateContainer;
     }
 
     public static class MissingAppContextException extends Exception {

@@ -8,8 +8,8 @@ android {
     defaultConfig {
         minSdkVersion Integer.valueOf(PARAM_MIN_SDK_VERSION)
         targetSdkVersion Integer.valueOf(PARAM_TARGET_SDK_VERSION)
-        versionCode 15
-        versionName "1.0.2"
+        versionCode 17
+        versionName "1.1.0"
         vectorDrawables.useSupportLibrary = true
     }
 
@@ -26,12 +26,9 @@ android {
 
 dependencies {
 
-    implementation('com.android.support:appcompat-v7:28.0.0'){
-        //Don't know if this could break something, doesn't save much file size
-        //exclude module: 'support-core-utils'
-    }
+    implementation 'androidx.appcompat:appcompat:1.0.2'
 
-    implementation('com.asamm:locus-api-android:0.3.0') {
+    implementation('com.asamm:locus-api-android:0.3.2') {
         exclude group: 'org.jetbrains.kotlin'
     }
 

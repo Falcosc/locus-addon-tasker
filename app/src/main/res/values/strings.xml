@@ -7,9 +7,9 @@
     <string name="app_main_description">You could trigger Locus Map actions in your Tasker task or Tasker can listen for Locus Map events</string>
     <string name="app_main_notice">Currently only some parts of the Locus API are implemented in this plugin. Please share your Tasker project idea if you miss any API implementations to make me able to create a proper translation to Tasker variables: \nhttps://github.com/Falcosc/locus-addon-tasker/issues</string>
     <string name="privacy_policy_link">Privacy: https://github.com/Falcosc/locus-addon-tasker/wiki/Privacy-Policy</string>
-    <string name="calc_remain_elev_description">You did select calculate remaining elevation. Reverse tracks are not supported. If something goes wrong you get the following returns values:</string>
-    <string name="calc_remain_elev_reset">RESET - track got reset because of track mismatch</string>
-    <string name="calc_remain_elev_notrk">noTRK - No track selected</string>
+    <string name="calc_remain_elev_description">You did select calculate remaining elevation. Reverse tracks are not fully supported. If something goes wrong you get the following returns values:</string>
+    <string name="calc_remain_elev_nonav">noNav - guiding is not enabled</string>
+    <string name="calc_remain_elev_notrk">noTRK - No track available for your navigation</string>
     <string name="run_task_description">This event is not properly implemented, if you want to use it please ask for a Tasker event implementation by sharing your Tasker project idea to tell which data you need.</string>
     <string name="run_task_execute">For now you can manually execute one of your tasks and get all event data as \'\%data\' in form of useless IDs to preview:</string>
     <string name="action_not_implemented_desc">Following API functions are currently not implemented and would be added if somebody request it:
@@ -46,5 +46,4 @@
     <string name="ok">OK</string>
     <string name="variable_select">Variable Selection</string>
     <string name="app_main_examples">Get example projects for Tasker as quick start: https://github.com/Falcosc/locus-addon-tasker/wiki/Examples</string>
-    <string name="is_active">is active</string>
 </resources>

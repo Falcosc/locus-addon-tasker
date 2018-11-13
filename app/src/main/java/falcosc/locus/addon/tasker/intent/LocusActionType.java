@@ -1,6 +1,6 @@
 package falcosc.locus.addon.tasker.intent;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.util.concurrent.Callable;
 

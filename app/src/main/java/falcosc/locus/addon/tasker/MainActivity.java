@@ -2,7 +2,7 @@ package falcosc.locus.addon.tasker;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import falcosc.locus.addon.tasker.intent.edit.ActionTaskEdit;
 import falcosc.locus.addon.tasker.intent.edit.NotImplementedActions;

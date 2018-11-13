@@ -1,12 +1,13 @@
 package falcosc.locus.addon.tasker.intent.handler;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.widget.Toast;
 
 import falcosc.locus.addon.tasker.R;
 import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
 import falcosc.locus.addon.tasker.utils.Const;
+import falcosc.locus.addon.tasker.utils.ExtUpdateContainer;
 import falcosc.locus.addon.tasker.utils.LocusCache;
 import falcosc.locus.addon.tasker.utils.LocusField;
 import locus.api.android.features.periodicUpdates.UpdateContainer;
@@ -46,7 +47,8 @@ public class UpdateContainerRequest extends AbstractTaskerAction {
 
             LocusCache locusCache = LocusCache.getInstanceUnsafe(mContext);
 
-            UpdateContainer update = locusCache.getUpdateContainer();
+            ExtUpdateContainer extUpdate = locusCache.getUpdateContainer();
+            UpdateContainer update = extUpdate.mUpdateContainer;
 
             if (!update.isTrackRecRecording()) {
                 //remove track recording fields to skip null checks
@@ -59,10 +61,11 @@ public class UpdateContainerRequest extends AbstractTaskerAction {
             }
 
             Bundle varsBundle = new Bundle();
+
             for (String field : selectedFields) {
                 //Don't need to check updateContainerMethodMap, illegal intents creates exceptions
                 LocusField lf = locusCache.mUpdateContainerFieldMap.get(field);
-                varsBundle.putString("%" + field, String.valueOf(lf.mUpdateContainerGetter.apply(update)));
+                varsBundle.putString("%" + field, String.valueOf(lf.apply(extUpdate)));
                 TaskerPlugin.addVariableBundle(mReceiver.getResultExtras(true), varsBundle);
             }
 
