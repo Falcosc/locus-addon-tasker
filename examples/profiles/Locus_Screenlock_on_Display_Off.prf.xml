@@ -6,7 +6,7 @@
 		<edate>1541610748395</edate>
 		<id>27</id>
 		<mid0>28</mid0>
-		<nme>Locus Screenlock on Display Off</nme>
+		<nme>Locus Screen lock on Display Off</nme>
 		<Event sr="con0" ve="2">
 			<code>210</code>
 		</Event>

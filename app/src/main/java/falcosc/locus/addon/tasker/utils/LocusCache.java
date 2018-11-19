@@ -33,6 +33,7 @@ public final class LocusCache {
 
     private final Application mApplicationContext;
 
+    @SuppressWarnings("WeakerAccess")
     @NonNull
     public Application getApplicationContext() {
         return mApplicationContext;
@@ -48,8 +49,9 @@ public final class LocusCache {
 
     //selected track fields
     private Track mLastSelectedTrack;
-    public int[] mRemainingTrackElevation;
-    public int mLastIndexOnRemainingTrack;
+    @SuppressWarnings("InstanceVariableOfConcreteClass")
+    NavigationProgress.Point[] mRemainingTrackElevation;
+    int mLastIndexOnRemainingTrack;
 
     //update container
     @SuppressWarnings("InstanceVariableOfConcreteClass")

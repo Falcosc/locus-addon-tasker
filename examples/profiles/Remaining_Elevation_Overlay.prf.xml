@@ -33,7 +33,7 @@
 			<code>194</code>
 			<Str sr="arg0" ve="3">LocusDashOverlay</Str>
 			<Int sr="arg1" val="0"/>
-			<Str sr="arg2" ve="3">%scenestatus</Str>
+			<Str sr="arg2" ve="3">%scene_status</Str>
 		</Action>
 		<Action sr="act1" ve="7">
 			<code>1120274117</code>
@@ -64,7 +64,7 @@
 			<code>37</code>
 			<ConditionList sr="if">
 				<Condition sr="c0" ve="3">
-					<lhs>%scenestatus</lhs>
+					<lhs>%scene_status</lhs>
 					<op>0</op>
 					<rhs>visible</rhs>
 				</Condition>

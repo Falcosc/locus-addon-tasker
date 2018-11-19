@@ -49,6 +49,8 @@ import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.util.Log;
 
+import androidx.core.content.pm.PackageInfoCompat;
+
 public class TaskerPlugin {
 
     private final static String 	TAG = "TaskerPlugin";
@@ -57,7 +59,7 @@ public class TaskerPlugin {
 
     private final static String 	EXTRAS_PREFIX = BASE_KEY + ".extras.";
 
-    private final static int		FIRST_ON_FIRE_VARIABLES_TASKER_VERSION = 80;
+    private final static long		FIRST_ON_FIRE_VARIABLES_TASKER_VERSION = 80L;
 
     public final static String		VARIABLE_PREFIX = "%";
 
@@ -919,15 +921,15 @@ public class TaskerPlugin {
                 ;
     }
 
-    public static int getPackageVersionCode( PackageManager pm, String packageName ) {
+    public static long getPackageVersionCode( PackageManager pm, String packageName ) {
 
-        int code = -1;
+        long code = -1L;
 
         if ( pm != null ) {
             try {
                 PackageInfo pi = pm.getPackageInfo( packageName, 0 );
                 if ( pi != null )
-                    code = pi.versionCode;
+                    code = PackageInfoCompat.getLongVersionCode(pi);
             }
             catch ( Exception e ) {
                 Log.e( TAG, "getPackageVersionCode: exception getting package info" );

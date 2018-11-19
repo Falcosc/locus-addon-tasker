@@ -16,39 +16,40 @@ import java.util.List;
 final class NavigationProgress {
     private int mRemainingUphill;
     private int mRemainingDownhill;
-    public int pointIndex = -1;
-    public String trackName;
-    private String mError;
+    int pointIndex = -1;
+    String trackName;
+    private final String mError;
 
     private static final String NO_TRK = "noTRK"; //NON-NLS
     private static final String NO_NAV = "noNAV"; //NON-NLS
+    private static final String NO_ELE = "noELE"; //NON-NLS
     private static final String OFF_TRK = "offTRK"; //NON-NLS
     private static final String RESET = "RESET"; //NON-NLS
     private static final String TAG = "CalcElevationToTarget"; //NON-NLS
 
     private NavigationProgress() {
-
+        mError = null;
     }
 
-    private NavigationProgress(String error) {
+    private NavigationProgress(@NonNull String error) {
         mError = error;
     }
 
-    public String getRemainingUphill() {
+    String getRemainingUphill() {
         if (mError != null) {
             return mError;
         }
         return Integer.toString(mRemainingUphill);
     }
 
-    public String getRemainingDownhill() {
+    String getRemainingDownhill() {
         if (mError != null) {
             return mError;
         }
         return Integer.toString(mRemainingDownhill);
     }
 
-    public static NavigationProgress calculate(@NonNull UpdateContainer updateContainer) {
+    static NavigationProgress calculate(@NonNull UpdateContainer updateContainer) {
 
         LocusCache locusCache = LocusCache.getInstanceNullable();
 
@@ -77,18 +78,8 @@ final class NavigationProgress {
                 currentIndex = findMatchingPointIndex(track.getPoints(), nextNavPoint, locusCache.mLastIndexOnRemainingTrack);
             }
 
-            if (currentIndex < 0) {
-                return new NavigationProgress(OFF_TRK);
-            } else {
-                locusCache.mLastIndexOnRemainingTrack = currentIndex;
-                NavigationProgress progress = new NavigationProgress("");
-                progress.pointIndex = currentIndex;
-                progress.mRemainingUphill = locusCache.mRemainingTrackElevation[currentIndex];
-                //TODO downhill
-                progress.mRemainingDownhill = locusCache.mRemainingTrackElevation[currentIndex];
-                progress.trackName = track.getName();
-                return progress;
-            }
+            return setCalculationResult(locusCache, track, currentIndex);
+
 
         } catch (Exception e) {
             Log.e(TAG, "Can not get remaining elevation", e); //NON-NLS
@@ -99,6 +90,22 @@ final class NavigationProgress {
         //reset track on error
         locusCache.setLastSelectedTrack(null);
         return new NavigationProgress(RESET);
+    }
+
+    private static NavigationProgress setCalculationResult(@NonNull LocusCache cache, @NonNull Track track, int currentIndex) {
+        if (currentIndex < 0) {
+            return new NavigationProgress(OFF_TRK);
+        }
+
+        NavigationProgress progress;
+        progress = (cache.mRemainingTrackElevation[0].remainingUphill == 0) ? new NavigationProgress(NO_ELE) : new NavigationProgress();
+
+        cache.mLastIndexOnRemainingTrack = currentIndex;
+        progress.pointIndex = currentIndex;
+        progress.mRemainingUphill = cache.mRemainingTrackElevation[currentIndex].remainingUphill;
+        progress.mRemainingDownhill = cache.mRemainingTrackElevation[currentIndex].remainingDownhill;
+        progress.trackName = track.getName();
+        return progress;
     }
 
     private static Track getActiveTrack(@NonNull LocusCache locusCache, UpdateContainer updateContainer) {
@@ -123,17 +130,28 @@ final class NavigationProgress {
     }
 
     private static boolean isSameTrack(Track track1, Track track2) {
-        if (track1 == null) {
+        if ((track1 == null) || (track2 == null)) {
+            Log.d(TAG, "is not same track because one is null"); //NON-NLS
             //is same if both null or can't be same if track2 is not null
             return track2 == null;
         }
 
         if (track1.getId() != track2.getId()) {
+            Log.d(TAG, "is not same track because id miss match"); //NON-NLS
             return false;
         }
 
-        //everything is equal, check track length float as last step
-        return Float.compare(track1.getStats().getTotalLength(), track2.getStats().getTotalLength()) != 0;
+        if (track1.getPointsCount() != track2.getPointsCount()) {
+            Log.d(TAG, "is not same track because point count miss match, " //NON-NLS
+                    + track1.getPointsCount() + " != " + track2.getPointsCount());
+            return false;
+        }
+
+        if (track1.getPoint(0).hasAltitude() != track1.getPoint(0).hasAltitude()) {
+            Log.d(TAG, "is not same track because altitude miss match"); //NON-NLS
+            return false;
+        }
+        return true;
     }
 
     @SuppressWarnings("FloatingPointEquality")
@@ -168,9 +186,14 @@ final class NavigationProgress {
         return -1;
     }
 
-    public static int[] calculateRemainingElevation(@Nullable Track track) {
+    static class Point {
+        int remainingUphill;
+        int remainingDownhill;
+    }
+
+    static Point[] calculateRemainingElevation(@Nullable Track track) {
         if (track == null) {
-            return new int[0];
+            return new Point[0];
         }
 
         Log.i(TAG, "recalculate track elevation of: " + track.getName()); //NON-NLS
@@ -178,21 +201,31 @@ final class NavigationProgress {
         List<Location> points = track.getPoints();
         int size = points.size();
         //make array one point larger because we assign remaining elevation to point+1 because remain is current target point -1
-        int[] remainingUphill = new int[size + 1];
+        Point[] remainingElevation = new Point[size + 1];
         Double uphillElevation = 0.0;
+        Double downhillElevation = 0.0;
         double nextAltitude = points.get(size - 1).getAltitude();
         for (int i = size - 1; i >= 0; i--) {
             double currentAltitude = points.get(i).getAltitude();
             if (nextAltitude > currentAltitude) {
                 uphillElevation += nextAltitude - currentAltitude;
+            } else {
+                downhillElevation += currentAltitude - nextAltitude;
             }
-            remainingUphill[i + 1] = uphillElevation.intValue();
+
+            Point p = new Point();
+            p.remainingUphill = uphillElevation.intValue();
+            p.remainingDownhill = downhillElevation.intValue();
+            remainingElevation[i + 1] = p;
+
             nextAltitude = currentAltitude;
         }
         //assign remaining altitude of point 0 because we have no values at 0 because we read 1 point ahead.
-        remainingUphill[0] = remainingUphill[1];
+        remainingElevation[0] = remainingElevation[1];
 
-        return remainingUphill;
+        Log.i(TAG, "Points calculated: " + size); //NON-NLS
+
+        return remainingElevation;
     }
 
 

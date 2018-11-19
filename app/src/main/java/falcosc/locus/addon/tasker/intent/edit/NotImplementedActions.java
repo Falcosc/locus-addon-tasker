@@ -5,6 +5,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import android.view.View;
 import android.widget.Button;
 
 import falcosc.locus.addon.tasker.ProjectActivity;
@@ -25,6 +27,8 @@ public class NotImplementedActions extends ProjectActivity {
         Button negativeBtn = findViewById(android.R.id.button2);
         negativeBtn.setText(R.string.back);
         negativeBtn.setOnClickListener((v) -> finish());
+
+        findViewById(android.R.id.button3).setVisibility(View.GONE);
     }
 
     private void openWebPage(@NonNull String url) {

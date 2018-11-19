@@ -22,4 +22,10 @@
         android:layout_height="wrap_content"
         android:text="@string/calc_remain_elev_notrk" />
 
+    <TextView
+        style="@style/textBullet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/calc_remain_elev_noele" />
+
 </LinearLayout>

@@ -1,7 +1,6 @@
 <resources>
 
     <!-- Base application theme. -->
-    <!--suppress AndroidDomInspection -->
     <style name="AppTheme" parent="Theme.AppCompat.Light">
         <item name="colorPrimary">@color/colorPrimaryDark</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -13,14 +12,18 @@
         <item name="android:colorBackground">@android:color/background_light</item>
     </style>
 
-    <!--suppress AndroidDomInspection -->
     <style name="AlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorAccent">@color/colorPrimaryDark</item>
         <item name="colorPrimary">@color/colorPrimaryDark</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="android:textColorLink">@color/linkColor</item>
+
         <item name="android:spinnerStyle">@style/SpinnerStyle</item>
+        <!--some old api versions don't use android: spinner style -->
+        <item name="spinnerStyle">@style/SpinnerStyle</item>
         <item name="android:checkboxStyle">@style/CheckboxStyle</item>
+        <item name="android:editTextStyle">@style/EditTextStyle</item>
+        <!--some new api versions don't use android: edit text style -->
         <item name="editTextStyle">@style/EditTextStyle</item>
         <item name="android:colorBackground">@android:color/background_light</item>
     </style>
@@ -34,10 +37,11 @@
     </style>
 
     <style name="EditTextStyle" parent="@style/Widget.AppCompat.EditText">
+        <!-- clickable element is a bit smaller then whole element-->
         <item name="android:minHeight">48dp</item>
     </style>
 
-    <style name="listButton">
+    <style name="listButton" parent="@style/Widget.AppCompat.Button">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:background">@drawable/tasker_panel</item>
@@ -48,7 +52,7 @@
         <item name="android:drawablePadding">8dp</item>
     </style>
 
-    <style name="listCheckbox">
+    <style name="listCheckbox" parent="CheckboxStyle">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:background">@drawable/tasker_panel</item>

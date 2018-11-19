@@ -36,6 +36,7 @@ public abstract class TaskerEditActivity extends AppCompatActivity {
         super.setContentView(view);
         setButton(android.R.id.button2, R.string.cancel, (v) -> finish());
         setButton(android.R.id.button1, R.string.ok, (v) -> onApply());
+        findViewById(android.R.id.button3).setVisibility(View.GONE);
     }
 
     @Override
@@ -43,6 +44,7 @@ public abstract class TaskerEditActivity extends AppCompatActivity {
         super.setContentView(layoutResID);
         setButton(android.R.id.button2, R.string.cancel, (v) -> finish());
         setButton(android.R.id.button1, R.string.ok, (v) -> onApply());
+        findViewById(android.R.id.button3).setVisibility(View.GONE);
     }
 
     @Override
@@ -50,6 +52,7 @@ public abstract class TaskerEditActivity extends AppCompatActivity {
         super.setContentView(view, params);
         setButton(android.R.id.button2, R.string.cancel, (v) -> finish());
         setButton(android.R.id.button1, R.string.ok, (v) -> onApply());
+        findViewById(android.R.id.button3).setVisibility(View.GONE);
     }
 
     private void setButton(@IdRes int btnId, @StringRes int textId, View.OnClickListener listener) {
