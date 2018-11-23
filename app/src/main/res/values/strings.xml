@@ -11,8 +11,8 @@
     <string name="calc_remain_elev_nonav">noNav - guiding is not enabled</string>
     <string name="calc_remain_elev_notrk">noTRK - No track available for your navigation</string>
     <string name="calc_remain_elev_noele">noELE - No elevation data is assigned to your track</string>
-    <string name="run_task_description">This event is not properly implemented, if you want to use it please ask for a Tasker event implementation by sharing your Tasker project idea to tell which data you need.</string>
-    <string name="run_task_execute">For now you can manually execute one of your tasks and get all event data as \'\%data\' in form of useless IDs to preview:</string>
+    <string name="run_task_not_implemented">This event is not properly implemented, if you want to use it please ask for a Tasker event implementation by sharing your Tasker project idea to tell which data you need. For now you will just get raw data.</string>
+    <string name="run_task_execute">Execute your tasks and get all event data as \'\%data\' and available fields as \'\%fields\'</string>
     <string name="action_not_implemented_desc">Following API functions are currently not implemented and would be added if somebody request it:
         \n
         \n\t• Import points with dialog

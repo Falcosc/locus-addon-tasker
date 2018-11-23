@@ -67,8 +67,6 @@ public class UpdateContainerEdit extends TaskerEditActivity {
             arrayAdapter.add(field.mLabel);
             mCheckState.put(i, mStoredFieldSelection.contains(field.mTaskerName));
         }
-
-        //todo check content view
     }
 
     private boolean isCalcNavigationProgressNew(@NonNull Set<String> previousFieldSelection){
