@@ -27,9 +27,7 @@ dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.0.2'
 
-    implementation('com.asamm:locus-api-android:0.3.13') {
-        exclude group: 'org.jetbrains.kotlin'
-    }
+    implementation 'com.asamm:locus-api-android:0.3.13'
 
     implementation 'com.twofortyfouram:android-plugin-api-for-locale:1.0.4'
     implementation 'org.apache.commons:commons-lang3:3.9'

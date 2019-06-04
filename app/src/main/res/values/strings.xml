@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Locus Map Addon Tasker Plugin</string>
     <string name="act_request_stats_sensors">Request sensors and stats</string>
+    <string name="act_request_locus_info">Get Locus Info</string>
     <string name="act_exec_task">Execute Action Task</string>
     <string name="act_more">More Actions</string>
     <string name="app_icon">App Icon</string>

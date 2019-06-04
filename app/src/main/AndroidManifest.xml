@@ -90,6 +90,16 @@
         </activity>
 
         <activity
+            android:name=".intent.edit.LocusInfoEdit"
+            android:label="@string/act_request_locus_info"
+            android:icon="@mipmap/ic_launcher"
+            android:theme="@style/AlertDialogTheme">
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name=".intent.edit.ActionTaskEdit"
             android:label="@string/act_exec_task"
             android:icon="@mipmap/ic_launcher"

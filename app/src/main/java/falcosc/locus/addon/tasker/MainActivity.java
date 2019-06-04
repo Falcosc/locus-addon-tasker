@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 
 import falcosc.locus.addon.tasker.intent.edit.ActionTaskEdit;
+import falcosc.locus.addon.tasker.intent.edit.LocusInfoEdit;
 import falcosc.locus.addon.tasker.intent.edit.NotImplementedActions;
 import falcosc.locus.addon.tasker.intent.edit.UpdateContainerEdit;
 
@@ -24,6 +25,7 @@ public class MainActivity extends ProjectActivity {
     private boolean mockTaskerEditStart() {
         Class<?>[] editClasses = {
                 UpdateContainerEdit.class,
+                LocusInfoEdit.class,
                 ActionTaskEdit.class,
                 NotImplementedActions.class
         };

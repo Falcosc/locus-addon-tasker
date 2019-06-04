@@ -10,7 +10,9 @@ import falcosc.locus.addon.tasker.utils.Const;
 import falcosc.locus.addon.tasker.utils.ExtUpdateContainer;
 import falcosc.locus.addon.tasker.utils.LocusCache;
 import falcosc.locus.addon.tasker.utils.LocusField;
+import locus.api.android.ActionBasics;
 import locus.api.android.features.periodicUpdates.UpdateContainer;
+import locus.api.android.utils.LocusInfo;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 
 import java.util.Arrays;
