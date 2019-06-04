@@ -17,8 +17,8 @@ import android.widget.Toast;
 
 import falcosc.locus.addon.tasker.thridparty.TaskerIntent;
 import falcosc.locus.addon.tasker.utils.LocusCache;
+import locus.api.android.utils.IntentHelper;
 import locus.api.android.utils.LocusConst;
-import locus.api.android.utils.LocusUtils;
 import locus.api.objects.GeoData;
 import locus.api.objects.extra.GeoDataExtra;
 import locus.api.objects.extra.Location;
@@ -113,11 +113,11 @@ public class LocusRunTaskerActivity extends ProjectActivity {
             if (locusCache != null) {
 
                 try {
-                    if (LocusUtils.isIntentPointTools(locusIntent)) {
-                        Point p = LocusUtils.handleIntentPointTools(locusCache.getApplicationContext(), locusIntent);
+                    if (IntentHelper.INSTANCE.isIntentPointTools(locusIntent)) {
+                        Point p = IntentHelper.INSTANCE.getPointFromIntent(locusCache.getApplicationContext(), locusIntent);
                         allIntentFields.putAll(mapPointFields(p));
-                    } else if (LocusUtils.isIntentTrackTools(locusIntent)) {
-                        Track t = LocusUtils.handleIntentTrackTools(locusCache.getApplicationContext(), locusIntent);
+                    } else if (IntentHelper.INSTANCE.isIntentTrackTools(locusIntent)) {
+                        Track t = IntentHelper.INSTANCE.getTrackFromIntent(locusCache.getApplicationContext(), locusIntent);
                         allIntentFields.putAll(mapTrackFields(t));
                     }
                     allIntentFields.values().removeAll(Arrays.asList(null, ""));
@@ -173,9 +173,9 @@ public class LocusRunTaskerActivity extends ProjectActivity {
         int extraCount = g.extraData.getCount();
         map.put(prefix + "extra_count", Integer.toString(extraCount));
         if (extraCount > 0) {
-            map.put(prefix + "extra_emails", StringUtils.join(convertToTexts(g.extraData.getEmails()), ','));
-            map.put(prefix + "extra_phones", StringUtils.join(convertToTexts(g.extraData.getPhones()), ','));
-            map.put(prefix + "extra_urls", StringUtils.join(convertToTexts(g.extraData.getUrls()), ','));
+            map.put(prefix + "extra_emails", StringUtils.join(convertToTexts(g.extraData.getAttachments(GeoDataExtra.AttachType.EMAIL)), ','));
+            map.put(prefix + "extra_phones", StringUtils.join(convertToTexts(g.extraData.getAttachments(GeoDataExtra.AttachType.PHONE)), ','));
+            map.put(prefix + "extra_urls", StringUtils.join(convertToTexts(g.extraData.getAttachments(GeoDataExtra.AttachType.URL)), ','));
             map.put(prefix + "extra_attachments", StringUtils.join(g.extraData.getAllAttachments(), ','));
         }
         map.put(prefix + "extra_emails", g.getName());

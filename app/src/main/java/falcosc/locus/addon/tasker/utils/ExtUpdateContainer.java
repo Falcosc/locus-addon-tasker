@@ -5,6 +5,7 @@ import locus.api.android.features.periodicUpdates.UpdateContainer;
 
 public class ExtUpdateContainer {
 
+    @SuppressWarnings("InstanceVariableOfConcreteClass")
     @NonNull
     public final UpdateContainer mUpdateContainer;
 

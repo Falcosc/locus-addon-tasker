@@ -20,7 +20,9 @@ public class ActionTask extends AbstractTaskerAction {
 
         Intent intent = new Intent(COM_ASAMM_LOCUS_ACTION_TASK);
         intent.putExtra(Const.INTENT_ACTION_TASK_EXTRA_KEY, json);
-        intent.setPackage(locusCache.mLocusVersion.getPackageName());
+        if (locusCache.mLocusVersion != null) {
+            intent.setPackage(locusCache.mLocusVersion.getPackageName());
+        }
         mContext.sendBroadcast(intent);
 
         if (mReceiver.isOrderedBroadcast()) {

@@ -5,7 +5,7 @@ import androidx.annotation.Nullable;
 
 import android.util.Log;
 
-import locus.api.android.ActionTools;
+import locus.api.android.ActionBasics;
 import locus.api.android.features.periodicUpdates.UpdateContainer;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 import locus.api.objects.extra.Location;
@@ -62,7 +62,8 @@ final class NavigationProgress {
 
             Track track = getActiveTrack(locusCache, updateContainer);
 
-            if (updateContainer.getGuideTypeTrack() == null) {
+            if ((updateContainer.getGuideType() != UpdateContainer.GUIDE_TYPE_TRACK_GUIDE)
+                    && (updateContainer.getGuideType() != UpdateContainer.GUIDE_TYPE_TRACK_NAVIGATION)) {
                 return new NavigationProgress(NO_NAV);
             }
 
@@ -70,11 +71,11 @@ final class NavigationProgress {
                 return new NavigationProgress(NO_TRK);
             }
 
-            Location nextPoint = updateContainer.getGuideTypeTrack().getTargetLoc();
+            Location nextPoint = updateContainer.getGuideWptLoc();
             int currentIndex = findMatchingPointIndex(track.getPoints(), nextPoint, locusCache.mLastIndexOnRemainingTrack);
             if (currentIndex < 0) {
                 //point not found on track, try to find the nav point because this may align because the selected track has less points
-                Location nextNavPoint = updateContainer.getGuideTypeTrack().getNavPoint1Loc();
+                Location nextNavPoint = updateContainer.getGuideNavPoint1Loc();
                 currentIndex = findMatchingPointIndex(track.getPoints(), nextNavPoint, locusCache.mLastIndexOnRemainingTrack);
             }
 
@@ -111,9 +112,10 @@ final class NavigationProgress {
     private static Track getActiveTrack(@NonNull LocusCache locusCache, UpdateContainer updateContainer) {
         try {
             Track newTrack = null;
-            UpdateContainer.GuideTypeTrack guideTrack = updateContainer.getGuideTypeTrack();
-            if (guideTrack != null) {
-                newTrack = ActionTools.getLocusTrack(locusCache.getApplicationContext(), locusCache.mLocusVersion, guideTrack.getTargetId());
+            long guideTargetId = updateContainer.getGuideTargetId();
+            if (guideTargetId != -1L) {
+                //TODO why is getTrack not static?
+                newTrack = ActionBasics.INSTANCE.getTrack(locusCache.getApplicationContext(), locusCache.mLocusVersion, guideTargetId);
             }
 
             Track lastSelectedTrack = locusCache.getLastSelectedTrack();
@@ -155,7 +157,11 @@ final class NavigationProgress {
     }
 
     @SuppressWarnings("FloatingPointEquality")
-    private static int findMatchingPointIndex(@NonNull List<Location> points, @NonNull Location current, int previousIndex) {
+    private static int findMatchingPointIndex(@NonNull List<Location> points, @Nullable Location current, int previousIndex) {
+        if(current == null){
+            return -1;
+        }
+
         //go back 5 points in case of wrong position
         int prevIndex = previousIndex - 5;
 
