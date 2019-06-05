@@ -83,4 +83,30 @@ abstract class AbstractTaskerAction implements TaskerAction {
     private String getString(int field) {
         return mContext.getResources().getString(field);
     }
+
+    void requireSupportingVariables() throws RequiredDataMissingException {
+        if (!TaskerPlugin.Condition.hostSupportsVariableReturn(mIntent.getExtras())) {
+            throw new RequiredDataMissingException(getString(R.string.err_no_support_return_variables));
+        }
+
+        if (!mReceiver.isOrderedBroadcast()) {
+            throw new RequiredDataMissingException(getString(R.string.err_not_set_sync_exec));
+        }
+    }
+
+    @NonNull
+    Set<String> requireSelectedFields(@NonNull Bundle apiExtraBundle) throws RequiredDataMissingException {
+
+        String[] selectedFieldsArray = apiExtraBundle.getStringArray(Const.INTENT_EXTRA_FIELD_LIST);
+
+        if ((selectedFieldsArray == null) || (selectedFieldsArray.length < 1)) {
+            throw new RequiredDataMissingException(getString(R.string.err_field_selection_missing));
+        }
+
+        return new HashSet<>(Arrays.asList(selectedFieldsArray));
+    }
+
+    private String getString(int field) {
+        return mContext.getResources().getString(field);
+    }
 }
