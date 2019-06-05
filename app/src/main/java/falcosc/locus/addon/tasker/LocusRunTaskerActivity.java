@@ -61,7 +61,7 @@ public class LocusRunTaskerActivity extends ProjectActivity {
         implementedActions.add(LocusConst.INTENT_ITEM_TRACK_TOOLS);
         implementedActions.add(LocusConst.INTENT_ITEM_POINT_TOOLS);
 
-        if(implementedActions.contains(getIntent().getAction())){
+        if (implementedActions.contains(getIntent().getAction())) {
             findViewById(R.id.not_implemented).setVisibility(View.GONE);
         }
     }

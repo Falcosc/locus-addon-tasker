@@ -9,7 +9,7 @@ public class ExtUpdateContainer {
     @NonNull
     public final UpdateContainer mUpdateContainer;
 
-    ExtUpdateContainer(@NonNull UpdateContainer updateContainer){
+    ExtUpdateContainer(@NonNull UpdateContainer updateContainer) {
         mUpdateContainer = updateContainer;
     }
 
@@ -17,7 +17,7 @@ public class ExtUpdateContainer {
     private NavigationProgress mNavigationProgress;
 
     NavigationProgress getNavigationProgress() {
-        if(mNavigationProgress == null){
+        if (mNavigationProgress == null) {
             mNavigationProgress = NavigationProgress.calculate(mUpdateContainer);
         }
         return mNavigationProgress;

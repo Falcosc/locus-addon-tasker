@@ -4,8 +4,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
+
 import android.util.Log;
+
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import falcosc.locus.addon.tasker.intent.LocusActionType;
 import falcosc.locus.addon.tasker.intent.handler.TaskerAction;
@@ -37,10 +41,11 @@ public class TaskerActionFireReceiver extends BroadcastReceiver {
             action.handle(intent, apiExtraBundle);
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
-            //TODO check how to throw exception to tasker
+            Bundle varsBundle = new Bundle();
+            varsBundle.putString(TaskerPlugin.Setting.VARNAME_ERROR_MESSAGE, e.getMessage() + " " + ExceptionUtils.getStackTrace(e));
+            TaskerPlugin.addVariableBundle(getResultExtras(true), varsBundle);
             setResultCode(TaskerPlugin.Setting.RESULT_CODE_FAILED);
         }
-
 
 
     }

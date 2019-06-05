@@ -2,6 +2,7 @@ package falcosc.locus.addon.tasker;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 
 import falcosc.locus.addon.tasker.intent.edit.ActionTaskEdit;
@@ -9,6 +10,7 @@ import falcosc.locus.addon.tasker.intent.edit.LocusInfoEdit;
 import falcosc.locus.addon.tasker.intent.edit.NotImplementedActions;
 import falcosc.locus.addon.tasker.intent.edit.UpdateContainerEdit;
 
+@SuppressWarnings("ClassWithTooManyTransitiveDependencies") //because of mock tasker start
 public class MainActivity extends ProjectActivity {
 
     private int i;

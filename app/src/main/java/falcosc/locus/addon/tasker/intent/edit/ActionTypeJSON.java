@@ -1,7 +1,9 @@
 package falcosc.locus.addon.tasker.intent.edit;
 
 import android.app.Dialog;
+
 import androidx.annotation.Nullable;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.*;

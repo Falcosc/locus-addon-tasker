@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 
 import android.util.Log;
 
+import falcosc.locus.addon.tasker.RequiredDataMissingException;
 import locus.api.android.ActionBasics;
 import locus.api.android.features.periodicUpdates.UpdateContainer;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
@@ -109,13 +110,12 @@ final class NavigationProgress {
         return progress;
     }
 
-    private static Track getActiveTrack(@NonNull LocusCache locusCache, UpdateContainer updateContainer) {
+    private static Track getActiveTrack(@NonNull LocusCache locusCache, UpdateContainer updateContainer) throws RequiredDataMissingException {
         try {
             Track newTrack = null;
             long guideTargetId = updateContainer.getGuideTargetId();
             if (guideTargetId != -1L) {
-                //TODO why is getTrack not static?
-                newTrack = ActionBasics.INSTANCE.getTrack(locusCache.getApplicationContext(), locusCache.mLocusVersion, guideTargetId);
+                newTrack = ActionBasics.INSTANCE.getTrack(locusCache.getApplicationContext(), locusCache.requireLocusVersion(), guideTargetId);
             }
 
             Track lastSelectedTrack = locusCache.getLastSelectedTrack();
@@ -158,7 +158,7 @@ final class NavigationProgress {
 
     @SuppressWarnings("FloatingPointEquality")
     private static int findMatchingPointIndex(@NonNull List<Location> points, @Nullable Location current, int previousIndex) {
-        if(current == null){
+        if (current == null) {
             return -1;
         }
 

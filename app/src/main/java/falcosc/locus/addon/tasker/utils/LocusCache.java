@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 
 import android.util.Log;
 
+import falcosc.locus.addon.tasker.RequiredDataMissingException;
 import locus.api.android.ActionBasics;
 import locus.api.android.features.periodicUpdates.UpdateContainer;
 import locus.api.android.utils.LocusUtils;
@@ -42,8 +43,8 @@ public final class LocusCache {
     public final Set<String> mTrackRecordingKeys;
     public final Set<String> mTrackGuideKeys;
     public final Set<String> mLocationProgressKeys;
-    public final Map<String, LocusField> mUpdateContainerFieldMap;
-    public final ArrayList<LocusField> mUpdateContainerFields;
+    public final Map<String, ExtUpdateContainerGetter> mExtUpdateContainerFieldMap;
+    public final ArrayList<TaskerField> mUpdateContainerFields;
     public final LocusVersion mLocusVersion;
     private final Resources mLocusResources;
 
@@ -80,23 +81,31 @@ public final class LocusCache {
         mUpdateContainerFields = createUpdateContainerFields();
         mUpdateContainerFields.addAll(createMapFields());
 
-        ArrayList<LocusField> trackRecStatsFields = createTrackRecStatsFields();
+        ArrayList<TaskerField> trackRecStatsFields = createTrackRecStatsFields();
         mTrackRecordingKeys = getLocusFieldKeys(trackRecStatsFields);
         mUpdateContainerFields.addAll(trackRecStatsFields);
 
-        ArrayList<LocusField> guideFields = createGuideFields();
+        ArrayList<TaskerField> guideFields = createGuideFields();
         mTrackGuideKeys = getLocusFieldKeys(guideFields);
         mUpdateContainerFields.addAll(guideFields);
 
-        ArrayList<LocusField> navigationProgressFields = createNavigationProgressFields();
+        ArrayList<TaskerField> navigationProgressFields = createNavigationProgressFields();
         mLocationProgressKeys = getLocusFieldKeys(navigationProgressFields);
         mUpdateContainerFields.addAll(navigationProgressFields);
 
-        mUpdateContainerFieldMap = createUpdateContainerFieldMap();
+        mExtUpdateContainerFieldMap = createExtUpdateContainerFieldMap();
 
         Log.d(TAG, "Locus fields created: " + mUpdateContainerFields.size());
         Log.d(TAG, "Locus Field keys mapped - recording keys: " + mTrackRecordingKeys.size());
         Log.d(TAG, "Locus Field keys mapped - guiding keys: " + mTrackGuideKeys.size());
+    }
+
+    @NonNull
+    public LocusVersion requireLocusVersion() throws RequiredDataMissingException {
+        if (mLocusVersion == null) {
+            throw new RequiredDataMissingException("Locus Maps need to be installed");
+        }
+        return mLocusVersion;
     }
 
     @NonNull
@@ -147,21 +156,21 @@ public final class LocusCache {
     }
 
     @NonNull
-    private LocusField cField(@NonNull String taskerVar, @Nullable String locusResName, @NonNull Function<UpdateContainer, Object> updateContainerGetter) {
+    private UpdateContainerField cField(@NonNull String taskerVar, @Nullable String locusResName, @NonNull Function<UpdateContainer, Object> updateContainerGetter) {
         String label = getLocusLabelByName(locusResName);
 
         if (StringUtils.isBlank(label)) {
             label = taskerVar.replace('_', ' ');
             label = WordUtils.capitalize(label);
         }
-        return new LocusField(taskerVar, label, updateContainerGetter);
+        return new UpdateContainerField(taskerVar, label, updateContainerGetter);
     }
 
     @NonNull
-    private static ExtendedLocusField extField(@NonNull String taskerVar, @NonNull Function<ExtUpdateContainer, Object> extUpdateContainerGetter) {
+    private static ExtendedUpdateContainerField extField(@NonNull String taskerVar, @NonNull Function<ExtUpdateContainer, Object> extUpdateContainerGetter) {
         String label = taskerVar.replace('_', ' ');
         label = WordUtils.capitalize(label);
-        return new ExtendedLocusField(taskerVar, label, extUpdateContainerGetter);
+        return new ExtendedUpdateContainerField(taskerVar, label, extUpdateContainerGetter);
 
     }
 
@@ -179,8 +188,8 @@ public final class LocusCache {
 
     @SuppressWarnings("HardCodedStringLiteral")
     @NonNull
-    private ArrayList<LocusField> createUpdateContainerFields() {
-        ArrayList<LocusField> list = new ArrayList<>();
+    private ArrayList<TaskerField> createUpdateContainerFields() {
+        ArrayList<TaskerField> list = new ArrayList<>();
         //this is a custom order
         list.add(cField("my_latitude", "latitude", u -> u.getLocMyLocation().latitude));
         list.add(cField("my_longitude", "longitude", u -> u.getLocMyLocation().longitude));
@@ -203,9 +212,6 @@ public final class LocusCache {
         list.add(cField("roll", "roll", UpdateContainer::getOrientRoll));
         list.add(cField("pitch", "orientation_pitch", UpdateContainer::getOrientPitch));
         list.add(cField("is_guide_enabled", null, UpdateContainer::isGuideEnabled));
-        //TODO how does isNewZoomLevel and isNewMapCenter work on asynchronous update container?
-        list.add(cField("is_new_zoom_level", null, UpdateContainer::isNewZoomLevel));
-        list.add(cField("is_new_map_center", null, UpdateContainer::isNewMapCenter));
         list.add(cField("is_track_rec_recording", null, UpdateContainer::isTrackRecRecording));
         list.add(cField("is_track_rec_paused", null, UpdateContainer::isTrackRecPaused));
         list.add(cField("is_enabled_my_location", null, UpdateContainer::isEnabledMyLocation));
@@ -218,12 +224,12 @@ public final class LocusCache {
 
     @SuppressWarnings({"HardCodedStringLiteral", "ConstantConditions"}) //don't make null because if map data is missing locus isn't active
     @NonNull
-    private ArrayList<LocusField> createMapFields() {
-        ArrayList<LocusField> list = new ArrayList<>();
+    private ArrayList<TaskerField> createMapFields() {
+        ArrayList<TaskerField> list = new ArrayList<>();
         list.add(cField("map_zoom_level", null, UpdateContainer::getMapZoomLevel));
         list.add(cField("map_distance_to_gps", "distance_to_gps", u -> u.getLocMapCenter().distanceTo(u.getLocMyLocation())));
         list.add(cField("map_rotate_angle", null, UpdateContainer::getMapRotate));
-        //TODO why can map locations be null but myLocation is always initialized?
+        //no null checks needed, map locations are always available
         list.add(cField("map_bottom_right_lon", null, u -> u.getMapBottomRight().longitude));
         list.add(cField("map_bottom_right_lat", null, u -> u.getMapBottomRight().latitude));
         list.add(cField("map_top_left_lon", null, u -> u.getMapTopLeft().longitude));
@@ -236,8 +242,8 @@ public final class LocusCache {
 
     @SuppressWarnings({"HardCodedStringLiteral", "ConstantConditions"}) //don't make null checks here, we do it based on key
     @NonNull
-    private ArrayList<LocusField> createTrackRecStatsFields() {
-        ArrayList<LocusField> list = new ArrayList<>();
+    private ArrayList<TaskerField> createTrackRecStatsFields() {
+        ArrayList<TaskerField> list = new ArrayList<>();
         //this is a custom order
         list.add(cField("rec_total_length", null, u -> u.getTrackRecStats().getTotalLength()));
         list.add(cField("rec_eleva_neg_length", null, u -> u.getTrackRecStats().getEleNegativeDistance()));
@@ -267,8 +273,8 @@ public final class LocusCache {
 
     @SuppressWarnings({"HardCodedStringLiteral", "ConstantConditions"}) //don't make null checks here, we do it based on key
     @NonNull
-    private ArrayList<LocusField> createGuideFields() {
-        ArrayList<LocusField> list = new ArrayList<>();
+    private ArrayList<TaskerField> createGuideFields() {
+        ArrayList<TaskerField> list = new ArrayList<>();
         //this is a custom order
         list.add(cField("guide_target_lon", null, u -> u.getGuideWptLoc().longitude));
         list.add(cField("guide_target_lat", null, u -> u.getGuideWptLoc().latitude));
@@ -279,8 +285,8 @@ public final class LocusCache {
 
     @SuppressWarnings("HardCodedStringLiteral")
     @NonNull
-    private static ArrayList<LocusField> createNavigationProgressFields() {
-        ArrayList<LocusField> list = new ArrayList<>();
+    private static ArrayList<TaskerField> createNavigationProgressFields() {
+        ArrayList<TaskerField> list = new ArrayList<>();
         list.add(extField("calc_remain_uphill_elevation", u -> u.getNavigationProgress().getRemainingUphill()));
         list.add(extField("calc_remain_downhill_elevation", u -> u.getNavigationProgress().getRemainingDownhill()));
         list.add(extField("navigation_point_index", u -> u.getNavigationProgress().pointIndex));
@@ -290,19 +296,20 @@ public final class LocusCache {
     }
 
     @NonNull
-    private Map<String, LocusField> createUpdateContainerFieldMap() {
-        Map<String, LocusField> updateContainerFieldMap = new HashMap<>();
-        for (LocusField field : mUpdateContainerFields) {
-            updateContainerFieldMap.put(field.mTaskerName, field);
+    private Map<String, ExtUpdateContainerGetter> createExtUpdateContainerFieldMap() {
+        Map<String, ExtUpdateContainerGetter> updateContainerFieldMap = new HashMap<>();
+        for (TaskerField field : mUpdateContainerFields) {
+            //do cast only once
+            updateContainerFieldMap.put(field.mTaskerName, (ExtUpdateContainerGetter) field);
         }
 
         return updateContainerFieldMap;
     }
 
     @NonNull
-    private static Set<String> getLocusFieldKeys(List<LocusField> fields) {
+    private static Set<String> getLocusFieldKeys(List<TaskerField> fields) {
         Set<String> keys = new HashSet<>();
-        for (LocusField field : fields) {
+        for (TaskerField field : fields) {
             keys.add(field.mTaskerName);
         }
         return keys;
@@ -323,7 +330,7 @@ public final class LocusCache {
         long requestTime = System.currentTimeMillis();
         if (requestTime > mUpdateContainerExpiration) {
             UpdateContainer container = ActionBasics.INSTANCE.getUpdateContainer(mApplicationContext, mLocusVersion);
-            if(container != null) {
+            if (container != null) {
                 mExtUpdateContainer = new ExtUpdateContainer(container);
                 mUpdateContainerExpiration = requestTime + UPDATE_CONTAINER_EXPIRATION; //don't care about 1 second offset for manual update requests
             }

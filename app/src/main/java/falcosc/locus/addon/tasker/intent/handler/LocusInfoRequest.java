@@ -1,26 +1,25 @@
 package falcosc.locus.addon.tasker.intent.handler;
 
 import android.os.Bundle;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import androidx.annotation.NonNull;
-import falcosc.locus.addon.tasker.R;
+import falcosc.locus.addon.tasker.RequiredDataMissingException;
 import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
-import falcosc.locus.addon.tasker.utils.Const;
 import falcosc.locus.addon.tasker.utils.LocusCache;
 import falcosc.locus.addon.tasker.utils.LocusInfoField;
+import falcosc.locus.addon.tasker.utils.TaskerField;
 import locus.api.android.ActionBasics;
 import locus.api.android.utils.LocusInfo;
 
 public class LocusInfoRequest extends AbstractTaskerAction {
 
-    public static List<LocusInfoField> FIELDS = new ArrayList<>(Arrays.asList(
+    @SuppressWarnings("HardCodedStringLiteral")
+    private static final ArrayList<LocusInfoField> FIELDS = new ArrayList<>(Arrays.asList(
             new LocusInfoField("dir_backup", "Backup Folder", LocusInfo::getRootDirBackup),
             new LocusInfoField("dir_root", "Main Folder", LocusInfo::getRootDirectory),
             new LocusInfoField("dir_export", "Export Folder", LocusInfo::getRootDirExport),
@@ -35,50 +34,34 @@ public class LocusInfoRequest extends AbstractTaskerAction {
             new LocusInfoField("last_active", "Last Active Timestamp", LocusInfo::getLastActive)
     ));
 
-    private Set<String> getSelectedFields(@NonNull Bundle apiExtraBundle) {
-
-        String[] selectedFieldsArray = apiExtraBundle.getStringArray(Const.INTENT_EXTRA_FIELD_LIST);
-
-        if (selectedFieldsArray == null) {
-            Toast.makeText(mContext, R.string.err_field_selection_missing, Toast.LENGTH_LONG).show();
-            return null;
+    public static List<TaskerField> getFieldNames() {
+        List<TaskerField> fields = new ArrayList<>();
+        for (int i = 0; i < FIELDS.size(); i++) {
+            fields.add(new TaskerField(FIELDS.get(i)));
         }
-
-        Set<String> selectedFields = new HashSet<>(Arrays.asList(selectedFieldsArray));
-
-        if (selectedFields.isEmpty()) {
-            Toast.makeText(mContext, R.string.err_field_selection_missing, Toast.LENGTH_LONG).show();
-            return null;
-        }
-
-        return selectedFields;
+        return fields;
     }
 
     @Override
-    protected void doHandle(@NonNull Bundle apiExtraBundle) throws LocusCache.MissingAppContextException {
+    protected void doHandle(@NonNull Bundle apiExtraBundle) throws LocusCache.MissingAppContextException, RequiredDataMissingException {
+
 
         LocusCache locusCache = LocusCache.getInstanceUnsafe(mContext);
 
-        Set<String> selectedFields = getSelectedFields(apiExtraBundle);
+        requireSupportingVariables();
 
-        if (isSupportingVariables() && (locusCache.mLocusVersion != null) && (selectedFields != null)) {
+        Set<String> selectedFields = requireSelectedFields(apiExtraBundle);
 
-            LocusInfo info = ActionBasics.INSTANCE.getLocusInfo(locusCache.getApplicationContext(), locusCache.mLocusVersion);
+        LocusInfo info = ActionBasics.INSTANCE.getLocusInfo(locusCache.getApplicationContext(), locusCache.requireLocusVersion());
 
-            Bundle varsBundle = new Bundle();
+        Bundle varsBundle = new Bundle();
 
-            for (LocusInfoField locusInfoField : FIELDS) {
-                if(selectedFields.contains(locusInfoField.mTaskerName)) {
-                    varsBundle.putString("%" + locusInfoField.mTaskerName, String.valueOf(locusInfoField.apply(info)));
-                    TaskerPlugin.addVariableBundle(mReceiver.getResultExtras(true), varsBundle);
-                }
+        for (LocusInfoField locusInfoField : FIELDS) {
+            if (selectedFields.contains(locusInfoField.mTaskerName)) {
+                varsBundle.putString("%" + locusInfoField.mTaskerName, String.valueOf(locusInfoField.apply(info)));
             }
-
-            TaskerPlugin.addVariableBundle(mReceiver.getResultExtras(true), varsBundle);
-            mReceiver.setResultCode(TaskerPlugin.Setting.RESULT_CODE_OK);
         }
 
-        //TODO error handling
-        //mReceiver.setResultCode(TaskerPlugin.Setting.RESULT_CODE_FAILED);
+        TaskerPlugin.addVariableBundle(mReceiver.getResultExtras(true), varsBundle);
     }
 }

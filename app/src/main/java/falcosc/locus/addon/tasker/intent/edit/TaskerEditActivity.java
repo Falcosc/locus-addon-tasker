@@ -5,24 +5,36 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import falcosc.locus.addon.tasker.R;
+import falcosc.locus.addon.tasker.intent.LocusActionType;
 import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
+import falcosc.locus.addon.tasker.utils.Const;
+import falcosc.locus.addon.tasker.utils.TaskerField;
 
 public abstract class TaskerEditActivity extends AppCompatActivity {
 
     private static final String TAG = "TaskerEditActivity"; //NON-NLS
+    private static final int DEFAULT_REQUEST_TIMEOUT_MS = 10000;
 
     abstract void onApply();
 
@@ -100,6 +112,47 @@ public abstract class TaskerEditActivity extends AppCompatActivity {
         }
 
         return null;
+    }
+
+    @Nullable
+    Intent createResultIntent(LocusActionType actionType, ArrayList<TaskerField> locusFields) {
+
+        Bundle hostExtras = getIntent().getExtras();
+
+        if (!TaskerPlugin.hostSupportsRelevantVariables(hostExtras)) {
+            Toast.makeText(this, R.string.err_no_support_relevant_variables, Toast.LENGTH_LONG).show();
+            return null;
+        }
+
+        if (!TaskerPlugin.Setting.hostSupportsSynchronousExecution(hostExtras)) {
+            Toast.makeText(this, R.string.err_no_support_sync_exec, Toast.LENGTH_LONG).show();
+            return null;
+        }
+
+        String[] fieldKeys = new String[locusFields.size()];
+        String[] fieldDesc = new String[locusFields.size()];
+        for (int i = 0; i < locusFields.size(); i++) {
+            TaskerField field = locusFields.get(i);
+            fieldDesc[i] = "%" + field.mTaskerName + "\n" + field.mLabel + "\n";
+            fieldKeys[i] = field.mTaskerName;
+        }
+        Arrays.sort(fieldKeys);
+
+        Bundle extraBundle = new Bundle();
+        extraBundle.putString(Const.INTEND_EXTRA_ADDON_ACTION_TYPE, actionType.name());
+        extraBundle.putStringArray(Const.INTENT_EXTRA_FIELD_LIST, fieldKeys);
+        String blurb = StringUtils.join(fieldKeys, ",\n");
+
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra(com.twofortyfouram.locale.api.Intent.EXTRA_BUNDLE, extraBundle);
+        resultIntent.putExtra(com.twofortyfouram.locale.api.Intent.EXTRA_STRING_BLURB, blurb);
+
+        TaskerPlugin.addRelevantVariableList(resultIntent, fieldDesc);
+
+        //force synchronous execution by set a timeout to handle variables
+        TaskerPlugin.Setting.requestTimeoutMS(resultIntent, DEFAULT_REQUEST_TIMEOUT_MS);
+
+        return resultIntent;
     }
 
     private static void insertTextAtFocus(@NonNull Activity activity, CharSequence text) {

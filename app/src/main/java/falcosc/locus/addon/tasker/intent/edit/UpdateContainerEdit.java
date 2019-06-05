@@ -1,31 +1,27 @@
 package falcosc.locus.addon.tasker.intent.edit;
 
 import android.app.Dialog;
-import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog.Builder;
+
 import android.util.SparseBooleanArray;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
-
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
 import falcosc.locus.addon.tasker.R;
 import falcosc.locus.addon.tasker.intent.LocusActionType;
-import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
 import falcosc.locus.addon.tasker.utils.Const;
 import falcosc.locus.addon.tasker.utils.LocusCache;
-import falcosc.locus.addon.tasker.utils.LocusField;
+import falcosc.locus.addon.tasker.utils.TaskerField;
 
 public class UpdateContainerEdit extends TaskerEditActivity {
 
-    private static final int DEFAULT_REQUEST_TIMEOUT_MS = 10000;
     private Set<String> mStoredFieldSelection;
     private SparseBooleanArray mCheckState;
 
@@ -48,8 +44,7 @@ public class UpdateContainerEdit extends TaskerEditActivity {
             }
         }
 
-
-        ArrayList<LocusField> locusFields = locusCache.mUpdateContainerFields;
+        ArrayList<TaskerField> updateContainerFields = locusCache.mUpdateContainerFields;
 
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_multiple_choice);
 
@@ -62,14 +57,14 @@ public class UpdateContainerEdit extends TaskerEditActivity {
 
         mCheckState = listView.getCheckedItemPositions();
 
-        for (int i = 0; i < locusFields.size(); i++) {
-            LocusField field = locusFields.get(i);
+        for (int i = 0; i < updateContainerFields.size(); i++) {
+            TaskerField field = updateContainerFields.get(i);
             arrayAdapter.add(field.mLabel);
             mCheckState.put(i, mStoredFieldSelection.contains(field.mTaskerName));
         }
     }
 
-    private boolean isCalcNavigationProgressNew(@NonNull Set<String> previousFieldSelection){
+    private boolean isCalcNavigationProgressNew(@NonNull Set<String> previousFieldSelection) {
         LocusCache locusCache = LocusCache.getInstance(getApplication());
         boolean isPrevWithoutNavigation = Collections.disjoint(previousFieldSelection, locusCache.mLocationProgressKeys);
         boolean isNewNavigation = !Collections.disjoint(mStoredFieldSelection, locusCache.mLocationProgressKeys);
@@ -90,65 +85,23 @@ public class UpdateContainerEdit extends TaskerEditActivity {
         return hintsDialog;
     }
 
-
-    @Nullable
-    private Intent createResultIntent(ArrayList<LocusField> locusFields) {
-
-        Bundle hostExtras = getIntent().getExtras();
-
-        if (!TaskerPlugin.hostSupportsRelevantVariables(hostExtras)) {
-            Toast.makeText(this, R.string.err_no_support_relevant_variables, Toast.LENGTH_LONG).show();
-            return null;
-        }
-
-        if (!TaskerPlugin.Setting.hostSupportsSynchronousExecution(hostExtras)) {
-            Toast.makeText(this, R.string.err_no_support_sync_exec, Toast.LENGTH_LONG).show();
-            return null;
-        }
-
-        String[] fieldKeys = new String[locusFields.size()];
-        String[] fieldDesc = new String[locusFields.size()];
-        for (int i = 0; i < locusFields.size(); i++) {
-            LocusField field = locusFields.get(i);
-            fieldDesc[i] = "%" + field.mTaskerName + "\n" + field.mLabel + "\n";
-            fieldKeys[i] = field.mTaskerName;
-        }
-        Arrays.sort(fieldKeys);
-
-        Bundle extraBundle = new Bundle();
-        extraBundle.putString(Const.INTEND_EXTRA_ADDON_ACTION_TYPE, LocusActionType.UPDATE_CONTAINER_REQUEST.name());
-        extraBundle.putStringArray(Const.INTENT_EXTRA_FIELD_LIST, fieldKeys);
-        String blurb = StringUtils.join(fieldKeys, ",\n");
-
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra(com.twofortyfouram.locale.api.Intent.EXTRA_BUNDLE, extraBundle);
-        resultIntent.putExtra(com.twofortyfouram.locale.api.Intent.EXTRA_STRING_BLURB, blurb);
-
-        TaskerPlugin.addRelevantVariableList(resultIntent, fieldDesc);
-
-        //force synchronous execution by set a timeout to handle variables
-        TaskerPlugin.Setting.requestTimeoutMS(resultIntent, DEFAULT_REQUEST_TIMEOUT_MS);
-
-        return resultIntent;
-    }
-
     @Override
     void onApply() {
         Set<String> previousFieldSelection = mStoredFieldSelection;
         mStoredFieldSelection = new LinkedHashSet<>();
 
-        ArrayList<LocusField> locusFields = LocusCache.getInstance(getApplication()).mUpdateContainerFields;
-        ArrayList<LocusField> selectedFields = new ArrayList<>();
+        ArrayList<TaskerField> updateContainerFields = LocusCache.getInstance(getApplication()).mUpdateContainerFields;
+        ArrayList<TaskerField> selectedFields = new ArrayList<>();
 
         int checkedItemsCount = mCheckState.size();
         for (int i = 0; i < checkedItemsCount; ++i) {
             int position = mCheckState.keyAt(i);
             if (mCheckState.valueAt(i)) {
-                LocusField field = locusFields.get(position);
+                TaskerField field = updateContainerFields.get(position);
                 selectedFields.add(field);
                 mStoredFieldSelection.add(field.mTaskerName);
             }
         }
-        finish(createResultIntent(selectedFields), createHintsDialog(previousFieldSelection));
+        finish(createResultIntent(LocusActionType.UPDATE_CONTAINER_REQUEST, selectedFields), createHintsDialog(previousFieldSelection));
     }
 }

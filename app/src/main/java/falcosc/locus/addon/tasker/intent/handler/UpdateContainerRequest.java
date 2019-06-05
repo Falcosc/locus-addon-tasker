@@ -1,78 +1,51 @@
 package falcosc.locus.addon.tasker.intent.handler;
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import android.widget.Toast;
 
-import falcosc.locus.addon.tasker.R;
+import androidx.annotation.NonNull;
+
+import falcosc.locus.addon.tasker.RequiredDataMissingException;
 import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
-import falcosc.locus.addon.tasker.utils.Const;
 import falcosc.locus.addon.tasker.utils.ExtUpdateContainer;
+import falcosc.locus.addon.tasker.utils.ExtUpdateContainerGetter;
 import falcosc.locus.addon.tasker.utils.LocusCache;
-import falcosc.locus.addon.tasker.utils.LocusField;
-import locus.api.android.ActionBasics;
 import locus.api.android.features.periodicUpdates.UpdateContainer;
-import locus.api.android.utils.LocusInfo;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 
 public class UpdateContainerRequest extends AbstractTaskerAction {
 
-    private Set<String> getSelectedFields(@NonNull Bundle apiExtraBundle) {
-
-        String[] selectedFieldsArray = apiExtraBundle.getStringArray(Const.INTENT_EXTRA_FIELD_LIST);
-
-        if (selectedFieldsArray == null) {
-            Toast.makeText(mContext, R.string.err_field_selection_missing, Toast.LENGTH_LONG).show();
-            return null;
-        }
-
-        Set<String> selectedFields = new HashSet<>(Arrays.asList(selectedFieldsArray));
-
-        if (selectedFields.isEmpty()) {
-            Toast.makeText(mContext, R.string.err_field_selection_missing, Toast.LENGTH_LONG).show();
-            return null;
-        }
-
-        return selectedFields;
-    }
-
     @Override
-    protected void doHandle(@NonNull Bundle apiExtraBundle) throws RequiredVersionMissingException, LocusCache.MissingAppContextException {
+    protected void doHandle(@NonNull Bundle apiExtraBundle) throws RequiredVersionMissingException, LocusCache.MissingAppContextException, RequiredDataMissingException {
+        requireSupportingVariables();
 
-        Set<String> selectedFields = getSelectedFields(apiExtraBundle);
+        Set<String> selectedFields = requireSelectedFields(apiExtraBundle);
 
-        if (isSupportingVariables() && (selectedFields != null)) {
+        LocusCache locusCache = LocusCache.getInstanceUnsafe(mContext);
 
-            LocusCache locusCache = LocusCache.getInstanceUnsafe(mContext);
+        ExtUpdateContainer extUpdate = locusCache.getUpdateContainer();
+        UpdateContainer update = extUpdate.mUpdateContainer;
 
-            ExtUpdateContainer extUpdate = locusCache.getUpdateContainer();
-            UpdateContainer update = extUpdate.mUpdateContainer;
-
-            if (!update.isTrackRecRecording()) {
-                //remove track recording fields to skip null checks
-                selectedFields.removeAll(locusCache.mTrackRecordingKeys);
-            }
-
-            if(!update.isGuideEnabled()){
-                //remove guide fields to skip null checks
-                selectedFields.removeAll(locusCache.mTrackGuideKeys);
-            }
-
-            Bundle varsBundle = new Bundle();
-
-            for (String field : selectedFields) {
-                //Don't need to check updateContainerMethodMap, illegal intents creates exceptions
-                LocusField lf = locusCache.mUpdateContainerFieldMap.get(field);
-                //noinspection ConstantConditions if field is null we got an illegal intent
-                varsBundle.putString("%" + field, String.valueOf(lf.apply(extUpdate)));
-                TaskerPlugin.addVariableBundle(mReceiver.getResultExtras(true), varsBundle);
-            }
-
-            mReceiver.setResultCode(TaskerPlugin.Setting.RESULT_CODE_OK);
+        if (!update.isTrackRecRecording()) {
+            //remove track recording fields to skip null checks
+            selectedFields.removeAll(locusCache.mTrackRecordingKeys);
         }
+
+        if (!update.isGuideEnabled()) {
+            //remove guide fields to skip null checks
+            selectedFields.removeAll(locusCache.mTrackGuideKeys);
+        }
+
+        Bundle varsBundle = new Bundle();
+
+        for (String field : selectedFields) {
+            //Don't need to check updateContainerMethodMap, illegal intents creates exceptions
+            ExtUpdateContainerGetter lf = locusCache.mExtUpdateContainerFieldMap.get(field);
+            //noinspection ConstantConditions if field is null we got an illegal intent
+            varsBundle.putString("%" + field, String.valueOf(lf.apply(extUpdate)));
+            TaskerPlugin.addVariableBundle(mReceiver.getResultExtras(true), varsBundle);
+        }
+
     }
 }
