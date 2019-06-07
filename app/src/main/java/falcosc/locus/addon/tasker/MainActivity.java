@@ -58,19 +58,20 @@ public class MainActivity extends ProjectActivity {
 
         // ACTION_OPEN_DOCUMENT is the intent to choose a file via the system's file
         // browser.
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        //Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
 
         // Filter to only show results that can be "opened", such as a
         // file (as opposed to a list of contacts or timezones)
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        //intent.addCategory(Intent.CATEGORY_OPENABLE);
 
         // Filter to show only images, using the image MIME data type.
         // If one wanted to search for ogg vorbis files, the type would be "audio/ogg".
         // To search for all documents available via installed storage providers,
         // it would be "*/*".
-        intent.setType("image/*");
+        //intent.setType("image/*");
 
-        startActivityForResult(intent, REQUEST_CODE_OPEN_FILE);
+        startActivityForResult(intent, REQUEST_CODE_OPEN_DIRECTORY);
     }
 
     @Override
@@ -80,6 +81,9 @@ public class MainActivity extends ProjectActivity {
         // The ACTION_OPEN_DOCUMENT intent was sent with the request code
         // READ_REQUEST_CODE. If the request code seen here doesn't match, it's the
         // response to some other intent, and the code below shouldn't run at all.
+
+        Log.i("Test", "requestCode: " + requestCode);
+
 
         if (requestCode == REQUEST_CODE_OPEN_FILE && resultCode == Activity.RESULT_OK) {
             // The document selected by the user won't be returned in the intent.
@@ -111,9 +115,14 @@ public class MainActivity extends ProjectActivity {
                     Log.i("Test", file.getType());
                 }
             }
-            Stream.of(documentFile.listFiles())
-                    .filter(file -> file.getType() == "image/jpeg")
-                    .forEach(file -> writeEXIFWithFileDescriptor(file.getUri()));
+            Intent serviceIntent = new Intent(this,
+                    GeotagPhotosService.class);
+            String[] fileUries = (String[]) Stream.of(documentFile.listFiles())
+                    .filter(file -> "image/jpeg".equals(file.getType()))
+                    .map(file -> file.getUri().toString())
+                    .toArray( String[]::new );
+            serviceIntent.putExtra("files" , fileUries);
+            startService(serviceIntent);
         }
     }
 
@@ -131,7 +140,9 @@ public class MainActivity extends ProjectActivity {
             FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
             Log.i("Test","writeEXIFWithFileDescriptor(): " + fileDescriptor.toString());
             ExifInterface exifInterface = new ExifInterface(fileDescriptor);
+            Log.i("Test","GPS Ref: " +  exifInterface.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF));
             // TODO Create  Exif Tags class to save Exif data
+            exifInterface.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, "S");
             exifInterface.saveAttributes();
 
         } catch (FileNotFoundException e) {
