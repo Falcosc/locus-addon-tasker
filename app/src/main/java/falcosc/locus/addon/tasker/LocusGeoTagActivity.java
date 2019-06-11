@@ -7,13 +7,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.provider.DocumentsContract;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Comparator;
 import java.util.Date;
@@ -27,8 +27,11 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.documentfile.provider.DocumentFile;
+import falcosc.locus.addon.tasker.utils.LocusCache;
 import locus.api.android.utils.IntentHelper;
+import locus.api.objects.extra.Location;
 import locus.api.objects.extra.Track;
+import locus.api.objects.extra.TrackStats;
 
 public class LocusGeoTagActivity extends ProjectActivity {
 
@@ -38,7 +41,7 @@ public class LocusGeoTagActivity extends ProjectActivity {
     private static final int REQUEST_CODE_OPEN_DOCUMENT = 2;
     private LinkedList<DocumentFile> mDocumentFiles;
     private Uri mFolderUri;
-    private java.text.DateFormat mLocalDateTimeFormat = DateFormat.getDateFormat(this);
+    private DateFormat mLocalDateTimeFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.LONG);
 
 
     @Override
@@ -64,14 +67,20 @@ public class LocusGeoTagActivity extends ProjectActivity {
         //don't need to check for track intent because this is bound only to track intents
 
         try {
-            setTrack(IntentHelper.INSTANCE.getTrackFromIntent(this, getIntent()));
+            if(!validateAndSetTrack(IntentHelper.INSTANCE.getTrackFromIntent(this, getIntent()))){
+                //TODO create error dialog instead of toast
+                finish();
+                return;
+            }
+
+
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+            startActivityForResult(intent, REQUEST_CODE_OPEN_DIRECTORY);
         } catch (Exception e) {
-            Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_LONG);
+            Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
             finish();
+            return;
         }
-        
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-        startActivityForResult(intent, REQUEST_CODE_OPEN_DIRECTORY);
     }
 
 
@@ -112,7 +121,7 @@ public class LocusGeoTagActivity extends ProjectActivity {
             mDocumentFiles.stream()
                     .max(Comparator.comparing(DocumentFile::lastModified))
                     .ifPresent(file -> setExmple(file));
-            this.setTitle(String.format("Geotag %1$i photos", mDocumentFiles.size()));
+            this.setTitle(String.format("Geotag %1$d photos", mDocumentFiles.size()));
 
         } else {
             finish();
@@ -142,19 +151,29 @@ public class LocusGeoTagActivity extends ProjectActivity {
         }
     }
 
-    private void setTrack(Track track){
-        if(track == null){
-            throw new NoSuchElementException("Can't find Locus Track");
+    private boolean validateAndSetTrack(Track track) throws RequiredDataMissingException {
+        if(track == null || track.getPointsCount() == 0){
+            throw new RequiredDataMissingException("Can't find Locus Track");
         }
         TextView trackText = findViewById(R.id.textTrack);
         trackText.setText(track.getName());
 
-        String starTime = mLocalDateTimeFormat.format(new Date( track.getStats().getStartTime()));
-        String stopTime = mLocalDateTimeFormat.format(new Date( track.getStats().getStopTime()));
+        long firstPointTime = track.getPoint(0).getTime();
+        long lastPointTime = track.getPoint(track.getPointsCount()-1).getTime();
+
+        if( firstPointTime == 0 ||  lastPointTime == 0 ){
+            Toast.makeText(this, "Can't use this track, because first or last point doesn't have a time", Toast.LENGTH_LONG).show();
+            return false;
+        }
+
+        //String starTime = mLocalDateTimeFormat.format(new Date( track.getStats().getStartTime()));
+        String starTime = mLocalDateTimeFormat.format(new Date( firstPointTime ));
+        String stopTime = mLocalDateTimeFormat.format(new Date( lastPointTime ));
 
         TextView trackDetails = findViewById(R.id.textTrackDetails);
         trackDetails.setText(String.format("Start %1$s \n End %2$s", starTime, stopTime));
 
+        return true;
     }
 
     private void pickExampleFile() {
@@ -162,7 +181,7 @@ public class LocusGeoTagActivity extends ProjectActivity {
         intent.setType("image/jpeg");
         intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, mFolderUri);
         intent.putExtra(DocumentsContract.EXTRA_PROMPT, "select example");
-        startActivityForResult(intent, REQUEST_CODE_OPEN_DIRECTORY);
+        startActivityForResult(intent, REQUEST_CODE_OPEN_DOCUMENT);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
