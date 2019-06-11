@@ -63,5 +63,6 @@ public class LocusInfoRequest extends AbstractTaskerAction {
         }
 
         TaskerPlugin.addVariableBundle(mReceiver.getResultExtras(true), varsBundle);
+        mReceiver.setResultCode(TaskerPlugin.Setting.RESULT_CODE_OK);
     }
 }

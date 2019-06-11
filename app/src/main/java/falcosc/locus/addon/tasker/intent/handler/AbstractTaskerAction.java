@@ -4,6 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import androidx.annotation.NonNull;
 
@@ -19,6 +22,8 @@ import falcosc.locus.addon.tasker.utils.LocusCache;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 
 abstract class AbstractTaskerAction implements TaskerAction {
+
+    private static final String TAG = "AbstractTaskerAction"; //NON-NLS
 
     protected abstract void doHandle(@NonNull Bundle apiExtraBundle) throws RequiredVersionMissingException, LocusCache.MissingAppContextException, RequiredDataMissingException;
 
@@ -38,12 +43,18 @@ abstract class AbstractTaskerAction implements TaskerAction {
 
         try {
             doHandle(apiExtraBundle);
-            mReceiver.setResultCode(TaskerPlugin.Setting.RESULT_CODE_OK);
         } catch (LocusCache.MissingAppContextException | RequiredVersionMissingException | RequiredDataMissingException e) {
-            Bundle varsBundle = new Bundle();
-            varsBundle.putString(TaskerPlugin.Setting.VARNAME_ERROR_MESSAGE, e.getMessage());
-            TaskerPlugin.addVariableBundle(mReceiver.getResultExtras(true), varsBundle);
-            mReceiver.setResultCode(TaskerPlugin.Setting.RESULT_CODE_FAILED);
+            if (mReceiver.isOrderedBroadcast()) {
+                Bundle varsBundle = new Bundle();
+                varsBundle.putString(TaskerPlugin.Setting.VARNAME_ERROR_MESSAGE, e.getMessage());
+                TaskerPlugin.addVariableBundle(mReceiver.getResultExtras(true), varsBundle);
+                mReceiver.setResultCode(TaskerPlugin.Setting.RESULT_CODE_FAILED);
+            } else {
+                //can't return anything, write it to log
+                Log.e(TAG, e.getMessage());
+                Log.e(TAG, ExceptionUtils.getStackTrace(e));
+                //TODO think about notification
+            }
         }
     }
 

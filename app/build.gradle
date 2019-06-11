@@ -8,8 +8,8 @@ android {
     defaultConfig {
         minSdkVersion Integer.valueOf(PARAM_MIN_SDK_VERSION)
         targetSdkVersion Integer.valueOf(PARAM_TARGET_SDK_VERSION)
-        versionCode 25
-        versionName "1.2.1-SNAPSHOT"
+        versionCode 26
+        versionName "1.2.1"
     }
 
     packagingOptions {

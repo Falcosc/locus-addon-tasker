@@ -46,6 +46,6 @@ public class UpdateContainerRequest extends AbstractTaskerAction {
             varsBundle.putString("%" + field, String.valueOf(lf.apply(extUpdate)));
             TaskerPlugin.addVariableBundle(mReceiver.getResultExtras(true), varsBundle);
         }
-
+        mReceiver.setResultCode(TaskerPlugin.Setting.RESULT_CODE_OK);
     }
 }
