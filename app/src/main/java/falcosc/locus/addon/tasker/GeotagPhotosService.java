@@ -14,6 +14,7 @@ import android.util.Log;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.stream.Stream;
 
 import androidx.annotation.RequiresApi;
@@ -23,6 +24,7 @@ import locus.api.objects.extra.Track;
 
 public class GeotagPhotosService extends IntentService {
 
+    public static final SimpleDateFormat exifDateFormat = new SimpleDateFormat("yyyy:MM:dd hh:mm:ss");
     private static final String TAG = "GeotagPhotosService"; //NON-NLS
     private int notificationID = 10;
     private Notification.Builder notificationBuilder;

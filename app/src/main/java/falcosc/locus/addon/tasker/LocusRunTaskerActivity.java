@@ -64,6 +64,8 @@ public class LocusRunTaskerActivity extends ProjectActivity {
         if (implementedActions.contains(getIntent().getAction())) {
             findViewById(R.id.not_implemented).setVisibility(View.GONE);
         }
+
+        //TODO close main activity if it was open
     }
 
     private void addTaskButtons(@NonNull ViewGroup viewGroup) {

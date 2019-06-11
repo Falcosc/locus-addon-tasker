@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/textTrack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Test Track recorded 2019-05-29T15:00:00" />
+    <TextView
+        android:id="@+id/textTrackDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textTrack"
+        android:text="Start 2019-05-29T15:00:00\nEnd 2019-05-29T15:00:00" />
+
+    <TextView
+        android:id="@+id/textPhoto"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_below="@id/textTrackDetails"
+        android:gravity="center_vertical"
+        android:layout_marginEnd="10dp"
+        android:text="Example Photo:" />
+
+    <TextView
+        android:id="@+id/textPhotoDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_alignTop="@id/textPhoto"
+        android:layout_toEndOf="@id/textPhoto"
+        android:gravity="center_vertical"
+        android:text="DCIM00043.jpg\n05.05.2019 15:34" />
+
+    <TextView
+        android:id="@+id/textOffset"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:gravity="center_vertical"
+        android:layout_below="@id/textPhoto"
+        android:text="Foto Offset in Hours" />
+
+    <EditText
+        android:id="@+id/editOffset"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_alignTop="@id/textOffset"
+        android:layout_toEndOf="@id/textOffset"
+        android:ems="3"
+        android:inputType="numberSigned"
+        android:text="+0" />
+
+    <LinearLayout
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textOffset"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnCancel"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/cancel" />
+
+        <Button
+            android:id="@+id/btnOk"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/ok" />
+
+    </LinearLayout>
+
+</RelativeLayout>
