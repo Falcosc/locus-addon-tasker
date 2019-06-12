@@ -1,63 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="10dp">
 
-    <TextView
-        android:id="@+id/textTrack"
+    <RelativeLayout
+        android:id="@+id/viewExamplePhoto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        android:paddingVertical="10dp">
+
+        <ImageView
+            android:id="@+id/imgRefresh"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_refresh"/>
+
+        <TextView
+            android:id="@+id/textExamplePhoto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Example Photo"
+            android:layout_toStartOf="@id/imgRefresh"
+            android:textAppearance="?android:attr/textAppearanceListItem"/>
+
+        <TextView
+            android:id="@+id/textPhotoName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textExamplePhoto"
+            android:layout_toStartOf="@id/imgRefresh"
+            android:text="20180402-42L_Schned.jpg"
+            android:textAppearance="?android:attr/textAppearanceListItemSecondary"
+             />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/viewDateAdjust"
+        android:layout_below="@id/viewExamplePhoto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Test Track recorded 2019-05-29T15:00:00" />
+        android:layout_centerHorizontal="true">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/textTimeLabels"
+            android:paddingEnd="5dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Start:"
+            android:labelFor="@id/textStartTime"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Photo:"
+                android:labelFor="@id/textPhotoTime"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="End:"
+                android:labelFor="@id/textEndTime"/>
+        </LinearLayout>
+
     <TextView
-        android:id="@+id/textTrackDetails"
+        android:id="@+id/textStartTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textTrack"
-        android:text="Start 2019-05-29T15:00:00\nEnd 2019-05-29T15:00:00" />
-
+        android:layout_alignTop="@id/textTimeLabels"
+        android:layout_toEndOf="@id/textTimeLabels"
+        android:text="51.01.2019 18:18"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        />
     <TextView
-        android:id="@+id/textPhoto"
+        android:id="@+id/textPhotoTime"
         android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_below="@id/textTrackDetails"
-        android:gravity="center_vertical"
-        android:layout_marginEnd="10dp"
-        android:text="Example Photo:" />
-
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/textTimeLabels"
+        android:layout_below="@id/textStartTime"
+        android:text="01.31.2019 18:18"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+    />
     <TextView
-        android:id="@+id/textPhotoDetails"
+        android:id="@+id/textEndTime"
         android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_alignTop="@id/textPhoto"
-        android:layout_toEndOf="@id/textPhoto"
-        android:gravity="center_vertical"
-        android:text="DCIM00043.jpg\n05.05.2019 15:34" />
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/textTimeLabels"
+        android:layout_below="@id/textPhotoTime"
+        android:text="21.01.2019 18:18"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        />
 
-    <TextView
-        android:id="@+id/textOffset"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:gravity="center_vertical"
-        android:layout_below="@id/textPhoto"
-        android:text="Foto Offset in Hours" />
+        <EditText
+            android:id="@+id/editOffset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/textStartTime"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="3dp"
+            android:ems="3"
+            android:inputType="numberSigned"
+            android:text="+0" />
+    </RelativeLayout>
 
-    <EditText
-        android:id="@+id/editOffset"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_alignTop="@id/textOffset"
-        android:layout_toEndOf="@id/textOffset"
-        android:ems="3"
-        android:inputType="numberSigned"
-        android:text="+0" />
 
     <LinearLayout
         style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textOffset"
+        android:layout_below="@id/viewDateAdjust"
         android:orientation="horizontal">
 
         <Button
@@ -77,5 +137,4 @@
             android:text="@string/ok" />
 
     </LinearLayout>
-
 </RelativeLayout>

@@ -8,13 +8,16 @@ import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.provider.DocumentsContract;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
@@ -41,7 +44,9 @@ public class LocusGeoTagActivity extends ProjectActivity {
     private static final int REQUEST_CODE_OPEN_DOCUMENT = 2;
     private LinkedList<DocumentFile> mDocumentFiles;
     private Uri mFolderUri;
-    private DateFormat mLocalDateTimeFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.LONG);
+    private DateFormat mLocalDateTimeFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM);
+    private Calendar mExampleDateTime = Calendar.getInstance();;
+    private EditText mEditOffset;
 
 
     @Override
@@ -61,13 +66,15 @@ public class LocusGeoTagActivity extends ProjectActivity {
         Button okButton = findViewById(R.id.btnOk);
         okButton.setOnClickListener(v -> startGeoTag());
 
-        TextView photoDetails = findViewById(R.id.textPhotoDetails);
-        photoDetails.setOnClickListener(v -> pickExampleFile());
+        findViewById(R.id.viewExamplePhoto).setOnClickListener(v -> pickExampleFile());
+        
+        mEditOffset = findViewById(R.id.editOffset);
+        //TODO add mEditOffset change listener
 
         //don't need to check for track intent because this is bound only to track intents
 
         try {
-            if(!validateAndSetTrack(IntentHelper.INSTANCE.getTrackFromIntent(this, getIntent()))){
+            if(!validateAndSetTrackDetails(IntentHelper.INSTANCE.getTrackFromIntent(this, getIntent()))){
                 //TODO create error dialog instead of toast
                 finish();
                 return;
@@ -142,21 +149,28 @@ public class LocusGeoTagActivity extends ProjectActivity {
     private void setExmple(DocumentFile file) {
         try (ParcelFileDescriptor pfd = getContentResolver().openFileDescriptor(file.getUri(), "r")) {
             ExifInterface exifInterface = new ExifInterface(pfd.getFileDescriptor());
-            Date dateTime = GeotagPhotosService.exifDateFormat.parse(exifInterface.getAttribute(ExifInterface.TAG_DATETIME));
-            TextView photoDetails = findViewById(R.id.textPhotoDetails);
-            String dateTimeString = mLocalDateTimeFormat.format(dateTime);
-            photoDetails.setText(file.getName() + '\n' + dateTimeString);
+            
+            
+            mExampleDateTime.setTime(GeotagPhotosService.exifDateFormat.parse(exifInterface.getAttribute(ExifInterface.TAG_DATETIME)));
+            Log.i(TAG, "Exif Time: " + exifInterface.getAttribute(ExifInterface.TAG_DATETIME));
+
+            TextView photoName = findViewById(R.id.textPhotoName);
+            photoName.setText(file.getName());
+            
+            mExampleDateTime.add(Calendar.HOUR, Integer.parseInt(mEditOffset.getText().toString()));
+
+            TextView photoTime = findViewById(R.id.textPhotoTime);
+            String dateTimeString = mLocalDateTimeFormat.format(mExampleDateTime);
+            photoTime.setText(dateTimeString);
         } catch (ParseException | IOException e) {
             e.printStackTrace();
         }
     }
 
-    private boolean validateAndSetTrack(Track track) throws RequiredDataMissingException {
+    private boolean validateAndSetTrackDetails(Track track) throws RequiredDataMissingException {
         if(track == null || track.getPointsCount() == 0){
             throw new RequiredDataMissingException("Can't find Locus Track");
         }
-        TextView trackText = findViewById(R.id.textTrack);
-        trackText.setText(track.getName());
 
         long firstPointTime = track.getPoint(0).getTime();
         long lastPointTime = track.getPoint(track.getPointsCount()-1).getTime();
@@ -166,12 +180,10 @@ public class LocusGeoTagActivity extends ProjectActivity {
             return false;
         }
 
-        //String starTime = mLocalDateTimeFormat.format(new Date( track.getStats().getStartTime()));
-        String starTime = mLocalDateTimeFormat.format(new Date( firstPointTime ));
-        String stopTime = mLocalDateTimeFormat.format(new Date( lastPointTime ));
-
-        TextView trackDetails = findViewById(R.id.textTrackDetails);
-        trackDetails.setText(String.format("Start %1$s \n End %2$s", starTime, stopTime));
+        TextView startTime = findViewById(R.id.textStartTime);
+        startTime.setText(mLocalDateTimeFormat.format(new Date( firstPointTime )));
+        TextView endTime = findViewById(R.id.textEndTime);
+        endTime.setText(mLocalDateTimeFormat.format(new Date( lastPointTime )));
 
         return true;
     }

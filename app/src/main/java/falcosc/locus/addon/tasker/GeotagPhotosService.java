@@ -10,26 +10,40 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
+import android.widget.TextView;
 
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import androidx.annotation.RequiresApi;
 import falcosc.locus.addon.tasker.utils.LocusCache;
 import locus.api.android.utils.IntentHelper;
+import locus.api.objects.extra.Location;
 import locus.api.objects.extra.Track;
 
 public class GeotagPhotosService extends IntentService {
 
-    public static final SimpleDateFormat exifDateFormat = new SimpleDateFormat("yyyy:MM:dd hh:mm:ss");
+    public static final SimpleDateFormat exifDateFormat = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
     private static final String TAG = "GeotagPhotosService"; //NON-NLS
+    public static final long ONE_HOUR = 3600000L;
     private int notificationID = 10;
     private Notification.Builder notificationBuilder;
     private int fileCount;
+    private AtomicInteger fileErrorCount;
     private int fileProgress;
+    private List<Location> mPoints;
+    private long[] mPointTimestamps;
 
 
     public GeotagPhotosService() {
@@ -43,6 +57,7 @@ public class GeotagPhotosService extends IntentService {
         Log.e(TAG, "fileUries: " + fileUries);
         fileCount = fileUries.length;
         fileProgress = 0;
+        fileErrorCount = new AtomicInteger(0);
 
         if (Build.VERSION.SDK_INT < 24) {
             //TODO
@@ -61,57 +76,86 @@ public class GeotagPhotosService extends IntentService {
         Notification notification = notificationBuilder.build();
         startForeground(notificationID, notification);
 
-        //loadTrack(workIntent);
+        loadTrack(workIntent);
 
-        Stream.of(fileUries).forEach(fileUri -> writeEXIFWithFileDescriptor(Uri.parse(fileUri)));
+        Stream.of(fileUries).parallel().forEach(fileUri -> writeEXIFWithFileDescriptor(Uri.parse(fileUri)));
 
-        stopForeground(true);
+        stopForeground(fileErrorCount.get() == 0);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void loadTrack(Intent locusIntent) {
         try {
-            LocusCache locusCache = LocusCache.getInstanceUnsafe(this);
             Track t = IntentHelper.INSTANCE.getTrackFromIntent(this, locusIntent);
+            mPoints = t.getPoints();
+            mPoints.sort(Comparator.comparing(Location::getTime));
+            mPointTimestamps = mPoints.stream().mapToLong(Location::getTime).toArray();
+
             Log.e(TAG, "points: " + t.getPoints().size());
         } catch (Exception e) {
             Log.e(TAG, "Can't get intent details", e); //NON-NLS
         }
     }
 
+    private Location findNearestLocation(long time){
+        int index = Arrays.binarySearch(mPointTimestamps, time);
+        if ( index >= 0 ) {
+            //direct match
+            return mPoints.get(index);
+        }
+
+        index = -index - 1;
+        if ( index == 0 ) {
+            // smaller than any
+            return mPoints.get(index);
+        } else if (index >= mPointTimestamps.length){
+            // larger than any
+            return mPoints.get(mPointTimestamps.length - 1);
+        }
+
+        //index larger then time and index-1 is smaller then time
+        return ((mPointTimestamps[index] - time) < (time - mPointTimestamps[index - 1]))
+                ? mPoints.get(index)  //index is closer then index-1
+                : mPoints.get(index - 1);
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void writeEXIFWithFileDescriptor(Uri uri) {
 
-        ParcelFileDescriptor parcelFileDescriptor = null;
-        try {
-
-            parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "rw");
-            FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-            Log.i(TAG,"writeEXIFWithFileDescriptor(): " + fileDescriptor.toString());
-            ExifInterface exifInterface = new ExifInterface(fileDescriptor);
-            Log.i(TAG,"GPS Ref: " +  exifInterface.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF));
-            // TODO Create  Exif Tags class to save Exif data
-            exifInterface.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, "S");
-            exifInterface.saveAttributes();
-
-        } catch (FileNotFoundException e) {
-            Log.i(TAG,"File Not Found " + e.getMessage());
-
-        } catch (IOException e) {
-            // Handle any errors
-            e.printStackTrace();
-            Log.i(TAG,"IOEXception " + e.getMessage());
-        } finally {
-            if (parcelFileDescriptor != null) {
-                try {
-                    parcelFileDescriptor.close();
-                } catch (IOException ignored) {
-                    ignored.printStackTrace();
-                }
+        try (ParcelFileDescriptor pfd = getContentResolver().openFileDescriptor(uri, "rw")) {
+            ExifInterface exifInterface = new ExifInterface(pfd.getFileDescriptor());
+            Date dateTime = exifDateFormat.parse(exifInterface.getAttribute(ExifInterface.TAG_DATETIME));
+            //TODO use offset
+            //TODO apply timezone
+            long time = dateTime.getTime();
+            Location loc = findNearestLocation(time);
+            long timeDiff = Math.abs(loc.getTime()-time);
+            if(timeDiff < ONE_HOUR){
+                // TODO save location
+                exifInterface.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, "S");
+                exifInterface.saveAttributes();
+            } else {
+                Log.e(TAG, uri + " is "  + timeDiff / ONE_HOUR + " hours away from closest match");
+                fileErrorCount.incrementAndGet();
             }
-            notificationBuilder.setProgress(fileCount, ++fileProgress, false);
-            Notification notification = notificationBuilder.build();
-            startForeground(notificationID, notification);
+
+
+        } catch (ParseException | IOException e) {
+            e.printStackTrace();
         }
+
+        incrementNotificationProgress();
+
+    }
+
+    private synchronized void incrementNotificationProgress(){
+        notificationBuilder.setProgress(fileCount, ++fileProgress, false);
+        int errorCount = fileErrorCount.get();
+        if(errorCount > 0) {
+            notificationBuilder.setContentText(String.format("%1$d Photos are more then 1 hour away from Track", errorCount));
+        }
+        Notification notification = notificationBuilder.build();
+        startForeground(notificationID, notification);
     }
 
 }
