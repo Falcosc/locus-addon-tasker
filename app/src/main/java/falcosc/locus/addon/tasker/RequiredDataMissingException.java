@@ -7,4 +7,8 @@ public class RequiredDataMissingException extends Exception {
     public RequiredDataMissingException(String message) {
         super(message);
     }
+
+    public RequiredDataMissingException(String message, Throwable caused) {
+        super(message, caused);
+    }
 }
