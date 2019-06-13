@@ -169,7 +169,7 @@ public final class GeotagPhotosService extends IntentService {
         mNotificationBuilder.setProgress(fileCount, ++fileProgress, false);
         int errorCount = fileErrorCount.get();
         if (errorCount > 0) {
-            mNotificationBuilder.setContentText(getResources().getQuantityString(R.plurals.err_geotag_x_photos_no_match, errorCount));
+            mNotificationBuilder.setContentText(getResources().getQuantityString(R.plurals.err_geotag_x_photos_no_match, errorCount, errorCount));
             //TODO expandable notification
         } else {
             mNotificationBuilder.setContentText(getString(R.string.geotag_process_photos));
