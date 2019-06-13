@@ -1,20 +1,166 @@
 <TaskerData sr="" dvi="1" tv="5.7.2">
 	<Task sr="task37">
 		<cdate>1559329401863</cdate>
-		<edate>1559915255320</edate>
+		<edate>1560463218709</edate>
 		<id>37</id>
 		<nme>Improve Geotag Performance</nme>
 		<pri>100</pri>
 		<Action sr="act0" ve="7">
+			<code>664</code>
+			<label>external cache dir</label>
+			<Str sr="arg0" ve="3">folder</Str>
+			<Str sr="arg1" ve="3">CONTEXT</Str>
+			<Str sr="arg2" ve="3">getExternalCacheDir
+{File} ()</Str>
+			<Str sr="arg3" ve="3">"Download"</Str>
+			<Str sr="arg4" ve="3"/>
+			<Str sr="arg5" ve="3"/>
+			<Str sr="arg6" ve="3"/>
+			<Str sr="arg7" ve="3"/>
+			<Str sr="arg8" ve="3"/>
+			<Str sr="arg9" ve="3"/>
+		</Action>
+		<Action sr="act1" ve="7">
+			<code>664</code>
+			<label>if permission error try internal cache dir by activating this</label>
+			<on>false</on>
+			<Str sr="arg0" ve="3">folder</Str>
+			<Str sr="arg1" ve="3">CONTEXT</Str>
+			<Str sr="arg2" ve="3">getCacheDir
+{File} ()</Str>
+			<Str sr="arg3" ve="3">"Download"</Str>
+			<Str sr="arg4" ve="3"/>
+			<Str sr="arg5" ve="3"/>
+			<Str sr="arg6" ve="3"/>
+			<Str sr="arg7" ve="3"/>
+			<Str sr="arg8" ve="3"/>
+			<Str sr="arg9" ve="3"/>
+		</Action>
+		<Action sr="act10" ve="7">
+			<code>404</code>
+			<label>could take a while</label>
+			<Str sr="arg0" ve="3">%locusdatabasedir/tracks.db</Str>
+			<Str sr="arg1" ve="3">%tempdir/tracks.db</Str>
+			<Int sr="arg2" val="0"/>
+		</Action>
+		<Action sr="act11" ve="7">
+			<code>123</code>
+			<se>false</se>
+			<Str sr="arg0" ve="3">sqlite3 %tempdir/tracks.db "CREATE INDEX IF NOT EXISTS locations_time ON locations (time);"</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg2" val="0"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3">%sqlerr</Str>
+			<Str sr="arg5" ve="3"/>
+		</Action>
+		<Action sr="act12" ve="7">
+			<code>123</code>
+			<label>activate this action to revert optimisation</label>
+			<on>false</on>
+			<se>false</se>
+			<Str sr="arg0" ve="3">sqlite3 %tempdir/tracks.db "DROP INDEX IF EXISTS locations_time;"</Str>
+			<Int sr="arg1" val="0"/>
+			<Int sr="arg2" val="0"/>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3">%sqlerr</Str>
+			<Str sr="arg5" ve="3"/>
+		</Action>
+		<Action sr="act13" ve="7">
+			<code>523</code>
+			<Str sr="arg0" ve="3">Sqlite Error</Str>
+			<Str sr="arg1" ve="3">%sqlerr</Str>
+			<Str sr="arg10" ve="3"/>
+			<Str sr="arg11" ve="3"/>
+			<Img sr="arg2" ve="2">
+				<nme>mw_image_camera_alt</nme>
+			</Img>
+			<Int sr="arg3" val="0"/>
+			<Int sr="arg4" val="0"/>
+			<Int sr="arg5" val="3"/>
+			<Int sr="arg6" val="0"/>
+			<Int sr="arg7" val="0"/>
+			<Int sr="arg8" val="0"/>
+			<Str sr="arg9" ve="3"/>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%sqlerr</lhs>
+					<op>12</op>
+					<rhs></rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+		<Action sr="act14" ve="7">
+			<code>137</code>
+			<Int sr="arg0" val="1"/>
+			<Str sr="arg1" ve="3"/>
+			<ConditionList sr="if">
+				<Condition sr="c0" ve="3">
+					<lhs>%sqlerr</lhs>
+					<op>12</op>
+					<rhs>1</rhs>
+				</Condition>
+			</ConditionList>
+		</Action>
+		<Action sr="act15" ve="7">
+			<code>400</code>
+			<Str sr="arg0" ve="3">%tempdir/tracks.db</Str>
+			<Str sr="arg1" ve="3">%locusdatabasedir/tracks.db.new</Str>
+			<Int sr="arg2" val="0"/>
+		</Action>
+		<Action sr="act16" ve="7">
+			<code>400</code>
+			<label>if some thing fails, there is an tracks.db.bak.timestamp</label>
+			<Str sr="arg0" ve="3">%locusdatabasedir/tracks.db</Str>
+			<Str sr="arg1" ve="3">%locusdatabasedir/tracks.db.bak.%TIMES</Str>
+			<Int sr="arg2" val="0"/>
+		</Action>
+		<Action sr="act17" ve="7">
+			<code>400</code>
+			<Str sr="arg0" ve="3">%locusdatabasedir/tracks.db.new</Str>
+			<Str sr="arg1" ve="3">%locusdatabasedir/tracks.db</Str>
+			<Int sr="arg2" val="0"/>
+		</Action>
+		<Action sr="act2" ve="7">
+			<code>664</code>
+			<label>if permission error try download dir by activating this</label>
+			<on>false</on>
+			<Str sr="arg0" ve="3">folder</Str>
+			<Str sr="arg1" ve="3">Environment</Str>
+			<Str sr="arg2" ve="3">getExternalStoragePublicDirectory
+{File} (String)</Str>
+			<Str sr="arg3" ve="3">"Download"</Str>
+			<Str sr="arg4" ve="3"/>
+			<Str sr="arg5" ve="3"/>
+			<Str sr="arg6" ve="3"/>
+			<Str sr="arg7" ve="3"/>
+			<Str sr="arg8" ve="3"/>
+			<Str sr="arg9" ve="3"/>
+		</Action>
+		<Action sr="act3" ve="7">
+			<code>664</code>
+			<label>global var WORKDIR can be reviewed at VARS</label>
+			<Str sr="arg0" ve="3">%WORKDIR</Str>
+			<Str sr="arg1" ve="3">folder</Str>
+			<Str sr="arg2" ve="3">getAbsolutePath
+{String} ()</Str>
+			<Str sr="arg3" ve="3"/>
+			<Str sr="arg4" ve="3"/>
+			<Str sr="arg5" ve="3"/>
+			<Str sr="arg6" ve="3"/>
+			<Str sr="arg7" ve="3"/>
+			<Str sr="arg8" ve="3"/>
+			<Str sr="arg9" ve="3"/>
+		</Action>
+		<Action sr="act4" ve="7">
 			<code>547</code>
 			<label>tmp on internal storage</label>
 			<Str sr="arg0" ve="3">%tempdir</Str>
-			<Str sr="arg1" ve="3">Tasker/cache/tmp</Str>
+			<Str sr="arg1" ve="3">%WORKDIR/tmp</Str>
 			<Int sr="arg2" val="0"/>
 			<Int sr="arg3" val="0"/>
 			<Int sr="arg4" val="0"/>
 		</Action>
-		<Action sr="act1" ve="7">
+		<Action sr="act5" ve="7">
 			<code>305350161</code>
 			<Bundle sr="arg0">
 				<Vals sr="val">
@@ -36,20 +182,7 @@ Main Folder
 			<Str sr="arg2" ve="3">falcosc.locus.addon.tasker.intent.edit.LocusInfoEdit</Str>
 			<Int sr="arg3" val="10"/>
 		</Action>
-		<Action sr="act10" ve="7">
-			<code>400</code>
-			<label>if some thing fails, there is an tracks.db.bak.timestamp</label>
-			<Str sr="arg0" ve="3">%locusdatabasedir/tracks.db</Str>
-			<Str sr="arg1" ve="3">%locusdatabasedir/tracks.db.bak.%TIMES</Str>
-			<Int sr="arg2" val="0"/>
-		</Action>
-		<Action sr="act11" ve="7">
-			<code>400</code>
-			<Str sr="arg0" ve="3">%locusdatabasedir/tracks.db.new</Str>
-			<Str sr="arg1" ve="3">%locusdatabasedir/tracks.db</Str>
-			<Int sr="arg2" val="0"/>
-		</Action>
-		<Action sr="act2" ve="7">
+		<Action sr="act6" ve="7">
 			<code>547</code>
 			<Str sr="arg0" ve="3">%locusdatabasedir</Str>
 			<Str sr="arg1" ve="3">%dir_root/data/database/</Str>
@@ -57,7 +190,7 @@ Main Folder
 			<Int sr="arg3" val="0"/>
 			<Int sr="arg4" val="0"/>
 		</Action>
-		<Action sr="act3" ve="7">
+		<Action sr="act7" ve="7">
 			<code>18</code>
 			<App sr="arg0">
 				<appClass>com.asamm.locus.core.StartScreen</appClass>
@@ -66,14 +199,14 @@ Main Folder
 			</App>
 			<Int sr="arg1" val="0"/>
 		</Action>
-		<Action sr="act4" ve="7">
+		<Action sr="act8" ve="7">
 			<code>342</code>
 			<Int sr="arg0" val="5"/>
 			<Str sr="arg1" ve="3">%tempdir</Str>
 			<Str sr="arg2" ve="3">%tmpexists</Str>
 			<Int sr="arg3" val="0"/>
 		</Action>
-		<Action sr="act5" ve="7">
+		<Action sr="act9" ve="7">
 			<code>409</code>
 			<Str sr="arg0" ve="3">%tempdir</Str>
 			<Int sr="arg1" val="1"/>
@@ -85,39 +218,6 @@ Main Folder
 					<rhs>false</rhs>
 				</Condition>
 			</ConditionList>
-		</Action>
-		<Action sr="act6" ve="7">
-			<code>404</code>
-			<label>could take a while</label>
-			<Str sr="arg0" ve="3">%locusdatabasedir/tracks.db</Str>
-			<Str sr="arg1" ve="3">%tempdir/tracks.db</Str>
-			<Int sr="arg2" val="0"/>
-		</Action>
-		<Action sr="act7" ve="7">
-			<code>123</code>
-			<Str sr="arg0" ve="3">sqlite3 %tempdir/tracks.db "CREATE INDEX IF NOT EXISTS locations_time ON locations (time);"</Str>
-			<Int sr="arg1" val="0"/>
-			<Int sr="arg2" val="0"/>
-			<Str sr="arg3" ve="3"/>
-			<Str sr="arg4" ve="3"/>
-			<Str sr="arg5" ve="3"/>
-		</Action>
-		<Action sr="act8" ve="7">
-			<code>123</code>
-			<label>activate this action to revert optimisation</label>
-			<on>false</on>
-			<Str sr="arg0" ve="3">sqlite3 %tempdir/tracks.db "DROP INDEX IF EXISTS locations_time;"</Str>
-			<Int sr="arg1" val="0"/>
-			<Int sr="arg2" val="0"/>
-			<Str sr="arg3" ve="3"/>
-			<Str sr="arg4" ve="3"/>
-			<Str sr="arg5" ve="3"/>
-		</Action>
-		<Action sr="act9" ve="7">
-			<code>400</code>
-			<Str sr="arg0" ve="3">%tmpdir/tracks.db</Str>
-			<Str sr="arg1" ve="3">%locusdatabasedir/tracks.db.new</Str>
-			<Int sr="arg2" val="0"/>
 		</Action>
 		<Img sr="icn" ve="2">
 			<nme>mw_image_camera_alt</nme>
