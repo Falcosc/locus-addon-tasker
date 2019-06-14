@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-
 import falcosc.locus.addon.tasker.intent.edit.ActionTaskEdit;
 import falcosc.locus.addon.tasker.intent.edit.LocusInfoEdit;
 import falcosc.locus.addon.tasker.intent.edit.NotImplementedActions;
@@ -29,6 +28,8 @@ public class MainActivity extends ProjectActivity {
                 UpdateContainerEdit.class,
                 LocusInfoEdit.class,
                 ActionTaskEdit.class,
+                LocusGeoTagActivity.class,
+                LocusRunTaskerActivity.class,
                 NotImplementedActions.class
         };
 
@@ -44,4 +45,6 @@ public class MainActivity extends ProjectActivity {
         }
         return false;
     }
+
+
 }

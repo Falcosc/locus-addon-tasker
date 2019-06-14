@@ -78,6 +78,25 @@
             </intent-filter>
         </activity>
 
+        <!-- run Tasker Task -->
+        <activity
+            android:name=".LocusGeoTagActivity"
+            android:label="@string/geotag_title"
+            android:icon="@mipmap/ic_tasker"
+            android:theme="@style/AlertDialogTheme">
+
+            <!-- thanks to this, app appear in sub-menu of every track -->
+            <intent-filter>
+                <action android:name="locus.api.android.INTENT_ITEM_TRACK_TOOLS" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".GeotagPhotosService"
+            android:exported="false">
+        </service>
+
         <!-- listen tasker edit action -->
         <activity
             android:name=".intent.edit.UpdateContainerEdit"

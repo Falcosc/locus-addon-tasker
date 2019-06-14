@@ -48,4 +48,37 @@
     <string name="ok">OK</string>
     <string name="variable_select">Variable Selection</string>
     <string name="app_main_examples">Get example projects for Tasker as quick start: https://github.com/Falcosc/locus-addon-tasker/wiki/Examples</string>
+    <string name="geotag_offset_default">+0</string>
+    <string name="geotag_offset">Offset in hours</string>
+    <string name="geotag_end">End:</string>
+    <string name="geotag_photo">Photo:</string>
+    <string name="geotag_start">Start:</string>
+    <string name="geotag_example_photo">Example Photo</string>
+    <string name="refresh">refresh</string>
+    <string name="err_geotag_required_android_version">Geotagging is only supported for Android Nougat to reduce code complexity.</string>
+    <string name="err_geotag_no_images_found">Can\'t find any jpeg\'s, please select an other folder or abort</string>
+    <plurals name="geotag_x_photos">
+        <item quantity="one">Geotag %d photo</item>
+        <item quantity="other">Geotag %d photos</item>
+    </plurals>
+    <string name="err_invalid_number">Is not a valid number</string>
+    <string name="geotag_select_example">Select Example</string>
+    <string name="geotag_select_folder">Folder for Geotag</string>
+    <plurals name="err_geotag_x_photos_no_match">
+        <item quantity="one">%d Photo are more then 1 hour away from Track</item>
+        <item quantity="other">%d Photos are more then 1 hour away from Track</item>
+    </plurals>
+    <plurals name="err_geotag_x_hours_away">
+        <item quantity="one">%d hour away from closest match</item>
+        <item quantity="other">%d hour away from closest match</item>
+    </plurals>
+    <string name="geotag_title">Geotag jpeg\'s</string>
+    <string name="start_process">Start Process</string>
+    <string name="geotag_process_photos">Process Photos</string>
+    <string name="err_geotag_no_date">has no exif date time</string>
+    <string name="err_geotag_write_exif">can\'t read and write exif</string>
+    <string name="err_geotag_date_invalid">invalid exif date time</string>
+    <string name="err_geotag_example_no_date">no exif date time, please select other or abort</string>
+    <string name="err_geotag_example_load_exif">can\'t load exif from example, please select other or abort</string>
+    <string name="done_with_errors">done with errors</string>
 </resources>

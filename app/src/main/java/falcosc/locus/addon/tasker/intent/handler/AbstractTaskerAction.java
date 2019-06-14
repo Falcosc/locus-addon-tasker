@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
-
 import androidx.annotation.NonNull;
 
 import java.util.Arrays;
@@ -52,7 +50,7 @@ abstract class AbstractTaskerAction implements TaskerAction {
             } else {
                 //can't return anything, write it to log
                 Log.e(TAG, e.getMessage());
-                Log.e(TAG, ExceptionUtils.getStackTrace(e));
+                Log.e(TAG, Log.getStackTraceString(e));
                 //TODO think about notification
             }
         }

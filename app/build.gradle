@@ -8,8 +8,8 @@ android {
     defaultConfig {
         minSdkVersion Integer.valueOf(PARAM_MIN_SDK_VERSION)
         targetSdkVersion Integer.valueOf(PARAM_TARGET_SDK_VERSION)
-        versionCode 26
-        versionName "1.2.1"
+        versionCode 27
+        versionName "1.2.2-SNAPSHOT"
     }
 
     packagingOptions {
@@ -41,4 +41,5 @@ dependencies {
     implementation 'com.twofortyfouram:android-plugin-api-for-locale:1.0.4'
     implementation 'org.apache.commons:commons-lang3:3.9'
     implementation 'org.apache.commons:commons-text:1.6'
+    implementation 'androidx.exifinterface:exifinterface:1.1.0-alpha01'
 }

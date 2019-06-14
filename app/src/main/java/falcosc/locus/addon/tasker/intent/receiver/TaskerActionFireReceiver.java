@@ -9,8 +9,6 @@ import androidx.annotation.NonNull;
 
 import android.util.Log;
 
-import org.apache.commons.lang3.exception.ExceptionUtils;
-
 import falcosc.locus.addon.tasker.intent.LocusActionType;
 import falcosc.locus.addon.tasker.intent.handler.TaskerAction;
 import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
@@ -42,11 +40,9 @@ public class TaskerActionFireReceiver extends BroadcastReceiver {
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
             Bundle varsBundle = new Bundle();
-            varsBundle.putString(TaskerPlugin.Setting.VARNAME_ERROR_MESSAGE, e.getMessage() + " " + ExceptionUtils.getStackTrace(e));
+            varsBundle.putString(TaskerPlugin.Setting.VARNAME_ERROR_MESSAGE, e.getMessage() + " " + Log.getStackTraceString(e));
             TaskerPlugin.addVariableBundle(getResultExtras(true), varsBundle);
             setResultCode(TaskerPlugin.Setting.RESULT_CODE_FAILED);
         }
-
-
     }
 }
