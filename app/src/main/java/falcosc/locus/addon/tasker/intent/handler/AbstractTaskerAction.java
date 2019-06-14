@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -17,6 +16,7 @@ import falcosc.locus.addon.tasker.RequiredDataMissingException;
 import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
 import falcosc.locus.addon.tasker.utils.Const;
 import falcosc.locus.addon.tasker.utils.LocusCache;
+import falcosc.locus.addon.tasker.utils.ReportingHelper;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 
 abstract class AbstractTaskerAction implements TaskerAction {
@@ -49,9 +49,7 @@ abstract class AbstractTaskerAction implements TaskerAction {
                 mReceiver.setResultCode(TaskerPlugin.Setting.RESULT_CODE_FAILED);
             } else {
                 //can't return anything, write it to log
-                Log.e(TAG, e.getMessage());
-                Log.e(TAG, Log.getStackTraceString(e));
-                //TODO think about notification
+                new ReportingHelper(mContext).sendErrorNotification(TAG, "Can't handle not ordered broadcast", e); //NON-NLS
             }
         }
     }

@@ -18,11 +18,13 @@ public final class Const {
 
     public static final String INTENT_EXTRA_GEOTAG_FILES = "files";
 
-    public static final String INTENT_EXTRA_GEOTAG_OFFSET = "offset" ;
+    public static final String INTENT_EXTRA_GEOTAG_OFFSET = "offset";
 
     public static final long ONE_HOUR = 3600000L;
 
     public static final int NOTIFICATION_ID_GEOTAG = 1;
+    public static final int NOTIFICATION_ID_COMMON_ERROR = 2;
+
 
     public static final SimpleDateFormat EXIF_DATE_FORMAT = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss", Locale.US);
 

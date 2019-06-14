@@ -1,5 +1,5 @@
-<resources>
-    <string name="app_name">Locus Map Addon Tasker Plugin</string>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">Locus Tasker</string>
     <string name="act_request_stats_sensors">Request sensors and stats</string>
     <string name="act_request_locus_info">Get Locus Info</string>
     <string name="act_exec_task">Execute Action Task</string>
@@ -81,4 +81,6 @@
     <string name="err_geotag_example_no_date">no exif date time, please select other or abort</string>
     <string name="err_geotag_example_load_exif">can\'t load exif from example, please select other or abort</string>
     <string name="done_with_errors">done with errors</string>
+    <string name="err_unexpected_problem">Unexpected Problem</string>
+    <string name="err_geotag_x_photos_got_not_tagged" tools:ignore="PluralsCandidate">%d/%d did not get tagged</string>
 </resources>

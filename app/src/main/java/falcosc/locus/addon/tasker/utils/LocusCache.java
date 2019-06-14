@@ -125,7 +125,6 @@ public final class LocusCache {
     public static LocusCache getInstanceUnsafe(@NonNull Context context) throws MissingAppContextException {
         if (mInstance == null) {
             Context appContext = context.getApplicationContext();
-            //TODO test this with broadcast receiver
             if (appContext instanceof Application) {
                 return getInstance((Application) appContext);
             } else {

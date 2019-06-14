@@ -92,8 +92,8 @@ public final class GeotagPhotosService extends IntentService {
         }
     }
 
-    private boolean sendResultNotification(){
-        if(fileErrors.isEmpty()){
+    private boolean sendResultNotification() {
+        if (fileErrors.isEmpty()) {
             return false;
         }
 
@@ -102,6 +102,7 @@ public final class GeotagPhotosService extends IntentService {
                 .setContentText(getResources().getQuantityString(R.plurals.err_geotag_x_photos_no_match, fileErrors.size(), fileErrors.size()))
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText(StringUtils.join(fileErrors, '\n'))
+                        .setSummaryText(String.format(getString(R.string.err_geotag_x_photos_got_not_tagged), fileErrors.size(), fileCount))
                 ).build();
         //TODO onclick display dialog or share onclick
         startForeground(Const.NOTIFICATION_ID_GEOTAG, notification);
@@ -223,10 +224,10 @@ public final class GeotagPhotosService extends IntentService {
         int fileErrorCount = fileErrors.size();
 
         mNotificationBuilder
-                .setContentText(getString(R.string.start_process))
                 .setContentText(getResources().getQuantityString(R.plurals.err_geotag_x_photos_no_match, fileErrorCount, fileErrorCount))
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText(StringUtils.join(fileErrors, '\n'))
+                        .setSummaryText(String.format(getString(R.string.err_geotag_x_photos_got_not_tagged), fileErrorCount, fileCount))
                 );
         incrementNotificationProgress();
     }

@@ -84,7 +84,8 @@ final class NavigationProgress {
 
 
         } catch (Exception e) {
-            Log.e(TAG, "Can not get remaining elevation", e); //NON-NLS
+            new ReportingHelper(locusCache.getApplicationContext())
+                    .sendErrorNotification(TAG, "Can not get remaining elevation", e); //NON-NLS
         }
 
         //Error case

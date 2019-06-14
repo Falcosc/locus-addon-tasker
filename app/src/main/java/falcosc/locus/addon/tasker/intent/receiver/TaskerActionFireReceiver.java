@@ -11,8 +11,8 @@ import android.util.Log;
 
 import falcosc.locus.addon.tasker.intent.LocusActionType;
 import falcosc.locus.addon.tasker.intent.handler.TaskerAction;
-import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
 import falcosc.locus.addon.tasker.utils.Const;
+import falcosc.locus.addon.tasker.utils.ReportingHelper;
 
 
 public class TaskerActionFireReceiver extends BroadcastReceiver {
@@ -38,11 +38,7 @@ public class TaskerActionFireReceiver extends BroadcastReceiver {
             action.setContext(context, this);
             action.handle(intent, apiExtraBundle);
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
-            Bundle varsBundle = new Bundle();
-            varsBundle.putString(TaskerPlugin.Setting.VARNAME_ERROR_MESSAGE, e.getMessage() + " " + Log.getStackTraceString(e));
-            TaskerPlugin.addVariableBundle(getResultExtras(true), varsBundle);
-            setResultCode(TaskerPlugin.Setting.RESULT_CODE_FAILED);
+            new ReportingHelper(context).sendErrorNotification(TAG, "Can't execute action " + actionType, e); //NON-NLS
         }
     }
 }

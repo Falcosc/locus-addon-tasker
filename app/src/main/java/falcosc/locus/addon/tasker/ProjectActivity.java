@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import falcosc.locus.addon.tasker.utils.LocusCache;
 
 public abstract class ProjectActivity extends AppCompatActivity {

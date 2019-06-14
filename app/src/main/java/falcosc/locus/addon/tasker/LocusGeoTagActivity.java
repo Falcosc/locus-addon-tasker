@@ -86,8 +86,8 @@ public class LocusGeoTagActivity extends ProjectActivity {
         super.onCreate(savedInstanceState);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-           createMessageView(getString(R.string.err_geotag_required_android_version));
-           return;
+            createMessageView(getString(R.string.err_geotag_required_android_version));
+            return;
         }
 
         //don't need to check for track intent because this is bound only to track intents
@@ -234,7 +234,8 @@ public class LocusGeoTagActivity extends ProjectActivity {
         }
     }
 
-    @SuppressWarnings("WeakerAccess") //because of inner class access
+    @SuppressWarnings("WeakerAccess")
+        //because of inner class access
     void handleExampleTimeOffset(@Nullable CharSequence offset) {
         try {
             if (StringUtils.isBlank(offset)) {
@@ -303,6 +304,7 @@ public class LocusGeoTagActivity extends ProjectActivity {
     private void startGeoTag() {
         Intent serviceIntent = new Intent(this,
                 GeotagPhotosService.class);
+        serviceIntent.setPackage(getPackageName());
         //set locus intent data
         serviceIntent.putExtras(getIntent());
         serviceIntent.putParcelableArrayListExtra(Const.INTENT_EXTRA_GEOTAG_FILES, mDocumentUris);

@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import falcosc.locus.addon.tasker.thridparty.TaskerIntent;
 import falcosc.locus.addon.tasker.utils.LocusCache;
+import falcosc.locus.addon.tasker.utils.ReportingHelper;
 import locus.api.android.utils.IntentHelper;
 import locus.api.android.utils.LocusConst;
 import locus.api.objects.GeoData;
@@ -64,8 +65,6 @@ public class LocusRunTaskerActivity extends ProjectActivity {
         if (implementedActions.contains(getIntent().getAction())) {
             findViewById(R.id.not_implemented).setVisibility(View.GONE);
         }
-
-        //TODO close main activity if it was open
     }
 
     private void addTaskButtons(@NonNull ViewGroup viewGroup) {
@@ -89,6 +88,7 @@ public class LocusRunTaskerActivity extends ProjectActivity {
 
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
+            new ReportingHelper(this).sendErrorNotification(TAG, "Can't create Buttons for Tasks", e); //NON-NLS
         }
     }
 
@@ -125,7 +125,7 @@ public class LocusRunTaskerActivity extends ProjectActivity {
                     allIntentFields.values().removeAll(Arrays.asList(null, ""));
                     Log.d(TAG, "Map: " + allIntentFields); //NON-NLS
                 } catch (Exception e) {
-                    Log.e(TAG, "Can't get intent details", e); //NON-NLS
+                    new ReportingHelper(this).sendErrorNotification(TAG, "Can't get intent details", e); //NON-NLS
                 }
 
                 taskerIntent.addLocalVariable("%data", new JSONObject(allIntentFields).toString()); //NON-NLS
