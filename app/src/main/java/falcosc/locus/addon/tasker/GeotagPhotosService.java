@@ -9,21 +9,22 @@ import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
 import androidx.exifinterface.media.ExifInterface;
 import falcosc.locus.addon.tasker.utils.Const;
 import locus.api.android.utils.IntentHelper;
@@ -33,9 +34,9 @@ import locus.api.objects.extra.Track;
 public final class GeotagPhotosService extends IntentService {
 
     private static final String TAG = "GeotagPhotosService"; //NON-NLS
-    private Notification.Builder mNotificationBuilder;
+    private NotificationCompat.Builder mNotificationBuilder;
     private int fileCount;
-    private AtomicInteger fileErrorCount;
+    private List<String> fileErrors;
     private int fileProgress;
     private List<Location> mPoints;
     private long[] mPointTimestamps;
@@ -67,9 +68,9 @@ public final class GeotagPhotosService extends IntentService {
 
         fileCount = fileUris.size();
         fileProgress = 0;
-        fileErrorCount = new AtomicInteger(0);
+        fileErrors = new ArrayList<>();
         //noinspection ConstantConditions is checked by fileUries
-        mTimeOffset = workIntent.getLongExtra(Const.INTENT_EXTRA_GEOTAG_OFFSET,0L) * Const.ONE_HOUR;
+        mTimeOffset = workIntent.getLongExtra(Const.INTENT_EXTRA_GEOTAG_OFFSET, 0L) * Const.ONE_HOUR;
 
         mNotificationBuilder.setProgress(fileCount, fileProgress, false);
         mNotificationBuilder.setOngoing(true).setContentText(getString(R.string.start_process));
@@ -77,19 +78,24 @@ public final class GeotagPhotosService extends IntentService {
 
         try {
             loadTrack(workIntent);
+
+            mNotificationBuilder.setContentText(getString(R.string.geotag_process_photos));
+            startForeground(Const.NOTIFICATION_ID_GEOTAG, mNotificationBuilder.build());
+
             fileUris.parallelStream().forEach(fileUri -> writeEXIFWithFileDescriptor(Uri.parse(fileUri)));
-            stopForeground(fileErrorCount.get() == 0);
+            stopForeground(fileErrors.isEmpty());
         } catch (RequiredDataMissingException e) {
             stopWithError(e.getMessage());
         }
     }
 
-    private Notification.Builder createNotificationBuilder() {
+    private NotificationCompat.Builder createNotificationBuilder() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             //TODO do we need advanced channel management?
-            mNotificationBuilder = new Notification.Builder(getApplicationContext(), NotificationChannel.DEFAULT_CHANNEL_ID);
+            mNotificationBuilder = new NotificationCompat.Builder(getApplicationContext(), NotificationChannel.DEFAULT_CHANNEL_ID);
         } else {
-            mNotificationBuilder = new Notification.Builder(getApplicationContext());
+            //noinspection deprecation
+            mNotificationBuilder = new NotificationCompat.Builder(getApplicationContext());
         }
         mNotificationBuilder.setSmallIcon(R.drawable.ic_camera_alt)
                 .setContentTitle(getString(R.string.geotag_title));
@@ -139,41 +145,66 @@ public final class GeotagPhotosService extends IntentService {
                 : mPoints.get(index - 1);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private void writeEXIFWithFileDescriptor(@NonNull Uri uri) {
 
         try (ParcelFileDescriptor pfd = getContentResolver().openFileDescriptor(uri, "rw")) { //NON-NLS
             assert pfd != null;
             ExifInterface exifInterface = new ExifInterface(pfd.getFileDescriptor());
-            Date dateTime = Const.EXIF_DATE_FORMAT.parse(exifInterface.getAttribute(ExifInterface.TAG_DATETIME));
-            long time = dateTime.getTime() + mTimeOffset;
-            Location loc = findNearestLocation(time);
-            long timeDiff = Math.abs(loc.getTime() - time);
-            if (timeDiff < Const.ONE_HOUR) {
-                exifInterface.setLatLong(loc.latitude, loc.longitude);
-                exifInterface.saveAttributes();
-            } else {
-                Log.e(TAG, uri + " is " + timeDiff / Const.ONE_HOUR + " hours away from closest match"); //NON-NLS
-                fileErrorCount.incrementAndGet();
+
+
+            String exifTime = exifInterface.getAttribute(ExifInterface.TAG_DATETIME);
+            if (exifTime == null) {
+                incrementProgressWithError(uri, getString(R.string.err_geotag_no_date));
+                return;
             }
 
-        } catch (ParseException | IOException e) {
-            Log.e(TAG, "can't write exif for " + uri, e); //NON-NLS
-            fileErrorCount.incrementAndGet();
+            long time = Const.EXIF_DATE_FORMAT.parse(exifTime).getTime() + mTimeOffset;
+
+            Location loc = findNearestLocation(time);
+            long timeDiff = Math.abs(loc.getTime() - time);
+            if (timeDiff > Const.ONE_HOUR) {
+                //noinspection NumericCastThatLosesPrecision
+                int hoursAway = (int) (timeDiff / Const.ONE_HOUR);
+                incrementProgressWithError(uri,  getResources().getQuantityString(R.plurals.err_geotag_x_hours_away, hoursAway, hoursAway));
+                return;
+            }
+
+            exifInterface.setLatLong(loc.latitude, loc.longitude);
+            exifInterface.saveAttributes();
+            incrementNotificationProgress();
+        } catch (IOException e) {
+            incrementProgressWithError(uri, getString(R.string.err_geotag_write_exif) + " " + e.getLocalizedMessage());
+            Log.e(TAG, "exif IOException", e); //NON-NLS
+        } catch (ParseException e) {
+            incrementProgressWithError(uri, getString(R.string.err_geotag_date_invalid));
         }
 
+
+    }
+
+    private synchronized void incrementProgressWithError(@NonNull Uri uri, @NonNull String error) {
+        String uriPath = uri.getPath();
+        if (uriPath == null) {
+            uriPath = uri.toString();
+        }
+        String fileName = new File(uriPath).getName();
+        String errLine = fileName + ": " + error;
+
+        fileErrors.add(errLine);
+        Log.e(TAG, errLine);
+
+        int fileErrorCount = fileErrors.size();
+
+        mNotificationBuilder
+                .setContentText(getResources().getQuantityString(R.plurals.err_geotag_x_photos_no_match, fileErrorCount, fileErrorCount))
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(StringUtils.join(fileErrors, '\n'))
+                );
         incrementNotificationProgress();
     }
 
     private synchronized void incrementNotificationProgress() {
         mNotificationBuilder.setProgress(fileCount, ++fileProgress, false);
-        int errorCount = fileErrorCount.get();
-        if (errorCount > 0) {
-            mNotificationBuilder.setContentText(getResources().getQuantityString(R.plurals.err_geotag_x_photos_no_match, errorCount, errorCount));
-            //TODO expandable notification
-        } else {
-            mNotificationBuilder.setContentText(getString(R.string.geotag_process_photos));
-        }
         Notification notification = mNotificationBuilder.build();
         startForeground(Const.NOTIFICATION_ID_GEOTAG, notification);
     }
