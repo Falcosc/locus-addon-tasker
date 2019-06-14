@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.ParcelFileDescriptor;
+import android.os.Parcelable;
 import android.util.Log;
 
 import org.apache.commons.lang3.StringUtils;
@@ -42,7 +43,6 @@ public final class GeotagPhotosService extends IntentService {
     private long[] mPointTimestamps;
     private long mTimeOffset;
 
-
     public GeotagPhotosService() {
         super(TAG);
         setIntentRedelivery(true);
@@ -50,15 +50,15 @@ public final class GeotagPhotosService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent workIntent) {
-        mNotificationBuilder = createNotificationBuilder();
+        mNotificationBuilder = createNotificationBuilder().setOngoing(true);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             stopWithError(getString(R.string.err_geotag_required_android_version));
             return;
         }
 
-        ArrayList<String> fileUris = Optional.ofNullable(workIntent)
-                .map(intent -> intent.getStringArrayListExtra(Const.INTENT_EXTRA_GEOTAG_FILES))
+        ArrayList<Parcelable> fileUris = Optional.ofNullable(workIntent)
+                .map(intent -> intent.getParcelableArrayListExtra(Const.INTENT_EXTRA_GEOTAG_FILES))
                 .orElse(new ArrayList<>());
 
         if (fileUris.isEmpty()) {
@@ -69,11 +69,10 @@ public final class GeotagPhotosService extends IntentService {
         fileCount = fileUris.size();
         fileProgress = 0;
         fileErrors = new ArrayList<>();
-        //noinspection ConstantConditions is checked by fileUries
-        mTimeOffset = workIntent.getLongExtra(Const.INTENT_EXTRA_GEOTAG_OFFSET, 0L) * Const.ONE_HOUR;
+        mTimeOffset = Objects.requireNonNull(workIntent).getIntExtra(Const.INTENT_EXTRA_GEOTAG_OFFSET, 0) * Const.ONE_HOUR;
 
         mNotificationBuilder.setProgress(fileCount, fileProgress, false);
-        mNotificationBuilder.setOngoing(true).setContentText(getString(R.string.start_process));
+        mNotificationBuilder.setContentText(getString(R.string.start_process));
         startForeground(Const.NOTIFICATION_ID_GEOTAG, mNotificationBuilder.build());
 
         try {
@@ -82,30 +81,58 @@ public final class GeotagPhotosService extends IntentService {
             mNotificationBuilder.setContentText(getString(R.string.geotag_process_photos));
             startForeground(Const.NOTIFICATION_ID_GEOTAG, mNotificationBuilder.build());
 
-            fileUris.parallelStream().forEach(fileUri -> writeEXIFWithFileDescriptor(Uri.parse(fileUri)));
-            stopForeground(fileErrors.isEmpty());
+            fileUris.parallelStream().forEach(fileUri -> exifFindAndWriteLocation((Uri) fileUri));
+
+            boolean hasResultNotification = sendResultNotification();
+
+            //remove notification if everything is fine, otherwise keep it with detach from service
+            stopForeground(hasResultNotification ? STOP_FOREGROUND_DETACH : STOP_FOREGROUND_REMOVE);
         } catch (RequiredDataMissingException e) {
             stopWithError(e.getMessage());
         }
     }
 
-    private NotificationCompat.Builder createNotificationBuilder() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            //TODO do we need advanced channel management?
-            mNotificationBuilder = new NotificationCompat.Builder(getApplicationContext(), NotificationChannel.DEFAULT_CHANNEL_ID);
-        } else {
-            //noinspection deprecation
-            mNotificationBuilder = new NotificationCompat.Builder(getApplicationContext());
+    private boolean sendResultNotification(){
+        if(fileErrors.isEmpty()){
+            return false;
         }
-        mNotificationBuilder.setSmallIcon(R.drawable.ic_camera_alt)
-                .setContentTitle(getString(R.string.geotag_title));
-        return mNotificationBuilder;
+
+        Notification notification = createNotificationBuilder()
+                .setContentTitle(getString(R.string.geotag_title) + " " + getString(R.string.done_with_errors))
+                .setContentText(getResources().getQuantityString(R.plurals.err_geotag_x_photos_no_match, fileErrors.size(), fileErrors.size()))
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(StringUtils.join(fileErrors, '\n'))
+                ).build();
+        //TODO onclick display dialog or share onclick
+        startForeground(Const.NOTIFICATION_ID_GEOTAG, notification);
+        return true;
     }
 
+    private NotificationCompat.Builder createNotificationBuilder() {
+        NotificationCompat.Builder builder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //TODO do we need advanced channel management?
+            builder = new NotificationCompat.Builder(getApplicationContext(), NotificationChannel.DEFAULT_CHANNEL_ID);
+        } else {
+            //noinspection deprecation
+            builder = new NotificationCompat.Builder(getApplicationContext());
+        }
+
+        return builder
+                .setSmallIcon(R.drawable.ic_camera_alt)
+                .setContentTitle(getString(R.string.geotag_title));
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void stopWithError(String errMsg) {
-        mNotificationBuilder.setOngoing(false).setContentText(errMsg);
-        startForeground(Const.NOTIFICATION_ID_GEOTAG, mNotificationBuilder.build());
-        stopForeground(false);
+        Log.e(TAG, errMsg);
+        NotificationCompat.Builder builder = createNotificationBuilder()
+                .setOngoing(false)
+                .setContentText(errMsg);
+        startForeground(Const.NOTIFICATION_ID_GEOTAG, builder.build());
+        //detach notification to keep
+        stopForeground(STOP_FOREGROUND_DETACH);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -145,7 +172,7 @@ public final class GeotagPhotosService extends IntentService {
                 : mPoints.get(index - 1);
     }
 
-    private void writeEXIFWithFileDescriptor(@NonNull Uri uri) {
+    private void exifFindAndWriteLocation(@NonNull Uri uri) {
 
         try (ParcelFileDescriptor pfd = getContentResolver().openFileDescriptor(uri, "rw")) { //NON-NLS
             assert pfd != null;
@@ -165,7 +192,7 @@ public final class GeotagPhotosService extends IntentService {
             if (timeDiff > Const.ONE_HOUR) {
                 //noinspection NumericCastThatLosesPrecision
                 int hoursAway = (int) (timeDiff / Const.ONE_HOUR);
-                incrementProgressWithError(uri,  getResources().getQuantityString(R.plurals.err_geotag_x_hours_away, hoursAway, hoursAway));
+                incrementProgressWithError(uri, getResources().getQuantityString(R.plurals.err_geotag_x_hours_away, hoursAway, hoursAway));
                 return;
             }
 
@@ -196,6 +223,7 @@ public final class GeotagPhotosService extends IntentService {
         int fileErrorCount = fileErrors.size();
 
         mNotificationBuilder
+                .setContentText(getString(R.string.start_process))
                 .setContentText(getResources().getQuantityString(R.plurals.err_geotag_x_photos_no_match, fileErrorCount, fileErrorCount))
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText(StringUtils.join(fileErrors, '\n'))

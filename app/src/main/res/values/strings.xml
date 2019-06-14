@@ -80,4 +80,5 @@
     <string name="err_geotag_date_invalid">invalid exif date time</string>
     <string name="err_geotag_example_no_date">no exif date time, please select other or abort</string>
     <string name="err_geotag_example_load_exif">can\'t load exif from example, please select other or abort</string>
+    <string name="done_with_errors">done with errors</string>
 </resources>

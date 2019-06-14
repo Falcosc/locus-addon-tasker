@@ -93,17 +93,11 @@ public class LocusGeoTagActivity extends ProjectActivity {
         //don't need to check for track intent because this is bound only to track intents
         try {
             TrackDetails trackDetails = getAndValidateTrackDetails();
-
             pickFolder();
             createGeotagView(trackDetails);
         } catch (Exception e) {
-            //TODO check if setContentView was called
-            if (findViewById(android.R.id.content) == null) {
-                createMessageView(e.getLocalizedMessage());
-            } else {
-                Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-                finish();
-            }
+            //TODO if exception is thrown after pick folder, we don't see the message
+            createMessageView(e.getLocalizedMessage());
         }
 
     }
@@ -311,8 +305,7 @@ public class LocusGeoTagActivity extends ProjectActivity {
                 GeotagPhotosService.class);
         //set locus intent data
         serviceIntent.putExtras(getIntent());
-        Uri[] fileUris = mDocumentUris.toArray(new Uri[]{});
-        serviceIntent.putExtra(Const.INTENT_EXTRA_GEOTAG_FILES, fileUris);
+        serviceIntent.putParcelableArrayListExtra(Const.INTENT_EXTRA_GEOTAG_FILES, mDocumentUris);
         serviceIntent.putExtra(Const.INTENT_EXTRA_GEOTAG_OFFSET, mTimeOffset);
         ContextCompat.startForegroundService(this, serviceIntent);
         setResult(RESULT_OK, getIntent());
