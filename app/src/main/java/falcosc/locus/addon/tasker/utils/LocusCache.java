@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 
 import android.util.Log;
 
+import falcosc.locus.addon.tasker.BuildConfig;
 import falcosc.locus.addon.tasker.RequiredDataMissingException;
 import locus.api.android.ActionBasics;
 import locus.api.android.features.periodicUpdates.UpdateContainer;
@@ -62,6 +63,7 @@ public final class LocusCache {
     @SuppressWarnings("HardCodedStringLiteral")
     private LocusCache(Application context) {
         Log.d(TAG, "init Locus cache");
+        Log.d(TAG, BuildConfig.VERSION_NAME);
 
         mApplicationContext = context;
 

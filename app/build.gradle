@@ -3,13 +3,14 @@ apply plugin: 'com.android.application'
 android {
     // setup SDK
     compileSdkVersion Integer.valueOf(PARAM_COMPILE_SDK_VERSION)
-    buildToolsVersion "28.0.3"
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
         minSdkVersion Integer.valueOf(PARAM_MIN_SDK_VERSION)
         targetSdkVersion Integer.valueOf(PARAM_TARGET_SDK_VERSION)
         versionCode 27
-        versionName "1.2.2-SNAPSHOT"
+        versionName '1.2.2-SNAPSHOT'
+        buildConfigField 'String', 'CONTACT_EMAIL', '"' + getContactEmail() + '"'
     }
 
     packagingOptions {

@@ -36,3 +36,27 @@ task clean(type: Delete) {
     //noinspection GroovyAssignabilityCheck
     delete rootProject.buildDir
 }
+
+ext.getGitConfig = {final String configKey ->
+    final def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'config', configKey
+        standardOutput = stdout
+        ignoreExitValue = true
+    }
+    stdout.toString().trim()
+}
+
+ext.getContactEmail = {
+    //get play store email
+    String email = getGitConfig('app.email')
+    if(!email.contains('@')) {
+        //fallback
+        email = getGitConfig('user.email')
+    }
+
+    if(!email.contains('@') || email.contains('noreply')){
+        throw new InvalidUserDataException('app contact email is missing')
+    }
+    email
+}
