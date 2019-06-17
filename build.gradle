@@ -56,7 +56,7 @@ ext.getContactEmail = {
     }
 
     if(!email.contains('@') || email.contains('noreply')){
-        throw new InvalidUserDataException('app contact email is missing')
+        throw new InvalidUserDataException('app contact email is missing: git config --add app.email')
     }
     email
 }
