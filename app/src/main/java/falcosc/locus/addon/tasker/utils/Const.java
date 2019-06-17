@@ -1,6 +1,8 @@
 package falcosc.locus.addon.tasker.utils;
 
-import java.text.SimpleDateFormat;
+import org.apache.commons.lang3.time.DateParser;
+import org.apache.commons.lang3.time.FastDateFormat;
+
 import java.util.Locale;
 
 @SuppressWarnings("HardCodedStringLiteral")
@@ -26,7 +28,9 @@ public final class Const {
     public static final int NOTIFICATION_ID_COMMON_ERROR = 2;
 
 
-    public static final SimpleDateFormat EXIF_DATE_FORMAT = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss", Locale.US);
+    public static final DateParser EXIF_DATE_FORMAT = FastDateFormat.getInstance("yyyy:MM:dd HH:mm:ss",Locale.US);
+    public static final String MIME_TYPE_JPEG = "image/jpeg";
+    public static final String MIME_TYPE_TEXT = "text/plain";
 
     private Const() {
     }

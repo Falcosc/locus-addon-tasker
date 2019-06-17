@@ -30,7 +30,7 @@ public class ReportingHelper {
                 builder = new NotificationCompat.Builder(mContext);
             }
 
-            //TODO share with github
+            //TODO share with email
 
             builder.setSmallIcon(R.drawable.ic_warning)
                     .setContentTitle(message)

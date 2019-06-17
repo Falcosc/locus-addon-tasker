@@ -69,7 +69,6 @@ public class LocusGeoTagActivity extends ProjectActivity {
         String endTime;
     }
 
-    private static final String MIME_TYPE_JPEG = "image/jpeg"; //NON-NLS
     private static final String TAG = "LocusGeoTagActivity"; //NON-NLS
     private static final int REQUEST_CODE_OPEN_DIRECTORY = 1;
     private static final int REQUEST_CODE_OPEN_DOCUMENT = 2;
@@ -179,7 +178,7 @@ public class LocusGeoTagActivity extends ProjectActivity {
 
                 //noinspection CallToSuspiciousStringMethod
                 mDocumentUris = info.stream()
-                        .filter(documentInfo -> MIME_TYPE_JPEG.equals(documentInfo.getMimeType()))
+                        .filter(documentInfo -> Const.MIME_TYPE_JPEG.equals(documentInfo.getMimeType()))
                         .sorted(Comparator.comparing(DocumentInfo::getLastModified).reversed())
                         .map(documentInfo -> DocumentsContract.buildDocumentUriUsingTree(mFolderUri, documentInfo.getDocumentId()))
                         .collect(Collectors.toCollection(ArrayList::new));
@@ -282,7 +281,7 @@ public class LocusGeoTagActivity extends ProjectActivity {
 
     private void pickExampleFile() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.setType(MIME_TYPE_JPEG);
+        intent.setType(Const.MIME_TYPE_JPEG);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, mFolderUri);
         }

@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="app_name">Locus Tasker</string>
     <string name="act_request_stats_sensors">Request sensors and stats</string>
     <string name="act_request_locus_info">Get Locus Info</string>
@@ -64,23 +64,33 @@
     <string name="err_invalid_number">Is not a valid number</string>
     <string name="geotag_select_example">Select Example</string>
     <string name="geotag_select_folder">Folder for Geotag</string>
-    <plurals name="err_geotag_x_photos_no_match">
-        <item quantity="one">%d Photo are more then 1 hour away from Track</item>
-        <item quantity="other">%d Photos are more then 1 hour away from Track</item>
+    <plurals name="err_geotag_x_skipped">
+        <item quantity="one">%d Photo skipped</item>
+        <item quantity="other">%d Photos skipped</item>
+    </plurals>
+    <plurals name="geotag_x_photos_successful">
+        <item quantity="one">%d Photo tagged</item>
+        <item quantity="other">%d Photos tagged</item>
     </plurals>
     <plurals name="err_geotag_x_hours_away">
         <item quantity="one">%d hour away from closest match</item>
         <item quantity="other">%d hour away from closest match</item>
     </plurals>
+    <plurals name="share_x_photos">
+        <item quantity="one">Share Photo</item>
+        <item quantity="other">Share %d Photos</item>
+    </plurals>
     <string name="geotag_title">Geotag jpeg\'s</string>
     <string name="start_process">Start Process</string>
-    <string name="geotag_process_photos">Process Photos</string>
     <string name="err_geotag_no_date">has no exif date time</string>
     <string name="err_geotag_write_exif">can\'t read and write exif</string>
     <string name="err_geotag_date_invalid">invalid exif date time</string>
     <string name="err_geotag_example_no_date">no exif date time, please select other or abort</string>
     <string name="err_geotag_example_load_exif">can\'t load exif from example, please select other or abort</string>
-    <string name="done_with_errors">done with errors</string>
     <string name="err_unexpected_problem">Unexpected Problem</string>
-    <string name="err_geotag_x_photos_got_not_tagged" tools:ignore="PluralsCandidate">%d/%d did not get tagged</string>
+    <string name="geotag_search_matching_photos">Search matching Photos</string>
+    <string name="err_geotag_open_file">Can\'t open File</string>
+    <string name="err_geotag_read_file">Can\'t read File</string>
+    <string name="geotag_write_exif">Write Exif</string>
+    <string name="error_details">Error Details</string>
 </resources>
