@@ -2,11 +2,15 @@ package falcosc.locus.addon.tasker.utils;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
+import falcosc.locus.addon.tasker.BuildConfig;
 import falcosc.locus.addon.tasker.R;
 
 public class ReportingHelper {
@@ -30,11 +34,22 @@ public class ReportingHelper {
                 builder = new NotificationCompat.Builder(mContext);
             }
 
-            //TODO share with email
+            String exceptionName = throwable.getClass().getSimpleName();
+
+            Intent emailIntent = new Intent(Intent.ACTION_SENDTO)
+                    .setData(Uri.fromParts(Const.SCHEMA_MAIL, BuildConfig.CONTACT_EMAIL, null))
+                    .putExtra(Intent.EXTRA_SUBJECT, mContext.getText(R.string.app_name) + " " + exceptionName)
+                    .putExtra(Intent.EXTRA_TEXT, exceptionName + ": " +
+                            throwable.getLocalizedMessage() + "\n" +
+                            Log.getStackTraceString(throwable));
+
+            PendingIntent pendingGetText = PendingIntent.getActivity(mContext, 0,
+                    Intent.createChooser(emailIntent, mContext.getText(R.string.send_to_developer)), PendingIntent.FLAG_UPDATE_CURRENT);
+            builder.addAction(android.R.drawable.ic_dialog_email, mContext.getText(R.string.send_to_developer), pendingGetText);
 
             builder.setSmallIcon(R.drawable.ic_warning)
                     .setContentTitle(message)
-                    .setContentText(throwable.getClass().getSimpleName() + ": " + throwable.getLocalizedMessage())
+                    .setContentText(exceptionName + ": " + throwable.getLocalizedMessage())
                     .setStyle(new NotificationCompat.BigTextStyle()
                             .bigText(Log.getStackTraceString(throwable))
                             .setSummaryText(mContext.getString(R.string.err_unexpected_problem))

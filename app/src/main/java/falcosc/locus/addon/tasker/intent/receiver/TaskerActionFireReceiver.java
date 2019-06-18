@@ -38,7 +38,7 @@ public class TaskerActionFireReceiver extends BroadcastReceiver {
             action.setContext(context, this);
             action.handle(intent, apiExtraBundle);
         } catch (Exception e) {
-            new ReportingHelper(context).sendErrorNotification(TAG, "Can't execute action " + actionType, e); //NON-NLS
+            new ReportingHelper(context).sendErrorNotification(TAG,"Can't execute action " + actionType, e); //NON-NLS
         }
     }
 }
