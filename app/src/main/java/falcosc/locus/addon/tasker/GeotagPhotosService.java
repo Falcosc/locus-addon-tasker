@@ -1,14 +1,18 @@
 package falcosc.locus.addon.tasker;
 
+import android.Manifest;
 import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.PendingIntent;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
+import android.provider.MediaStore;
 import android.system.Os;
 import android.system.OsConstants;
 import android.util.Log;
@@ -34,6 +38,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 import androidx.exifinterface.media.ExifInterface;
 import falcosc.locus.addon.tasker.utils.Const;
 import locus.api.android.utils.IntentHelper;
@@ -54,6 +59,7 @@ public final class GeotagPhotosService extends IntentService {
 
     @SuppressWarnings("NumericCastThatLosesPrecision")
     private final long openFilesThreshold = (long) (Os.sysconf(OsConstants._SC_OPEN_MAX) * 0.9);
+    private boolean mNoMediaStoreAccess;
 
     public GeotagPhotosService() {
         super(TAG);
@@ -77,6 +83,8 @@ public final class GeotagPhotosService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent workIntent) {
+        mNoMediaStoreAccess = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
         mNotificationBuilder = createNotificationBuilder().setOngoing(true);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
@@ -111,7 +119,7 @@ public final class GeotagPhotosService extends IntentService {
             //keep notification
             stopForeground(STOP_FOREGROUND_DETACH);
         } catch (RequiredDataMissingException e) {
-            stopWithError(e.getMessage());
+            stopWithError(Optional.ofNullable(e.getMessage()).orElseGet(()->e.getClass().getSimpleName()));
         }
     }
 
@@ -165,6 +173,7 @@ public final class GeotagPhotosService extends IntentService {
         sendResultNotification(pendingExifChanges.stream()
                 .map(PendingExifChange::getUri)
                 .collect(Collectors.toCollection(ArrayList::new)));
+        Log.i(TAG, "done"); //NON-NLS
     }
 
     private void sendResultNotification(@NonNull ArrayList<Uri> imageUris) {
@@ -229,11 +238,13 @@ public final class GeotagPhotosService extends IntentService {
                 : mPoints.get(index - 1);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Nullable
     private PendingExifChange findAndSetLocation(@NonNull Uri uri) {
         ParcelFileDescriptor pfd = null;
         PendingExifChange pendingChange = null;
         try {
+            //don't need setRequireOriginal because we are just writing
             pfd = getContentResolver().openFileDescriptor(uri, "rw"); //NON-NLS
             if (pfd == null) {
                 incrementProgressWithError(uri, getString(R.string.err_geotag_open_file));
@@ -249,7 +260,7 @@ public final class GeotagPhotosService extends IntentService {
             incrementProgressWithError(uri, getString(R.string.err_geotag_date_invalid));
         } catch (Exception e) {
             incrementProgressWithError(uri, e.getClass().getSimpleName() + " " + e.getLocalizedMessage());
-        }finally {
+        } finally {
             //only close if we don't have a pending change
             if (pendingChange == null) {
                 closeQuietly(pfd);
@@ -259,18 +270,58 @@ public final class GeotagPhotosService extends IntentService {
         return pendingChange;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @NonNull
+    private static Optional<String> getAttribute(@NonNull ExifInterface exif, @NonNull String tag) {
+        String value = exif.getAttribute(tag);
+        if (StringUtils.isBlank(value)) {
+            return Optional.empty();
+        }
+        return Optional.of(value);
+    }
+
+    private static void setAttributeIfBlank(@NonNull ExifInterface exif, @NonNull String tag, @NonNull String newValue) {
+        String oldValue = exif.getAttribute(tag);
+        if (StringUtils.isBlank(oldValue)) {
+            exif.setAttribute(tag, newValue);
+        }
+    }
+
+    private static android.location.Location convertLocation(Location loc) {
+        android.location.Location result = new android.location.Location(loc.getProvider());
+        result.setLatitude(loc.getLatitude());
+        result.setLongitude(loc.getLongitude());
+        result.setAltitude(loc.getAltitude());
+        result.setSpeed(loc.getSpeed());
+        result.setTime(loc.getTime());
+        return result;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Nullable
+    public static String getOriginalDateTime(@NonNull ExifInterface exif) {
+        return getAttribute(exif, ExifInterface.TAG_DATETIME_ORIGINAL)
+                .orElseGet(() -> getAttribute(exif, ExifInterface.TAG_DATETIME)
+                        .orElseGet(() -> getAttribute(exif, ExifInterface.TAG_DATETIME_DIGITIZED)
+                                .orElse(null)));
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @SuppressWarnings("DuplicateThrows")
     private PendingExifChange createPendingExifChange(@NonNull ParcelFileDescriptor pfd, @NonNull Uri uri) throws IOException, ParseException, FileNotFoundException {
         FileDescriptor fd = pfd.getFileDescriptor();
         ExifInterface exif = new ExifInterface(fd);
-        String exifTime = exif.getAttribute(ExifInterface.TAG_DATETIME);
+
+        String exifTime = getOriginalDateTime(exif);
         if (exifTime == null) {
             incrementProgressWithError(uri, getString(R.string.err_geotag_no_date));
             return null;
         }
+        setAttributeIfBlank(exif, ExifInterface.TAG_DATETIME_ORIGINAL, exifTime);
+        setAttributeIfBlank(exif, ExifInterface.TAG_DATETIME_DIGITIZED, exifTime);
 
-        //clone because this is not threadsafe
         long time = Const.EXIF_DATE_FORMAT.parse(exifTime).getTime() + mTimeOffset;
+        exif.setAttribute(ExifInterface.TAG_DATETIME, Const.EXIF_DATE_FORMAT.format(time));
 
         Location loc = findNearestLocation(time);
         long timeDiff = Math.abs(loc.getTime() - time);
@@ -281,25 +332,65 @@ public final class GeotagPhotosService extends IntentService {
             return null;
         }
 
-        exif.setLatLong(loc.latitude, loc.longitude);
-        //it is ok to increment at this point because ForkJoinPool is very small
+        android.location.Location androidLoc = convertLocation(loc);
+        exif.setGpsInfo(androidLoc);
 
+        //it is ok to increment at this point because ForkJoinPool is very small
         if (mOpenFiles.get() >= openFilesThreshold) {
             //write exif in parallel mode if we have to many open files
-            exif.saveAttributes();
-            incrementNotificationProgress();
+            write(new PendingExifChange(exif, pfd, uri, time, androidLoc));
             return null;
         }
 
         mOpenFiles.incrementAndGet();
         incrementNotificationProgress();
-        return new PendingExifChange(exif, pfd, uri, time);
+        return new PendingExifChange(exif, pfd, uri, time, androidLoc);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private synchronized void updateMediaStore(Uri uri, android.location.Location loc, long time) {
+        if(mNoMediaStoreAccess){
+            return;
+        }
+
+        Uri mediaStore = null;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            mediaStore = MediaStore.getMediaUri(this, uri);
+        }
+
+        if(mediaStore == null){
+            //noinspection CallToSuspiciousStringMethod
+            if (Const.AUTHORITY_EXTERNAL_STORAGE.equals(uri.getAuthority())) {
+                mediaStore = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+            } else {
+                //TODO Test and check documents file
+                return;
+            }
+        }
+
+        String path = Optional.ofNullable(uri.getPath()).orElseGet(uri::toString);
+        path = path.substring(path.lastIndexOf(':') + 1);
+
+        ContentValues values = new ContentValues();
+        //noinspection StaticFieldReferencedViaSubclass because this is an api 29 refactoring
+        values.put(MediaStore.Images.ImageColumns.DATE_TAKEN, time);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            values.put(MediaStore.Images.ImageColumns.LATITUDE, loc.getLatitude());
+            values.put(MediaStore.Images.ImageColumns.LONGITUDE, loc.getLongitude());
+        }
+        int updatedRows = getContentResolver().update(mediaStore, values,
+                MediaStore.MediaColumns.DATA + " LIKE ?", new String[]{"%" + path}); //NON-NLS
+        Log.i(TAG,"Updated MediaStore Rows: " + updatedRows + " for " + path);  //NON-NLS
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void write(@NonNull PendingExifChange pendingChange) {
         Log.i(TAG, "write exif " + pendingChange.getUri()); //NON-NLS
         try {
             pendingChange.mExif.saveAttributes();
+            //manually updating media store to get result in realtime
+            updateMediaStore(pendingChange.getUri(), pendingChange.mLoc, pendingChange.getTime());
             incrementNotificationProgress();
         } catch (IOException e) {
             incrementProgressWithError(pendingChange.getUri(), getString(R.string.err_geotag_write_exif) + " " + e.getLocalizedMessage());
@@ -346,6 +437,7 @@ public final class GeotagPhotosService extends IntentService {
     static class PendingExifChange {
         final ExifInterface mExif;
         final ParcelFileDescriptor mPfd;
+        final android.location.Location mLoc;
 
         Uri getUri() {
             return mUri;
@@ -358,11 +450,12 @@ public final class GeotagPhotosService extends IntentService {
             return mTime;
         }
 
-        PendingExifChange(@NonNull ExifInterface exif, @NonNull ParcelFileDescriptor pfd, @NonNull Uri uri, long time) {
+        PendingExifChange(@NonNull ExifInterface exif, @NonNull ParcelFileDescriptor pfd, @NonNull Uri uri, long time, android.location.Location loc) {
             mExif = exif;
             mPfd = pfd;
             mUri = uri;
             mTime = time;
+            mLoc = loc;
         }
 
     }

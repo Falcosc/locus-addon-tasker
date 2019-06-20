@@ -1,6 +1,8 @@
 package falcosc.locus.addon.tasker;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -21,11 +23,11 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.File;
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
@@ -73,7 +75,7 @@ public class LocusGeoTagActivity extends ProjectActivity {
     private static final int REQUEST_CODE_OPEN_DIRECTORY = 1;
     private static final int REQUEST_CODE_OPEN_DOCUMENT = 2;
     private final DateFormat mLocalDateTimeFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM);
-    private final Calendar mExampleDateTime = Calendar.getInstance();
+    private static long mExampleDateTime = 0;
     private ArrayList<Uri> mDocumentUris;
     private Uri mFolderUri;
     private EditText mEditOffset;
@@ -89,6 +91,12 @@ public class LocusGeoTagActivity extends ProjectActivity {
             return;
         }
 
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            if(!shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+            }
+        }
+
         //don't need to check for track intent because this is bound only to track intents
         try {
             TrackDetails trackDetails = getAndValidateTrackDetails();
@@ -96,7 +104,7 @@ public class LocusGeoTagActivity extends ProjectActivity {
             createGeotagView(trackDetails);
         } catch (Exception e) {
             //TODO if exception is thrown after pick folder, we don't see the message
-            createMessageView(e.getLocalizedMessage());
+            createMessageView(Optional.ofNullable(e.getLocalizedMessage()).orElseGet(() -> e.getClass().getSimpleName()));
         }
 
     }
@@ -114,7 +122,6 @@ public class LocusGeoTagActivity extends ProjectActivity {
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void createGeotagView(@NonNull TrackDetails trackDetails) {
         setContentView(R.layout.geotag_start);
-
         Button cancelButton = findViewById(R.id.btnCancel);
         cancelButton.setOnClickListener(v -> finish());
 
@@ -164,12 +171,10 @@ public class LocusGeoTagActivity extends ProjectActivity {
 
             Uri treeUrl = DocumentsContract.buildChildDocumentsUriUsingTree(mFolderUri, DocumentsContract.getTreeDocumentId(mFolderUri));
             Log.i(TAG, "mFolderUri: " + mFolderUri + " \ntreeUrl: " + treeUrl); //NON-NLS
-
             //selection and order is ignored by content resolver, use null and do it in ui thread
             try (Cursor cursor = getContentResolver().query(treeUrl, new String[]{Document.COLUMN_DOCUMENT_ID, Document.COLUMN_MIME_TYPE, Document.COLUMN_LAST_MODIFIED},
                     null, null, null, null)) { //NON-NLS
                 List<DocumentInfo> info = new ArrayList<>();
-
                 if (cursor != null) {
                     while (cursor.moveToNext()) {
                         info.add(new DocumentInfo(cursor.getString(0), cursor.getString(1), cursor.getLong(2)));
@@ -199,6 +204,7 @@ public class LocusGeoTagActivity extends ProjectActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void handleOpenFile(int resultCode, @Nullable Intent resultData) {
         if (resultCode == RESULT_OK) {
             try {
@@ -210,6 +216,7 @@ public class LocusGeoTagActivity extends ProjectActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void setExample(@NonNull Uri uri) {
         try (ParcelFileDescriptor pfd = getContentResolver().openFileDescriptor(uri, "r")) { //NON-NLS
             assert pfd != null;
@@ -218,9 +225,9 @@ public class LocusGeoTagActivity extends ProjectActivity {
             photoName.setText(fileName);
             ExifInterface exifInterface = new ExifInterface(pfd.getFileDescriptor());
 
-            String exifTime = exifInterface.getAttribute(ExifInterface.TAG_DATETIME);
+            String exifTime = GeotagPhotosService.getOriginalDateTime(exifInterface);
             if (exifTime != null) {
-                mExampleDateTime.setTime(Const.EXIF_DATE_FORMAT.parse(exifTime));
+                mExampleDateTime = Const.EXIF_DATE_FORMAT.parse(exifTime).getTime();
                 handleExampleTimeOffset(mEditOffset.getText());
             } else {
                 Toast.makeText(this, fileName + ": " + getString(R.string.err_geotag_example_no_date), Toast.LENGTH_LONG).show();
@@ -238,13 +245,13 @@ public class LocusGeoTagActivity extends ProjectActivity {
     void handleExampleTimeOffset(@Nullable CharSequence offset) {
         try {
             if (StringUtils.isBlank(offset)) {
-                mPhotoTime.setText(mLocalDateTimeFormat.format(mExampleDateTime.getTime()));
+                mPhotoTime.setText(mLocalDateTimeFormat.format(mExampleDateTime));
                 mTimeOffset = 0;
             } else {
                 mTimeOffset = Integer.parseInt(offset.toString());
-                Calendar newTime = (Calendar) mExampleDateTime.clone();
-                newTime.add(Calendar.HOUR, mTimeOffset);
-                mPhotoTime.setText(mLocalDateTimeFormat.format(newTime.getTime()));
+                long newTime = mExampleDateTime;
+                newTime += mTimeOffset * Const.ONE_HOUR;
+                mPhotoTime.setText(mLocalDateTimeFormat.format(newTime));
             }
         } catch (NumberFormatException e) {
             mEditOffset.setError(getString(R.string.err_invalid_number));
