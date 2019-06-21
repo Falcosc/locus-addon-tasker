@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import falcosc.locus.addon.tasker.BuildConfig;
 import falcosc.locus.addon.tasker.R;
@@ -27,8 +28,7 @@ public class ReportingHelper {
         try {
             NotificationCompat.Builder builder;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                //TODO do we need advanced channel management?
-                builder = new NotificationCompat.Builder(mContext, NotificationChannel.DEFAULT_CHANNEL_ID);
+                builder = new NotificationCompat.Builder(mContext, createDefaultNotificationChannel());
             } else {
                 //noinspection deprecation
                 builder = new NotificationCompat.Builder(mContext);
@@ -63,4 +63,17 @@ public class ReportingHelper {
         }
 
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public String createDefaultNotificationChannel() {
+        NotificationChannel channel = new NotificationChannel(Const.NOTIFICATION_CHANNEL_ID,
+                mContext.getString(R.string.app_name), NotificationManager.IMPORTANCE_MIN);
+        channel.setDescription(mContext.getString(R.string.notification_channel_desc));
+        NotificationManager notificationManager = mContext.getSystemService(NotificationManager.class);
+        if (notificationManager != null) {
+            notificationManager.createNotificationChannel(channel);
+        }
+        return Const.NOTIFICATION_CHANNEL_ID;
+    }
+
 }

@@ -3,7 +3,6 @@ package falcosc.locus.addon.tasker;
 import android.Manifest;
 import android.app.IntentService;
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -12,6 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
+import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.system.Os;
 import android.system.OsConstants;
@@ -41,6 +41,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.exifinterface.media.ExifInterface;
 import falcosc.locus.addon.tasker.utils.Const;
+import falcosc.locus.addon.tasker.utils.ReportingHelper;
 import locus.api.android.utils.IntentHelper;
 import locus.api.objects.extra.Location;
 import locus.api.objects.extra.Track;
@@ -68,8 +69,7 @@ public final class GeotagPhotosService extends IntentService {
     private NotificationCompat.Builder createNotificationBuilder() {
         NotificationCompat.Builder builder;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            //TODO do we need advanced channel management?
-            builder = new NotificationCompat.Builder(getApplicationContext(), NotificationChannel.DEFAULT_CHANNEL_ID);
+            builder = new NotificationCompat.Builder(getApplicationContext(), Const.NOTIFICATION_CHANNEL_ID);
         } else {
             //noinspection deprecation
             builder = new NotificationCompat.Builder(getApplicationContext());
@@ -83,6 +83,10 @@ public final class GeotagPhotosService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent workIntent) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            new ReportingHelper(this).createDefaultNotificationChannel();
+        }
+
         mNoMediaStoreAccess = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
         mNotificationBuilder = createNotificationBuilder().setOngoing(true);
@@ -169,6 +173,8 @@ public final class GeotagPhotosService extends IntentService {
         startForeground(Const.NOTIFICATION_ID_GEOTAG, mNotificationBuilder.build());
 
         pendingExifChanges.forEach(this::write);
+        //TODO workarround needed if too many notifications are in queue
+        SystemClock.sleep(500);
 
         sendResultNotification(pendingExifChanges.stream()
                 .map(PendingExifChange::getUri)
@@ -188,9 +194,11 @@ public final class GeotagPhotosService extends IntentService {
         PendingIntent pendingSendFiles = PendingIntent.getActivity(this, 2,
                 Intent.createChooser(filesIntent, title), PendingIntent.FLAG_UPDATE_CURRENT);
         builder.addAction(android.R.drawable.ic_menu_share, title, pendingSendFiles);
+        builder.setOngoing(false);
+        builder.setContentIntent(pendingSendFiles);
 
         if (fileErrors.isEmpty()) {
-            builder.setContentTitle(getString(R.string.geotag_title));
+            builder.setContentTitle(getString(R.string.geotag_title_done));
             builder.setContentText(getResources().getQuantityString(R.plurals.geotag_x_photos_successful, imageUris.size(), imageUris.size()));
         } else {
             String errorLongText = StringUtils.join(fileErrors, '\n');

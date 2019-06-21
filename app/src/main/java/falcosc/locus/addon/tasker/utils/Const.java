@@ -32,6 +32,8 @@ public final class Const {
     public static final String SCHEMA_MAIL = "mailto";
     public static final String AUTHORITY_EXTERNAL_STORAGE = "com.android.externalstorage.documents";
 
+    public static final String NOTIFICATION_CHANNEL_ID = "LOCUS_TASKER";
+
     private Const() {
     }
 }

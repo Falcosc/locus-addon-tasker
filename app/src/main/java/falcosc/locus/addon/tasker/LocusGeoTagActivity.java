@@ -75,7 +75,7 @@ public class LocusGeoTagActivity extends ProjectActivity {
     private static final int REQUEST_CODE_OPEN_DIRECTORY = 1;
     private static final int REQUEST_CODE_OPEN_DOCUMENT = 2;
     private final DateFormat mLocalDateTimeFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM);
-    private static long mExampleDateTime = 0;
+    private long mExampleDateTime;
     private ArrayList<Uri> mDocumentUris;
     private Uri mFolderUri;
     private EditText mEditOffset;

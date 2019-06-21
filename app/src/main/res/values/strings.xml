@@ -81,6 +81,7 @@
         <item quantity="other">Share %d Photos</item>
     </plurals>
     <string name="geotag_title">Geotag jpeg\'s</string>
+    <string name="geotag_title_done">Geotag jpeg\'s is done</string>
     <string name="start_process">Start Process</string>
     <string name="err_geotag_no_date">has no exif date time</string>
     <string name="err_geotag_write_exif">can\'t read and write exif</string>
@@ -94,4 +95,5 @@
     <string name="geotag_write_exif">Write Exif</string>
     <string name="error_details">Error Details</string>
     <string name="send_to_developer">Report to Developer</string>
+    <string name="notification_channel_desc">Use to inform about processing progress and problems during asynchronous tasks</string>
 </resources>
