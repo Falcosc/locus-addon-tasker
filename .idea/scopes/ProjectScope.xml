@@ -1,3 +1,3 @@
 <component name="DependencyValidationManager">
-  <scope name="ProjectScope" pattern="file[*]:*/&amp;&amp;!file[*]:*.md&amp;&amp;!file[*]:build//*&amp;&amp;!file[app]:*/thridparty/*" />
+  <scope name="ProjectScope" pattern="file[*]:*/&amp;&amp;!file[locus-addon-tasker]:examples//*&amp;&amp;!file[*]:*.md&amp;&amp;!file[*]:build//*&amp;&amp;!file[app]:*/thridparty/*" />
 </component>

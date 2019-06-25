@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import falcosc.locus.addon.tasker.BuildConfig;
@@ -22,7 +23,7 @@ public class ReportingHelper {
         mContext = context;
     }
 
-    public void sendErrorNotification(String tag, String message, Throwable throwable) {
+    public void sendErrorNotification(@NonNull String tag, @NonNull String message, @NonNull Throwable throwable) {
         Log.e(tag, message, throwable);
 
         try {
@@ -34,14 +35,11 @@ public class ReportingHelper {
                 builder = new NotificationCompat.Builder(mContext);
             }
 
-            String exceptionName = throwable.getClass().getSimpleName();
-
             Intent emailIntent = new Intent(Intent.ACTION_SENDTO)
                     .setData(Uri.fromParts(Const.SCHEMA_MAIL, BuildConfig.CONTACT_EMAIL, null))
-                    .putExtra(Intent.EXTRA_SUBJECT, mContext.getText(R.string.app_name) + " " + exceptionName)
-                    .putExtra(Intent.EXTRA_TEXT, exceptionName + ": " +
-                            throwable.getLocalizedMessage() + "\n" +
-                            Log.getStackTraceString(throwable));
+                    .putExtra(Intent.EXTRA_SUBJECT, mContext.getText(R.string.app_name) + " " + throwable.getClass().getSimpleName())
+                    .putExtra(Intent.EXTRA_TEXT, getUserFriendlyName(throwable)
+                            + "\n" + Log.getStackTraceString(throwable));
 
             PendingIntent pendingGetText = PendingIntent.getActivity(mContext, 0,
                     Intent.createChooser(emailIntent, mContext.getText(R.string.send_to_developer)), PendingIntent.FLAG_UPDATE_CURRENT);
@@ -49,7 +47,7 @@ public class ReportingHelper {
 
             builder.setSmallIcon(R.drawable.ic_warning)
                     .setContentTitle(message)
-                    .setContentText(exceptionName + ": " + throwable.getLocalizedMessage())
+                    .setContentText(getUserFriendlyName(throwable))
                     .setStyle(new NotificationCompat.BigTextStyle()
                             .bigText(Log.getStackTraceString(throwable))
                             .setSummaryText(mContext.getString(R.string.err_unexpected_problem))
@@ -74,6 +72,10 @@ public class ReportingHelper {
             notificationManager.createNotificationChannel(channel);
         }
         return Const.NOTIFICATION_CHANNEL_ID;
+    }
+
+    public static String getUserFriendlyName(@NonNull Throwable throwable) {
+        return throwable.getClass().getSimpleName() + ": " + throwable.getLocalizedMessage();
     }
 
 }

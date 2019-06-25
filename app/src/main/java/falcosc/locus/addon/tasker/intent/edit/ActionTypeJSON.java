@@ -3,6 +3,7 @@ package falcosc.locus.addon.tasker.intent.edit;
 import android.app.Dialog;
 
 import androidx.annotation.Nullable;
+import falcosc.locus.addon.tasker.utils.ReportingHelper;
 
 import android.util.Log;
 import android.view.View;
@@ -104,7 +105,7 @@ class ActionTypeJSON {
                         bind.mSetter.set(value);
                     }
                 } catch (Exception e) {
-                    Log.w(TAG, e.getMessage(), e);
+                    Log.w(TAG, ReportingHelper.getUserFriendlyName(e), e);
                 }
             }
         }
@@ -125,7 +126,7 @@ class ActionTypeJSON {
                 //null get removed by put
                 json.put(entry.getKey(), value);
             } catch (Exception e) {
-                Log.w(TAG, e.getMessage(), e);
+                Log.w(TAG, ReportingHelper.getUserFriendlyName(e), e);
             }
 
         }

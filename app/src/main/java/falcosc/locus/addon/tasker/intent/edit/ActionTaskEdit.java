@@ -24,6 +24,7 @@ import falcosc.locus.addon.tasker.R;
 import falcosc.locus.addon.tasker.intent.LocusActionType;
 import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
 import falcosc.locus.addon.tasker.utils.Const;
+import falcosc.locus.addon.tasker.utils.ReportingHelper;
 
 
 public class ActionTaskEdit extends TaskerEditActivity {
@@ -194,7 +195,7 @@ public class ActionTaskEdit extends TaskerEditActivity {
                 }
             }
         } catch (JSONException e) {
-            Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, ReportingHelper.getUserFriendlyName(e), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -241,7 +242,7 @@ public class ActionTaskEdit extends TaskerEditActivity {
                 try {
                     locusJSON.put(stringActionTypeJSONEntry.getKey(), actionType.getJSON());
                 } catch (JSONException e) {
-                    Toast.makeText(this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, ReportingHelper.getUserFriendlyName(e), Toast.LENGTH_LONG).show();
                 }
             }
         }

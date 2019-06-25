@@ -44,7 +44,7 @@ abstract class AbstractTaskerAction implements TaskerAction {
         } catch (LocusCache.MissingAppContextException | RequiredVersionMissingException | RequiredDataMissingException e) {
             if (mReceiver.isOrderedBroadcast()) {
                 Bundle varsBundle = new Bundle();
-                varsBundle.putString(TaskerPlugin.Setting.VARNAME_ERROR_MESSAGE, e.getMessage());
+                varsBundle.putString(TaskerPlugin.Setting.VARNAME_ERROR_MESSAGE, ReportingHelper.getUserFriendlyName(e));
                 TaskerPlugin.addVariableBundle(mReceiver.getResultExtras(true), varsBundle);
                 mReceiver.setResultCode(TaskerPlugin.Setting.RESULT_CODE_FAILED);
             } else {

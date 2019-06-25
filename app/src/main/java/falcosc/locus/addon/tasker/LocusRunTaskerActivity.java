@@ -87,7 +87,7 @@ public class LocusRunTaskerActivity extends ProjectActivity {
             }
 
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
+            Log.e(TAG, ReportingHelper.getUserFriendlyName(e), e);
             new ReportingHelper(this).sendErrorNotification(TAG, "Can't create Buttons for Tasks", e); //NON-NLS
         }
     }

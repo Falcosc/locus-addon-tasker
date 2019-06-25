@@ -27,7 +27,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
@@ -36,6 +35,7 @@ import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.exifinterface.media.ExifInterface;
 import falcosc.locus.addon.tasker.utils.Const;
+import falcosc.locus.addon.tasker.utils.ReportingHelper;
 import locus.api.android.utils.IntentHelper;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 import locus.api.objects.extra.Track;
@@ -81,6 +81,7 @@ public class LocusGeoTagActivity extends ProjectActivity {
     private EditText mEditOffset;
     private int mTimeOffset;
     private TextView mPhotoTime;
+    private boolean isMessageView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -103,13 +104,14 @@ public class LocusGeoTagActivity extends ProjectActivity {
             pickFolder();
             createGeotagView(trackDetails);
         } catch (Exception e) {
-            //TODO if exception is thrown after pick folder, we don't see the message
-            createMessageView(Optional.ofNullable(e.getLocalizedMessage()).orElseGet(() -> e.getClass().getSimpleName()));
+            createMessageView(ReportingHelper.getUserFriendlyName(e));
+            Log.e(TAG, ReportingHelper.getUserFriendlyName(e), e);
         }
 
     }
 
     private void createMessageView(@NonNull String text) {
+        isMessageView = true;
         setContentView(R.layout.text_dialog);
 
         TextView textMsg = findViewById(R.id.textMsg);
@@ -165,6 +167,11 @@ public class LocusGeoTagActivity extends ProjectActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void handleOpenDir(int resultCode, @Nullable Intent resultData) {
+        if(isMessageView){
+            //do nothing during message view
+            return;
+        }
+
         if ((resultCode == RESULT_OK) && (resultData != null)) {
 
             mFolderUri = resultData.getData();

@@ -61,6 +61,7 @@ public final class GeotagPhotosService extends IntentService {
     @SuppressWarnings("NumericCastThatLosesPrecision")
     private final long openFilesThreshold = (long) (Os.sysconf(OsConstants._SC_OPEN_MAX) * 0.9);
     private boolean mNoMediaStoreAccess;
+    private long mLastNotificationTime;
 
     public GeotagPhotosService() {
         super(TAG);
@@ -123,7 +124,7 @@ public final class GeotagPhotosService extends IntentService {
             //keep notification
             stopForeground(STOP_FOREGROUND_DETACH);
         } catch (RequiredDataMissingException e) {
-            stopWithError(Optional.ofNullable(e.getMessage()).orElseGet(()->e.getClass().getSimpleName()));
+            stopWithError(ReportingHelper.getUserFriendlyName(e));
         }
     }
 
@@ -173,9 +174,8 @@ public final class GeotagPhotosService extends IntentService {
         startForeground(Const.NOTIFICATION_ID_GEOTAG, mNotificationBuilder.build());
 
         pendingExifChanges.forEach(this::write);
-        //TODO workarround needed if too many notifications are in queue
-        SystemClock.sleep(500);
 
+        //mLastNotificationTime does prevent that this important notification got dismissed because of notification overflow
         sendResultNotification(pendingExifChanges.stream()
                 .map(PendingExifChange::getUri)
                 .collect(Collectors.toCollection(ArrayList::new)));
@@ -262,12 +262,13 @@ public final class GeotagPhotosService extends IntentService {
             //createPendingExifChange does increment progress
             pendingChange = createPendingExifChange(pfd, uri);
         } catch (IOException e) {
-            incrementProgressWithError(uri, getString(R.string.err_geotag_read_file) + e.getLocalizedMessage());
+            incrementProgressWithError(uri, getString(R.string.err_geotag_read_file)
+                    + " " + ReportingHelper.getUserFriendlyName(e));
             Log.e(TAG, "exif IOException", e); //NON-NLS
         } catch (ParseException e) {
             incrementProgressWithError(uri, getString(R.string.err_geotag_date_invalid));
         } catch (Exception e) {
-            incrementProgressWithError(uri, e.getClass().getSimpleName() + " " + e.getLocalizedMessage());
+            incrementProgressWithError(uri, ReportingHelper.getUserFriendlyName(e));
         } finally {
             //only close if we don't have a pending change
             if (pendingChange == null) {
@@ -357,7 +358,7 @@ public final class GeotagPhotosService extends IntentService {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private synchronized void updateMediaStore(Uri uri, android.location.Location loc, long time) {
-        if(mNoMediaStoreAccess){
+        if (mNoMediaStoreAccess) {
             return;
         }
 
@@ -367,7 +368,7 @@ public final class GeotagPhotosService extends IntentService {
             mediaStore = MediaStore.getMediaUri(this, uri);
         }
 
-        if(mediaStore == null){
+        if (mediaStore == null) {
             //noinspection CallToSuspiciousStringMethod
             if (Const.AUTHORITY_EXTERNAL_STORAGE.equals(uri.getAuthority())) {
                 mediaStore = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
@@ -389,7 +390,7 @@ public final class GeotagPhotosService extends IntentService {
         }
         int updatedRows = getContentResolver().update(mediaStore, values,
                 MediaStore.MediaColumns.DATA + " LIKE ?", new String[]{"%" + path}); //NON-NLS
-        Log.i(TAG,"Updated MediaStore Rows: " + updatedRows + " for " + path);  //NON-NLS
+        Log.i(TAG, "Updated MediaStore Rows: " + updatedRows + " for " + path);  //NON-NLS
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -401,7 +402,8 @@ public final class GeotagPhotosService extends IntentService {
             updateMediaStore(pendingChange.getUri(), pendingChange.mLoc, pendingChange.getTime());
             incrementNotificationProgress();
         } catch (IOException e) {
-            incrementProgressWithError(pendingChange.getUri(), getString(R.string.err_geotag_write_exif) + " " + e.getLocalizedMessage());
+            incrementProgressWithError(pendingChange.getUri(), getString(R.string.err_geotag_write_exif)
+                    + " " + ReportingHelper.getUserFriendlyName(e));
             Log.e(TAG, "exif IOException", e); //NON-NLS
         } finally {
             closeQuietly(pendingChange.mPfd);
@@ -436,10 +438,15 @@ public final class GeotagPhotosService extends IntentService {
         incrementNotificationProgress();
     }
 
+    @SuppressWarnings("CallToNativeMethodWhileLocked")
     private synchronized void incrementNotificationProgress() {
         mNotificationBuilder.setProgress(progressEnd, ++fileProgress, false);
-        Notification notification = mNotificationBuilder.build();
-        startForeground(Const.NOTIFICATION_ID_GEOTAG, notification);
+        long newTime = SystemClock.elapsedRealtime();
+        if ((mLastNotificationTime + Const.NOTIFICATION_REPEAT_AFTER) < newTime) {
+            Notification notification = mNotificationBuilder.build();
+            startForeground(Const.NOTIFICATION_ID_GEOTAG, notification);
+            mLastNotificationTime = newTime;
+        }
     }
 
     static class PendingExifChange {

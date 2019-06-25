@@ -1,5 +1,6 @@
 <resources>
-    <string name="app_name">Locus Tasker</string>
+    <string name="app_name">LocusTasker</string>
+    <string name="app_name_long">Locus Addon &amp; Tasker Plugin</string>
     <string name="act_request_stats_sensors">Request sensors and stats</string>
     <string name="act_request_locus_info">Get Locus Info</string>
     <string name="act_exec_task">Execute Action Task</string>

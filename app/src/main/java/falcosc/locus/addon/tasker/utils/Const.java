@@ -33,6 +33,7 @@ public final class Const {
     public static final String AUTHORITY_EXTERNAL_STORAGE = "com.android.externalstorage.documents";
 
     public static final String NOTIFICATION_CHANNEL_ID = "LOCUS_TASKER";
+    public static final long NOTIFICATION_REPEAT_AFTER = 300L;
 
     private Const() {
     }
