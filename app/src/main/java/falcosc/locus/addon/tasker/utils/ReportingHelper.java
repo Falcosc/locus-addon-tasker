@@ -9,6 +9,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
@@ -17,6 +20,7 @@ import falcosc.locus.addon.tasker.R;
 
 public class ReportingHelper {
 
+    private static final Pattern EXCEPTION = Pattern.compile("Exception", Pattern.LITERAL); //NON-NLS
     private final Context mContext;
 
     public ReportingHelper(Context context) {
@@ -75,7 +79,9 @@ public class ReportingHelper {
     }
 
     public static String getUserFriendlyName(@NonNull Throwable throwable) {
-        return throwable.getClass().getSimpleName() + ": " + throwable.getLocalizedMessage();
+        String exceptionName = throwable.getClass().getSimpleName();
+        exceptionName = EXCEPTION.matcher(exceptionName).replaceAll(Matcher.quoteReplacement(""));
+        return exceptionName + ": " + throwable.getLocalizedMessage();
     }
 
 }

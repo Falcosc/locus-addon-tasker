@@ -93,7 +93,7 @@ public class LocusGeoTagActivity extends ProjectActivity {
         }
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            if(!shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            if (!shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
             }
         }
@@ -167,7 +167,7 @@ public class LocusGeoTagActivity extends ProjectActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void handleOpenDir(int resultCode, @Nullable Intent resultData) {
-        if(isMessageView){
+        if (isMessageView) {
             //do nothing during message view
             return;
         }

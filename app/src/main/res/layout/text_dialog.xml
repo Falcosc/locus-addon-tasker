@@ -9,8 +9,7 @@
         android:id="@+id/textMsg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/fab_margin"
-        android:paddingRight="@dimen/fab_margin"
+        android:padding="@dimen/fab_margin"
         android:text=""
         tools:text="@tools:sample/lorem/random" />
 
