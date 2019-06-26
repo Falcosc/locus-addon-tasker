@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import falcosc.locus.addon.tasker.thridparty.TaskerIntent;
@@ -73,19 +74,23 @@ public class LocusRunTaskerActivity extends ProjectActivity {
 
         try (Cursor cursor = getContentResolver().query(Uri.parse("content://net.dinglisch.android.tasker/tasks"), //NON-NLS
                 null, null, null, null)) {
-            assert cursor != null;
-            int nameCol = cursor.getColumnIndex("name"); //NON-NLS
+            if(cursor != null) {
+                int nameCol = cursor.getColumnIndex("name"); //NON-NLS
 
-            while (cursor.moveToNext()) {
-                String task = cursor.getString(nameCol);
+                while (cursor.moveToNext()) {
+                    String task = cursor.getString(nameCol);
 
-                View view = inflater.inflate(R.layout.list_btn, viewGroup, false);
-                Button taskBtn = view.findViewById(R.id.listBtn);
-                taskBtn.setText(task);
-                taskBtn.setOnClickListener(v -> startTask(task));
-                viewGroup.addView(view);
+                    View view = inflater.inflate(R.layout.list_btn, viewGroup, false);
+                    Button taskBtn = view.findViewById(R.id.listBtn);
+                    taskBtn.setText(task);
+                    taskBtn.setOnClickListener(v -> startTask(task));
+                    viewGroup.addView(view);
+                }
+            } else {
+                findViewById(R.id.not_implemented).setVisibility(View.GONE);
+                TextView text = findViewById(R.id.execute_tasks);
+                text.setText(R.string.err_tasker_external_access);
             }
-
         } catch (Exception e) {
             Log.e(TAG, ReportingHelper.getUserFriendlyName(e), e);
             new ReportingHelper(this).sendErrorNotification(TAG, "Can't create Buttons for Tasks", e); //NON-NLS

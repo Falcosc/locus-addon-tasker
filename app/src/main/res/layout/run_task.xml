@@ -23,6 +23,7 @@
                 android:text="@string/run_task_not_implemented" />
 
             <TextView
+                android:id="@+id/execute_tasks"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/run_task_execute" />

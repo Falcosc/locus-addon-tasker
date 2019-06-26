@@ -97,4 +97,5 @@
     <string name="error_details">Error Details</string>
     <string name="send_to_developer">Report to Developer</string>
     <string name="notification_channel_desc">Use to inform about processing progress and problems during asynchronous tasks</string>
+    <string name="err_tasker_external_access">Can not access your Tasks, please enable external access in tasker settings</string>
 </resources>

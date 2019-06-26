@@ -90,7 +90,7 @@ public final class GeotagPhotosService extends IntentService {
 
         mNoMediaStoreAccess = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
-        mNotificationBuilder = createNotificationBuilder().setOngoing(true);
+        mNotificationBuilder = createNotificationBuilder();
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             stopWithError(getString(R.string.err_geotag_required_android_version));
@@ -145,9 +145,8 @@ public final class GeotagPhotosService extends IntentService {
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void stopWithError(@NonNull String errMsg) {
         Log.e(TAG, errMsg);
-        NotificationCompat.Builder builder = createNotificationBuilder()
-                .setOngoing(false)
-                .setContentText(errMsg);
+        NotificationCompat.Builder builder = createNotificationBuilder().setContentText(errMsg);
+        SystemClock.sleep(Const.NOTIFICATION_REPEAT_AFTER); //detach does sometimes not work if notifications fire close to each other
         startForeground(Const.NOTIFICATION_ID_GEOTAG, builder.build());
         //detach notification to keep
         stopForeground(STOP_FOREGROUND_DETACH);
@@ -194,7 +193,6 @@ public final class GeotagPhotosService extends IntentService {
         PendingIntent pendingSendFiles = PendingIntent.getActivity(this, 2,
                 Intent.createChooser(filesIntent, title), PendingIntent.FLAG_UPDATE_CURRENT);
         builder.addAction(android.R.drawable.ic_menu_share, title, pendingSendFiles);
-        builder.setOngoing(false);
         builder.setContentIntent(pendingSendFiles);
 
         if (fileErrors.isEmpty()) {
@@ -358,24 +356,18 @@ public final class GeotagPhotosService extends IntentService {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private synchronized void updateMediaStore(Uri uri, android.location.Location loc, long time) {
-        if (mNoMediaStoreAccess) {
+        if (mNoMediaStoreAccess || (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)) {
             return;
         }
 
-        Uri mediaStore = null;
+        Uri mediaStore;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            mediaStore = MediaStore.getMediaUri(this, uri);
-        }
-
-        if (mediaStore == null) {
-            //noinspection CallToSuspiciousStringMethod
-            if (Const.AUTHORITY_EXTERNAL_STORAGE.equals(uri.getAuthority())) {
-                mediaStore = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-            } else {
-                //TODO Test and check documents file
-                return;
-            }
+        //noinspection CallToSuspiciousStringMethod
+        if (Const.AUTHORITY_EXTERNAL_STORAGE.equals(uri.getAuthority())) {
+            mediaStore = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        } else {
+            Log.w(TAG, "skip update media store");  //NON-NLS
+            return;
         }
 
         String path = Optional.ofNullable(uri.getPath()).orElseGet(uri::toString);
@@ -384,10 +376,8 @@ public final class GeotagPhotosService extends IntentService {
         ContentValues values = new ContentValues();
         //noinspection StaticFieldReferencedViaSubclass because this is an api 29 refactoring
         values.put(MediaStore.Images.ImageColumns.DATE_TAKEN, time);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            values.put(MediaStore.Images.ImageColumns.LATITUDE, loc.getLatitude());
-            values.put(MediaStore.Images.ImageColumns.LONGITUDE, loc.getLongitude());
-        }
+        values.put(MediaStore.Images.ImageColumns.LATITUDE, loc.getLatitude());
+        values.put(MediaStore.Images.ImageColumns.LONGITUDE, loc.getLongitude());
         int updatedRows = getContentResolver().update(mediaStore, values,
                 MediaStore.MediaColumns.DATA + " LIKE ?", new String[]{"%" + path}); //NON-NLS
         Log.i(TAG, "Updated MediaStore Rows: " + updatedRows + " for " + path);  //NON-NLS
