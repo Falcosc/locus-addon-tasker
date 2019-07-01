@@ -17,6 +17,9 @@
     <uses-permission-sdk-23 android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission-sdk-23 android:name="android.permission.FOREGROUND_SERVICE" />
 
+    <uses-permission android:name="com.asamm.locus.permission.READ_GEOCACHING_DATA" />
+    <uses-permission android:name="com.asamm.locus.permission.WRITE_GEOCACHING_DATA" />
+
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
@@ -116,6 +119,16 @@
         <activity
             android:name=".intent.edit.LocusInfoEdit"
             android:label="@string/act_request_locus_info"
+            android:icon="@mipmap/ic_launcher"
+            android:theme="@style/AlertDialogTheme">
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".intent.edit.NearestPointEdit"
+            android:label="Request Nearest Points"
             android:icon="@mipmap/ic_launcher"
             android:theme="@style/AlertDialogTheme">
             <intent-filter>

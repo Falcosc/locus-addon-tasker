@@ -36,6 +36,7 @@ public class TaskerActionFireReceiver extends BroadcastReceiver {
         try {
             TaskerAction action = LocusActionType.valueOf(actionType).createHandler();
             action.setContext(context, this);
+            Log.i(TAG, "onReceive: " + apiExtraBundle); //NON-NLS
             action.handle(intent, apiExtraBundle);
         } catch (Exception e) {
             new ReportingHelper(context).sendErrorNotification(TAG, "Can't execute action " + actionType, e); //NON-NLS

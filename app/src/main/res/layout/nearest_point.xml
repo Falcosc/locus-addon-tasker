@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:ignore="Autofill">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/fab_margin"
+            android:paddingRight="@dimen/fab_margin"
+            tools:ignore="HardcodedText">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <ImageButton
+                    android:id="@+id/name_var"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignBottom="@id/name"
+                    android:layout_alignParentEnd="true"
+                    android:contentDescription="Variable Selection"
+                    android:src="@drawable/var_select"
+                    android:visibility="gone" />
+                <EditText
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignWithParentIfMissing="true"
+                    android:layout_toStartOf="@id/name_var"
+                    android:gravity="end"
+                    android:hint="optional"
+                    android:imeOptions="actionDone"
+                    android:inputType="text" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_alignBottom="@id/name"
+                    android:layout_alignParentStart="true"
+                    android:gravity="center"
+                    android:text="Name Filter"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <EditText
+                    android:id="@+id/limit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@id/name"
+                    android:gravity="end"
+                    android:imeOptions="actionDone"
+                    android:inputType="numberSigned" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_alignBottom="@id/limit"
+                    android:layout_alignParentStart="true"
+                    android:gravity="center"
+                    android:labelFor="@id/limit"
+                    android:text="Limit (max 100)"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+
+                <ImageButton
+                    android:id="@+id/radius_var"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignBottom="@id/radius"
+                    android:layout_alignParentEnd="true"
+                    android:contentDescription="Variable Selection"
+                    android:src="@drawable/var_select"
+                    android:visibility="gone" />
+
+                <EditText
+                    android:id="@+id/radius"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignWithParentIfMissing="true"
+                    android:layout_below="@id/limit"
+                    android:layout_toStartOf="@id/radius_var"
+                    android:gravity="end"
+                    android:imeOptions="actionDone"
+                    android:inputType="text" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_alignBottom="@id/radius"
+                    android:layout_alignParentStart="true"
+                    android:gravity="center"
+                    android:labelFor="@id/radius"
+                    android:text="Radius (km)"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:labelFor="@id/known_pids"
+                android:text="Known Point Ids (Array)"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <ImageButton
+                    android:id="@+id/known_pids_var"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignBottom="@id/known_pids"
+                    android:layout_alignParentEnd="true"
+                    android:contentDescription="Variable Selection"
+                    android:src="@drawable/var_select"
+                    android:visibility="gone" />
+
+                <EditText
+                    android:id="@+id/known_pids"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignWithParentIfMissing="true"
+                    android:layout_toStartOf="@id/known_pids_var"
+                    android:gravity="end"
+                    android:imeOptions="actionDone"
+                    android:inputType="text" />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:labelFor="@id/remove_points_mode"
+                android:text="Remove known point IDs"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <Spinner
+                android:id="@+id/remove_points_mode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <ImageButton
+                    android:id="@+id/ext_radius_var"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignBottom="@id/ext_radius"
+                    android:layout_alignParentEnd="true"
+                    android:contentDescription="Variable Selection"
+                    android:src="@drawable/var_select"
+                    android:visibility="gone" />
+
+                <EditText
+                    android:id="@+id/ext_radius"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignWithParentIfMissing="true"
+                    android:layout_toStartOf="@id/ext_radius_var"
+                    android:gravity="end"
+                    android:imeOptions="actionDone"
+                    android:inputType="text" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_alignBottom="@id/ext_radius"
+                    android:layout_alignParentStart="true"
+                    android:gravity="center"
+                    android:labelFor="@id/ext_radius"
+                    android:text="Ext. Radius (km)"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+            </RelativeLayout>
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+    <include
+        layout="@layout/abc_alert_dialog_button_bar_material"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="PrivateResource" />
+</LinearLayout>

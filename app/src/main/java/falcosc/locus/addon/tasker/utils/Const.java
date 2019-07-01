@@ -21,6 +21,13 @@ public final class Const {
 
     public static final String INTENT_EXTRA_GEOTAG_OFFSET = "offset";
 
+    public static final String INTENT_EXTRA_POINTS_NAME_FILTER = "name_filter";
+    public static final String INTENT_EXTRA_POINTS_RADIUS = "radius";
+    public static final String INTENT_EXTRA_POINTS_RADIUS_EXTENDED = "radius_extended";
+    public static final String INTENT_EXTRA_POINTS_LIMIT = "limit";
+    public static final String INTENT_EXTRA_POINTS_KNOWN = "known_pids";
+    public static final String INTENT_EXTRA_POINTS_REMOVE_MODE = "remove_points_mode";
+
     public static final long ONE_HOUR = 3600000L;
 
     public static final int NOTIFICATION_ID_GEOTAG = 1;

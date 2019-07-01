@@ -9,6 +9,7 @@ import falcosc.locus.addon.tasker.intent.handler.*;
 public enum LocusActionType {
     UPDATE_CONTAINER_REQUEST(UpdateContainerRequest::new),
     LOCUS_INFO_REQUEST(LocusInfoRequest::new),
+    NEAREST_POINT_REQUEST(NearestPointRequest::new),
     ACTION_TASK(ActionTask::new);
 
     LocusActionType(@NonNull Callable<TaskerAction> handler) {

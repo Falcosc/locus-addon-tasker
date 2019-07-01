@@ -9,10 +9,7 @@ import java.util.ArrayList;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-import falcosc.locus.addon.tasker.intent.edit.ActionTaskEdit;
-import falcosc.locus.addon.tasker.intent.edit.LocusInfoEdit;
-import falcosc.locus.addon.tasker.intent.edit.NotImplementedActions;
-import falcosc.locus.addon.tasker.intent.edit.UpdateContainerEdit;
+import falcosc.locus.addon.tasker.intent.handler.NearestPointRequest;
 import falcosc.locus.addon.tasker.utils.Const;
 
 @SuppressWarnings("ClassWithTooManyTransitiveDependencies") //because of mock tasker start
@@ -31,16 +28,21 @@ public class MainActivity extends ProjectActivity {
     @SuppressWarnings({"HardCodedStringLiteral", "MagicNumber"}) //because it is just a mock
     private boolean mockTaskerEditStart() {
         Class<?>[] editClasses = {
-                UpdateContainerEdit.class,
-                LocusInfoEdit.class,
-                ActionTaskEdit.class,
-                LocusGeoTagActivity.class,
-                GeotagPhotosService.class,
-                LocusRunTaskerActivity.class,
-                NotImplementedActions.class
+                NearestPointRequest.class,
+//                UpdateContainerEdit.class,
+//                LocusInfoEdit.class,
+//                ActionTaskEdit.class,
+//                LocusGeoTagActivity.class,
+//                GeotagPhotosService.class,
+//                LocusRunTaskerActivity.class,
+//                NotImplementedActions.class
         };
 
+
         try {
+            new NearestPointRequest().getPoints();
+
+
             Class<?> testClass = editClasses[i++ % editClasses.length];
             Intent intent = new Intent(this, testClass);
             intent.setPackage(getPackageName());

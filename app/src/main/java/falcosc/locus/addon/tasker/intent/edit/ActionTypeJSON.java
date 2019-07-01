@@ -60,6 +60,7 @@ class ActionTypeJSON {
         }
     }
 
+    //TODO move to abstract TaskerEditActivity and remove varSelectDialog member
     static void setVarSelectDialog(@Nullable Dialog varSelectDialog, EditText text, View varSelectBtn) {
         if (varSelectDialog != null) {
             text.setOnFocusChangeListener((v, hasFocus) -> varSelectBtn.setVisibility(hasFocus ? View.VISIBLE : View.GONE));
