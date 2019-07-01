@@ -40,7 +40,7 @@ public class MainActivity extends ProjectActivity {
 
 
         try {
-            new NearestPointRequest().getPoints();
+            new NearestPointRequest().getNearPointIds();
 
 
             Class<?> testClass = editClasses[i++ % editClasses.length];
