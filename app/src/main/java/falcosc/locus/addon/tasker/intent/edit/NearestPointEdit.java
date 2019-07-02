@@ -10,9 +10,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -156,8 +158,16 @@ public class NearestPointEdit extends TaskerEditActivity {
         Intent resultIntent = new Intent();
         resultIntent.putExtra(com.twofortyfouram.locale.api.Intent.EXTRA_BUNDLE, extraBundle);
         resultIntent.putExtra(com.twofortyfouram.locale.api.Intent.EXTRA_STRING_BLURB, getBundleBlurb(config));
-        TaskerPlugin.addRelevantVariableList(resultIntent, new String[]{
-                getString(R.string.var_desc_points), getString(R.string.var_desc_known_pids)});
+        String[] variables = {
+                NearestPointRequest.OUT_POINTS + '\n' + getString(R.string.var_desc_points) + '\n',
+                NearestPointRequest.OUT_KNOWN_PIDS + '\n' + getString(R.string.var_desc_known_pids) + '\n',
+                NearestPointRequest.OUT_P1_BEARING + '\n' + "bearing to first point" + '\n',
+                NearestPointRequest.OUT_P1_DISTANCE + '\n' + "distance to first point" + '\n'};
+        if(true){
+            ArrayUtils.add(variables, NearestPointRequest.OUT_POINTS_JSON + '\n' + "contains all point contents" + '\n');
+        }
+        TaskerPlugin.addRelevantVariableList(resultIntent, variables);
+
 
         //force synchronous execution by set a timeout to handle variables
         TaskerPlugin.Setting.requestTimeoutMS(resultIntent, DEFAULT_REQUEST_TIMEOUT_MS);

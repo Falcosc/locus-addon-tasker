@@ -98,7 +98,7 @@
     <string name="send_to_developer">Report to Developer</string>
     <string name="notification_channel_desc">Use to inform about processing progress and problems during asynchronous tasks</string>
     <string name="err_tasker_external_access">Can not access your Tasks, please enable external access in tasker settings</string>
-    <string name="var_desc_points">%points array of points</string>
-    <string name="var_desc_known_pids">%known_pids array of known point ids Can be used to prevent returning points which got return on previous calls. Array contains Id from known_pids input and points result. Depending on points remove mode known_pids could contain less ids then input</string>
+    <string name="var_desc_points">array of point names</string>
+    <string name="var_desc_known_pids">array of known point ids Can be used to prevent returning points which got return on previous calls. Array contains Id from known_pids input and points result. Depending on points remove mode known_pids could contain less ids then input</string>
     <string name="nearest_point_before_use"><![CDATA[Please try out Locus Map features <a href=\"https://docs.locusmap.eu/doku.php?id=manual:user_guide:functions:poi_alert\">POI Alert</a>, <a href=\"https://docs.locusmap.eu/doku.php?id=manual:user_guide:functions:guidance#target_notifications\">Target Notifications</a> or <a href=\"https://docs.locusmap.eu/doku.php?id=manual:user_guide:functions:navigation:settings#advanced_settings\">Navigation commands</a> before you rebuild these features which this function.]]></string>
 </resources>

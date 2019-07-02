@@ -2,15 +2,20 @@ package falcosc.locus.addon.tasker.intent.handler;
 
 import android.app.Notification;
 import android.os.Bundle;
+import android.util.Log;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import falcosc.locus.addon.tasker.LocusRunTaskerActivity;
 import falcosc.locus.addon.tasker.RequiredDataMissingException;
 import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
 import falcosc.locus.addon.tasker.utils.Const;
@@ -22,6 +27,13 @@ import locus.api.objects.extra.Location;
 import locus.api.objects.extra.Point;
 
 public class NearestPointRequest extends AbstractTaskerAction {
+    private static final String TAG = "NearestPointRequest";
+    public static final String OUT_POINTS = "%points";
+    public static final String OUT_POINTS_JSON = "%points_json";
+    public static final String OUT_P1_NAME = "%p1_name";
+    public static final String OUT_P1_DISTANCE = "%p1_distance";
+    public static final String OUT_P1_BEARING = "%p1_bearing";
+    public static final String OUT_KNOWN_PIDS = "%known_pids";
     private String mNameFilter;
     private int mRadius;
     private int mExtendedRadius;
@@ -30,6 +42,7 @@ public class NearestPointRequest extends AbstractTaskerAction {
     private RemoveMode mRemoveMode;
     private long[] mPointIdsFromNameFilter;
     private long[] mPointIdsRadius;
+    private Location mLoc;
 
     public enum RemoveMode {
         NEVER,
@@ -44,6 +57,7 @@ public class NearestPointRequest extends AbstractTaskerAction {
 
         LocusCache locusCache = LocusCache.getInstanceUnsafe(mContext);
         LocusUtils.LocusVersion locusVersion = locusCache.requireLocusVersion();
+        mLoc = locusCache.getUpdateContainer().mUpdateContainer.getLocMyLocation();
 
         if (StringUtils.isNotBlank(mNameFilter)) {
             mPointIdsFromNameFilter = ActionBasics.INSTANCE.getPointsId(mContext, locusVersion, mNameFilter);
@@ -69,10 +83,34 @@ public class NearestPointRequest extends AbstractTaskerAction {
         pointNames = new String[]{"Test1", "Test2"};
 
         Bundle varsBundle = new Bundle();
-        varsBundle.putLongArray("%" + Const.INTENT_EXTRA_POINTS_KNOWN, knownPIDsResult);
-        varsBundle.putStringArray("%points", pointNames);
+        varsBundle.putLongArray(OUT_KNOWN_PIDS, knownPIDsResult);
+        varsBundle.putStringArray(OUT_POINTS, pointNames);
 
-        //TODO get Points json
+        //TODO json checkbox
+        if(true){
+            JSONArray jsonArray = new JSONArray();
+
+            for(Point p : points){
+                JSONObject json = new JSONObject(LocusRunTaskerActivity.mapPointFields(p, ""));
+                float[] distanceAndBearing = mLoc.distanceAndBearingTo(p.getLocation());
+                try {
+                    json.put("distance", distanceAndBearing[0]);
+                    json.put("bearing", distanceAndBearing[1]);
+
+                } catch (JSONException e) {
+                    Log.e(TAG, "Can not set distance result", e); //NON-NLS
+                }
+                jsonArray.put(json);
+            }
+            varsBundle.putString(OUT_POINTS_JSON, jsonArray.toString());
+        }
+
+        if(!points.isEmpty()){
+            float[] distanceAndBearing = mLoc.distanceAndBearingTo(points.get(0).getLocation());
+            varsBundle.putString(OUT_P1_NAME, points.get(0).getName());
+            varsBundle.putFloat(OUT_P1_DISTANCE, distanceAndBearing[0]);
+            varsBundle.putFloat(OUT_P1_BEARING, distanceAndBearing[1]);
+        }
 
         TaskerPlugin.addVariableBundle(mReceiver.getResultExtras(true), varsBundle);
         mReceiver.setResultCode(TaskerPlugin.Setting.RESULT_CODE_OK);
@@ -112,9 +150,7 @@ public class NearestPointRequest extends AbstractTaskerAction {
         loc.latitude = 51.05089;
         loc.longitude = 13.73832;
 
-        //long[] pointIds = ActionBasics.INSTANCE.getPointsId(locusCache.getApplicationContext(), locusCache.requireLocusVersion(),loc, 100, 100000);
-        //TODO Location loc = locusCache.getUpdateContainer().mUpdateContainer.getLocMyLocation();
-        long[] pointIdsRadius = ActionBasics.INSTANCE.getPointsId(mContext, locusVersion, loc, mLimit, radius);
+        long[] pointIdsRadius = ActionBasics.INSTANCE.getPointsId(mContext, locusVersion, mLoc, mLimit, radius);
         if (mPointIdsFromNameFilter != null) {
             long[] pointIdsRadiusFiltered = new long[0];
             for (long pointId : mPointIdsFromNameFilter) {
