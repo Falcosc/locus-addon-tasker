@@ -34,7 +34,7 @@ import falcosc.locus.addon.tasker.utils.TaskerField;
 public abstract class TaskerEditActivity extends AppCompatActivity {
 
     private static final String TAG = "TaskerEditActivity"; //NON-NLS
-    private static final int DEFAULT_REQUEST_TIMEOUT_MS = 10000;
+    static final int DEFAULT_REQUEST_TIMEOUT_MS = 10000;
 
     abstract void onApply();
 

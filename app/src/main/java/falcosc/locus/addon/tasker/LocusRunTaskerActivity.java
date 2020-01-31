@@ -27,9 +27,12 @@ import locus.api.objects.extra.Location;
 import locus.api.objects.extra.Point;
 import locus.api.objects.extra.Track;
 import locus.api.objects.extra.TrackStats;
+import locus.api.utils.Utils;
 
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONStringer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -122,7 +125,7 @@ public class LocusRunTaskerActivity extends ProjectActivity {
                 try {
                     if (IntentHelper.INSTANCE.isIntentPointTools(locusIntent)) {
                         Point p = IntentHelper.INSTANCE.getPointFromIntent(locusCache.getApplicationContext(), locusIntent);
-                        allIntentFields.putAll(mapPointFields(p));
+                        allIntentFields.putAll(mapPointFields(p, "p_")); //NON-NLS
                     } else if (IntentHelper.INSTANCE.isIntentTrackTools(locusIntent)) {
                         Track t = IntentHelper.INSTANCE.getTrackFromIntent(locusCache.getApplicationContext(), locusIntent);
                         allIntentFields.putAll(mapTrackFields(t));
@@ -164,6 +167,61 @@ public class LocusRunTaskerActivity extends ProjectActivity {
         return result;
     }
 
+    private static final int[] EXTRA_DATA_PAR_KEYS = {
+            GeoDataExtra.PAR_SOURCE,
+            GeoDataExtra.PAR_STYLE_NAME,
+            GeoDataExtra.PAR_AREA_SIZE,
+            GeoDataExtra.PAR_DB_POI_EXTRA_DATA,
+            GeoDataExtra.PAR_KML_TRIP_ID,
+            GeoDataExtra.PAR_GOOGLE_PLACES_REFERENCE,
+            GeoDataExtra.PAR_GOOGLE_PLACES_RATING,
+            GeoDataExtra.PAR_GOOGLE_PLACES_DETAILS,
+            GeoDataExtra.PAR_INTENT_EXTRA_CALLBACK,
+            GeoDataExtra.PAR_INTENT_EXTRA_ON_DISPLAY,
+            GeoDataExtra.PAR_DESCRIPTION,
+            GeoDataExtra.PAR_COMMENT,
+            GeoDataExtra.PAR_RELATIVE_WORKING_DIR,
+            GeoDataExtra.PAR_TYPE,
+            GeoDataExtra.PAR_GEOCACHE_CODE,
+            GeoDataExtra.PAR_POI_ALERT_INCLUDE,
+            GeoDataExtra.PAR_ADDRESS_STREET,
+            GeoDataExtra.PAR_ADDRESS_CITY,
+            GeoDataExtra.PAR_ADDRESS_REGION,
+            GeoDataExtra.PAR_ADDRESS_POST_CODE,
+            GeoDataExtra.PAR_ADDRESS_COUNTRY,
+            GeoDataExtra.PAR_RTE_INDEX,
+            GeoDataExtra.PAR_RTE_DISTANCE_F,
+            GeoDataExtra.PAR_RTE_TIME_I,
+            GeoDataExtra.PAR_RTE_SPEED_F,
+            GeoDataExtra.PAR_RTE_TURN_COST,
+            GeoDataExtra.PAR_RTE_STREET,
+            GeoDataExtra.PAR_RTE_POINT_ACTION,
+            GeoDataExtra.PAR_RTE_COMPUTE_TYPE,
+            GeoDataExtra.PAR_RTE_SIMPLE_ROUNDABOUTS,
+            GeoDataExtra.PAR_RTE_PLAN_DEFINITION,
+            GeoDataExtra.PAR_OSM_NOTES_ID,
+            GeoDataExtra.PAR_OSM_NOTES_CLOSED
+    };
+
+    private static String getExtraDataAsJSON(GeoDataExtra extraData){
+        JSONStringer stringer = new JSONStringer();
+        try {
+            stringer.object();
+            for (int key : EXTRA_DATA_PAR_KEYS) {
+                byte[] data = extraData.getParameterRaw(key);
+                if (data != null) {
+                    stringer.key(String.valueOf(key));
+                    stringer.value(Utils.doBytesToString(data));
+                }
+            }
+            stringer.endObject();
+        } catch (JSONException e) {
+            Log.e(TAG, "can not create extra data json", e); //NON-NLS
+        }
+
+        return stringer.toString();
+    }
+
     @SuppressWarnings("HardCodedStringLiteral")
     private static LinkedHashMap<String, String> mapGeoDataFields(String prefix, GeoData g) {
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
@@ -177,18 +235,16 @@ public class LocusRunTaskerActivity extends ProjectActivity {
         map.put(prefix + "is_enabled", Boolean.toString(g.isEnabled()));
         map.put(prefix + "is_visible", Boolean.toString(g.isVisible()));
         map.put(prefix + "is_selected", Boolean.toString(g.isSelected()));
+
         int extraCount = g.extraData.getCount();
         map.put(prefix + "extra_count", Integer.toString(extraCount));
         if (extraCount > 0) {
+            map.put(prefix + "extra_data", getExtraDataAsJSON(g.extraData));
             map.put(prefix + "extra_emails", StringUtils.join(convertToTexts(g.extraData.getAttachments(GeoDataExtra.AttachType.EMAIL)), ','));
             map.put(prefix + "extra_phones", StringUtils.join(convertToTexts(g.extraData.getAttachments(GeoDataExtra.AttachType.PHONE)), ','));
             map.put(prefix + "extra_urls", StringUtils.join(convertToTexts(g.extraData.getAttachments(GeoDataExtra.AttachType.URL)), ','));
             map.put(prefix + "extra_attachments", StringUtils.join(g.extraData.getAllAttachments(), ','));
         }
-        map.put(prefix + "extra_emails", g.getName());
-        map.put(prefix + "name", g.getName());
-        map.put(prefix + "name", g.getName());
-
         return map;
     }
 
@@ -220,8 +276,7 @@ public class LocusRunTaskerActivity extends ProjectActivity {
         return map;
     }
 
-    private static LinkedHashMap<String, String> mapPointFields(Point p) {
-        String prefix = "p_"; //NON-NLS
+    public static LinkedHashMap<String, String> mapPointFields(Point p, String prefix) {
         LinkedHashMap<String, String> map = new LinkedHashMap<>(mapGeoDataFields(prefix, p));
         map.putAll(mapLocationFields(prefix, p.getLocation()));
         return map;
