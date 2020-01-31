@@ -279,8 +279,32 @@ public final class LocusCache {
         //this is a custom order
         list.add(cField("guide_target_lon", null, u -> u.getGuideWptLoc().longitude));
         list.add(cField("guide_target_lat", null, u -> u.getGuideWptLoc().latitude));
+        list.add(cField("guide_target_angle", null, UpdateContainer::getGuideWptAngle));
+        list.add(cField("guide_target_azimuth", null, UpdateContainer::getGuideWptAzim));
+        list.add(cField("guide_target_dist", null, UpdateContainer::getGuideWptDist));
+        list.add(cField("guide_target_name", null, UpdateContainer::getGuideWptName));
+        list.add(cField("guide_target_time", null, UpdateContainer::getGuideWptTime));
+        list.add(cField("guide_dist_from_start", null, UpdateContainer::getGuideDistFromStart));
+        list.add(cField("guide_dist_to_finish", null, UpdateContainer::getGuideDistToFinish));
+        list.add(cField("guide_target_id", null, UpdateContainer::getGuideTargetId));
+        list.add(cField("guide_time_to_finish", null, UpdateContainer::getGuideTimeToFinish));
+        list.add(cField("guide_type", null, UpdateContainer::getGuideType));
+        list.add(cField("guide_valid", null, UpdateContainer::getGuideValid));
+        list.add(cField("guide_navpoint1_action", null, UpdateContainer::getGuideNavPoint1Action));
+        list.add(cField("guide_navpoint1_dist", null, UpdateContainer::getGuideNavPoint1Dist));
+        list.add(cField("guide_navpoint1_extra", null, UpdateContainer::getGuideNavPoint1Extra));
+        list.add(cField("guide_navpoint1_lon", null, u -> u.getGuideNavPoint1Loc().longitude));
+        list.add(cField("guide_navpoint1_lat", null, u -> u.getGuideNavPoint1Loc().latitude));
+        list.add(cField("guide_navpoint1_name", null, UpdateContainer::getGuideNavPoint1Name));
+        list.add(cField("guide_navpoint1_time", null, UpdateContainer::getGuideNavPoint1Time));
+        list.add(cField("guide_navpoint2_action", null, UpdateContainer::getGuideNavPoint2Action));
+        list.add(cField("guide_navpoint2_dist", null, UpdateContainer::getGuideNavPoint2Dist));
+        list.add(cField("guide_navpoint2_extra", null, UpdateContainer::getGuideNavPoint2Extra));
+        list.add(cField("guide_navpoint2_lon", null, u -> u.getGuideNavPoint2Loc().longitude));
+        list.add(cField("guide_navpoint2_lat", null, u -> u.getGuideNavPoint2Loc().latitude));
+        list.add(cField("guide_navpoint2_name", null, UpdateContainer::getGuideNavPoint2Name));
+        list.add(cField("guide_navpoint2_time", null, UpdateContainer::getGuideNavPoint2Time));
 
-        //TODO Navigation points
         return list;
     }
 
