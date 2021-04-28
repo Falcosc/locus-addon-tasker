@@ -67,6 +67,9 @@ public class LocusGeoTagActivity extends ProjectActivity {
     }
 
     private static class TrackDetails {
+        TrackDetails() {
+        }
+
         String startTime;
         String endTime;
     }
@@ -163,6 +166,7 @@ public class LocusGeoTagActivity extends ProjectActivity {
         } else if (requestCode == REQUEST_CODE_OPEN_DOCUMENT) {
             handleOpenFile(resultCode, resultData);
         }
+        super.onActivityResult(requestCode, resultCode, resultData);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -268,6 +272,7 @@ public class LocusGeoTagActivity extends ProjectActivity {
     /**
      * @return Error Message
      */
+    @SuppressWarnings("UseOfObsoleteDateTimeApi")
     @NonNull
     private TrackDetails getAndValidateTrackDetails() throws RequiredDataMissingException, RequiredVersionMissingException {
         Track track = IntentHelper.INSTANCE.getTrackFromIntent(this, getIntent());

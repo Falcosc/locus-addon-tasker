@@ -51,6 +51,7 @@ import android.util.Log;
 
 import androidx.core.content.pm.PackageInfoCompat;
 
+@SuppressWarnings("All")
 public class TaskerPlugin {
 
     private final static String 	TAG = "TaskerPlugin";
@@ -244,7 +245,7 @@ public class TaskerPlugin {
      * Add a bundle of variable name/value pairs.
      *
      * Names must be valid Tasker local variable names.
-     * Values must be String, String [] or ArrayList<String>
+     * Values must be String, String [] or ArrayList&lt;String&gt;
      * Null values cause deletion of possible already-existing variables
      * A null value where the variable does not already exist results in attempted deletion
      * of any existing array indices (%arr1, %arr2 etc)

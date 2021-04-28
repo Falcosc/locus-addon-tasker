@@ -17,6 +17,13 @@
     <uses-permission-sdk-23 android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission-sdk-23 android:name="android.permission.FOREGROUND_SERVICE" />
 
+    <queries>
+        <package android:name="menion.android.locus" />
+        <package android:name="menion.android.locus.pro" />
+        <package android:name="menion.android.locus.free.amazon" />
+        <package android:name="menion.android.locus.pro.amazon" />
+    </queries>
+
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"

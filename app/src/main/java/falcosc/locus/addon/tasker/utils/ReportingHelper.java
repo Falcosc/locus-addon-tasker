@@ -58,7 +58,6 @@ public class ReportingHelper {
                     );
 
             NotificationManager mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-            //noinspection ConstantConditions
             mNotificationManager.notify(Const.NOTIFICATION_ID_COMMON_ERROR, builder.build());
         } catch (Exception e) {
             Log.e(tag, "Can't create error notification", e); //NON-NLS

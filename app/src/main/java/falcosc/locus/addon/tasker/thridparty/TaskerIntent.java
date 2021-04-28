@@ -30,6 +30,7 @@ import android.os.PatternMatcher;
 import android.os.Process;
 import android.util.Log;
 
+@SuppressWarnings("All")
 public class TaskerIntent extends Intent {
 
 	// 3 Tasker versions

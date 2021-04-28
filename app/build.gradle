@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     // setup SDK
     compileSdkVersion Integer.valueOf(PARAM_COMPILE_SDK_VERSION)
-    buildToolsVersion '28.0.3'
+    buildToolsVersion '29.0.2'
 
     defaultConfig {
         minSdkVersion Integer.valueOf(PARAM_MIN_SDK_VERSION)
@@ -35,12 +35,12 @@ android {
 
 dependencies {
 
-    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
 
     implementation 'com.asamm:locus-api-android:0.3.13'
 
     implementation 'com.twofortyfouram:android-plugin-api-for-locale:1.0.4'
-    implementation 'org.apache.commons:commons-lang3:3.9'
-    implementation 'org.apache.commons:commons-text:1.6'
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'org.apache.commons:commons-text:1.9'
     implementation 'androidx.exifinterface:exifinterface:1.1.0'
 }

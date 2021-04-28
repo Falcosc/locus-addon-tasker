@@ -37,6 +37,7 @@ import java.util.stream.Collectors;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.app.JobIntentService;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.exifinterface.media.ExifInterface;
@@ -46,7 +47,7 @@ import locus.api.android.utils.IntentHelper;
 import locus.api.objects.extra.Location;
 import locus.api.objects.extra.Track;
 
-public final class GeotagPhotosService extends IntentService {
+public final class GeotagPhotosService extends JobIntentService {
 
     private static final String TAG = "GeotagPhotosService"; //NON-NLS
     private NotificationCompat.Builder mNotificationBuilder;
@@ -62,10 +63,6 @@ public final class GeotagPhotosService extends IntentService {
     private final long openFilesThreshold = (long) (Os.sysconf(OsConstants._SC_OPEN_MAX) * 0.9);
     private boolean mNoMediaStoreAccess;
     private long mLastNotificationTime;
-
-    public GeotagPhotosService() {
-        super(TAG);
-    }
 
     private NotificationCompat.Builder createNotificationBuilder() {
         NotificationCompat.Builder builder;
@@ -83,7 +80,7 @@ public final class GeotagPhotosService extends IntentService {
     }
 
     @Override
-    protected void onHandleIntent(@Nullable Intent workIntent) {
+    protected void onHandleWork(@Nullable Intent workIntent) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             new ReportingHelper(this).createDefaultNotificationChannel();
         }
@@ -142,14 +139,17 @@ public final class GeotagPhotosService extends IntentService {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private void stopWithError(@NonNull String errMsg) {
         Log.e(TAG, errMsg);
         NotificationCompat.Builder builder = createNotificationBuilder().setContentText(errMsg);
         SystemClock.sleep(Const.NOTIFICATION_REPEAT_AFTER); //detach does sometimes not work if notifications fire close to each other
         startForeground(Const.NOTIFICATION_ID_GEOTAG, builder.build());
         //detach notification to keep
-        stopForeground(STOP_FOREGROUND_DETACH);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            stopForeground(STOP_FOREGROUND_DETACH);
+        } else {
+            stopForeground(false);
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -314,8 +314,7 @@ public final class GeotagPhotosService extends IntentService {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    @SuppressWarnings("DuplicateThrows")
-    private PendingExifChange createPendingExifChange(@NonNull ParcelFileDescriptor pfd, @NonNull Uri uri) throws IOException, ParseException, FileNotFoundException {
+    private PendingExifChange createPendingExifChange(@NonNull ParcelFileDescriptor pfd, @NonNull Uri uri) throws IOException, ParseException {
         FileDescriptor fd = pfd.getFileDescriptor();
         ExifInterface exif = new ExifInterface(fd);
 
