@@ -46,7 +46,7 @@ public final class LocusCache {
     public final Set<String> mLocationProgressKeys;
     public final Map<String, ExtUpdateContainerGetter> mExtUpdateContainerFieldMap;
     public final ArrayList<TaskerField> mUpdateContainerFields;
-    public final LocusVersion mLocusVersion;
+    public LocusVersion mLocusVersion;
     private final Resources mLocusResources;
 
     //selected track fields
@@ -72,7 +72,6 @@ public final class LocusCache {
 
         Resources locusRes = null;
         try {
-            //noinspection ConstantConditions
             locusRes = context.getPackageManager().getResourcesForApplication(mLocusVersion.getPackageName());
             Log.d(TAG, "Found Locus resources");
         } catch (Exception e) {

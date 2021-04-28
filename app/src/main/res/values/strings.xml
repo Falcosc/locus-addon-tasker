@@ -2,6 +2,7 @@
     <string name="app_name">LocusTasker</string>
     <string name="app_name_long">Locus Addon &amp; Tasker Plugin</string>
     <string name="act_request_stats_sensors">Request sensors and stats</string>
+    <string name="act_select_version">Select Version</string>
     <string name="act_request_locus_info">Get Locus Info</string>
     <string name="act_exec_task">Execute Action Task</string>
     <string name="act_more">More Actions</string>
@@ -98,4 +99,7 @@
     <string name="send_to_developer">Report to Developer</string>
     <string name="notification_channel_desc">Use to inform about processing progress and problems during asynchronous tasks</string>
     <string name="err_tasker_external_access">Can not access your Tasks, please enable external access in tasker settings</string>
+    <string name="select_version_desc">This is only useful if you have multiple Locus versions installed and open
+        because the first call searches the current running app and keeps it until the plugin got force closed.
+    </string>
 </resources>
