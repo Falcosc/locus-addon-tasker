@@ -186,7 +186,7 @@ public final class GeotagPhotosService extends JobIntentService {
 
         Intent filesIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
         filesIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
-        filesIntent.setType(Const.MIME_TYPE_JPEG);
+        filesIntent.setType(Const.MIME_TYPE_IMAGES);
         filesIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         String title = getResources().getQuantityString(R.plurals.share_x_photos, imageUris.size(), imageUris.size());

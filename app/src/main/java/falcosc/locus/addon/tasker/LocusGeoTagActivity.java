@@ -25,6 +25,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -192,9 +193,13 @@ public class LocusGeoTagActivity extends ProjectActivity {
                     }
                 }
 
-                //noinspection CallToSuspiciousStringMethod
+                HashSet<String> supportedMimeTypes = new HashSet<>();
+                supportedMimeTypes.add(Const.MIME_TYPE_JPEG);
+                supportedMimeTypes.add(Const.MIME_TYPE_PNG);
+                supportedMimeTypes.add(Const.MIME_TYPE_WEBP);
+
                 mDocumentUris = info.stream()
-                        .filter(documentInfo -> Const.MIME_TYPE_JPEG.equals(documentInfo.getMimeType()))
+                        .filter(documentInfo -> supportedMimeTypes.contains(documentInfo.getMimeType()))
                         .sorted(Comparator.comparing(DocumentInfo::getLastModified).reversed())
                         .map(documentInfo -> DocumentsContract.buildDocumentUriUsingTree(mFolderUri, documentInfo.getDocumentId()))
                         .collect(Collectors.toCollection(ArrayList::new));

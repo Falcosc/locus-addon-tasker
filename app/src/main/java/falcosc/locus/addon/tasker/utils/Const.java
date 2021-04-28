@@ -27,6 +27,9 @@ public final class Const {
     public static final int NOTIFICATION_ID_COMMON_ERROR = 2;
 
     public static final FastDateFormat EXIF_DATE_FORMAT = FastDateFormat.getInstance("yyyy:MM:dd HH:mm:ss", Locale.US);
+    public static final String MIME_TYPE_IMAGES = "image/*";
+    public static final String MIME_TYPE_WEBP = "image/webp";
+    public static final String MIME_TYPE_PNG = "image/png";
     public static final String MIME_TYPE_JPEG = "image/jpeg";
     public static final String MIME_TYPE_TEXT = "text/plain";
     public static final String SCHEMA_MAIL = "mailto";
