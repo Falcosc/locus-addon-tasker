@@ -39,7 +39,7 @@ import falcosc.locus.addon.tasker.utils.Const;
 import falcosc.locus.addon.tasker.utils.ReportingHelper;
 import locus.api.android.utils.IntentHelper;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
-import locus.api.objects.extra.Track;
+import locus.api.objects.geoData.Track;
 
 public class LocusGeoTagActivity extends ProjectActivity {
 

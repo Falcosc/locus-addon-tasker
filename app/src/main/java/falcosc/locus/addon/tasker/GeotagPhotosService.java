@@ -1,7 +1,6 @@
 package falcosc.locus.addon.tasker;
 
 import android.Manifest;
-import android.app.IntentService;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.ContentValues;
@@ -22,7 +21,6 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileDescriptor;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -45,7 +43,7 @@ import falcosc.locus.addon.tasker.utils.Const;
 import falcosc.locus.addon.tasker.utils.ReportingHelper;
 import locus.api.android.utils.IntentHelper;
 import locus.api.objects.extra.Location;
-import locus.api.objects.extra.Track;
+import locus.api.objects.geoData.Track;
 
 public final class GeotagPhotosService extends JobIntentService {
 

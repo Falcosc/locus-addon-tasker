@@ -10,7 +10,7 @@ import locus.api.android.ActionBasics;
 import locus.api.android.features.periodicUpdates.UpdateContainer;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 import locus.api.objects.extra.Location;
-import locus.api.objects.extra.Track;
+import locus.api.objects.geoData.Track;
 
 import java.util.List;
 
@@ -150,7 +150,7 @@ final class NavigationProgress {
             return false;
         }
 
-        if (track1.getPoint(0).hasAltitude() != track1.getPoint(0).hasAltitude()) {
+        if (track1.getPoint(0).getHasAltitude() != track1.getPoint(0).getHasAltitude()) {
             Log.d(TAG, "is not same track because altitude miss match"); //NON-NLS
             return false;
         }
@@ -177,7 +177,7 @@ final class NavigationProgress {
 
         for (int i = prevIndex; i <= lastIndex; i++) {
             Location loc = points.get(i);
-            if ((current.longitude == loc.longitude) && (current.latitude == loc.latitude)) {
+            if ((current.getLongitude() == loc.getLongitude()) && (current.getLatitude() == loc.getLatitude())) {
                 return i;
             }
         }
@@ -185,7 +185,7 @@ final class NavigationProgress {
         //not found ahead, go backwards
         for (int i = prevIndex; i >= 0; i--) {
             Location loc = points.get(i);
-            if ((current.longitude == loc.longitude) && (current.latitude == loc.latitude)) {
+            if ((current.getLongitude() == loc.getLongitude()) && (current.getLatitude() == loc.getLatitude())) {
                 return i;
             }
         }
@@ -198,6 +198,7 @@ final class NavigationProgress {
         int remainingDownhill;
     }
 
+    @SuppressWarnings("WrapperTypeMayBePrimitive")
     static Point[] calculateRemainingElevation(@Nullable Track track) {
         if (track == null) {
             return new Point[0];

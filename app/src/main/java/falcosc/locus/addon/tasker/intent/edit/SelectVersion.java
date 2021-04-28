@@ -13,6 +13,7 @@ import falcosc.locus.addon.tasker.R;
 import falcosc.locus.addon.tasker.intent.LocusActionType;
 import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
 import falcosc.locus.addon.tasker.utils.Const;
+import locus.api.android.objects.LocusVersion;
 import locus.api.android.utils.LocusConst;
 import locus.api.android.utils.LocusUtils;
 
@@ -27,7 +28,7 @@ public class SelectVersion extends TaskerEditActivity {
         setContentView(R.layout.select_version);
 
         ArrayList<String> availablePackageNames = new ArrayList<>();
-        for(LocusUtils.LocusVersion lv : LocusUtils.getAvailableVersions(this)){
+        for(LocusVersion lv : LocusUtils.INSTANCE.getAvailableVersions(this)){
             availablePackageNames.add(lv.getPackageName());
         }
 

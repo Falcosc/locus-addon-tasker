@@ -2,7 +2,8 @@ package falcosc.locus.addon.tasker.utils;
 
 import androidx.annotation.NonNull;
 import androidx.arch.core.util.Function;
-import locus.api.android.utils.LocusInfo;
+import locus.api.android.objects.LocusInfo;
+
 
 public class LocusInfoField extends TaskerField {
 

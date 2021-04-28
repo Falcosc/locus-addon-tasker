@@ -21,12 +21,12 @@ import falcosc.locus.addon.tasker.utils.LocusCache;
 import falcosc.locus.addon.tasker.utils.ReportingHelper;
 import locus.api.android.utils.IntentHelper;
 import locus.api.android.utils.LocusConst;
-import locus.api.objects.GeoData;
 import locus.api.objects.extra.GeoDataExtra;
 import locus.api.objects.extra.Location;
-import locus.api.objects.extra.Point;
-import locus.api.objects.extra.Track;
 import locus.api.objects.extra.TrackStats;
+import locus.api.objects.geoData.GeoData;
+import locus.api.objects.geoData.Point;
+import locus.api.objects.geoData.Track;
 import locus.api.utils.Utils;
 
 import org.apache.commons.lang3.StringUtils;
@@ -162,7 +162,7 @@ public class LocusRunTaskerActivity extends ProjectActivity {
     private static List<String> convertToTexts(List<GeoDataExtra.LabelTextContainer> data) {
         List<String> result = new ArrayList<>();
         for (int i = 0, m = data.size(); i < m; i++) {
-            result.add(data.get(i).text);
+            result.add(data.get(i).getText());
         }
         return result;
     }
@@ -211,7 +211,7 @@ public class LocusRunTaskerActivity extends ProjectActivity {
                 byte[] data = extraData.getParameterRaw(key);
                 if (data != null) {
                     stringer.key(String.valueOf(key));
-                    stringer.value(Utils.doBytesToString(data));
+                    stringer.value(Utils.INSTANCE.doBytesToString(data));
                 }
             }
             stringer.endObject();
@@ -236,14 +236,18 @@ public class LocusRunTaskerActivity extends ProjectActivity {
         map.put(prefix + "is_visible", Boolean.toString(g.isVisible()));
         map.put(prefix + "is_selected", Boolean.toString(g.isSelected()));
 
-        int extraCount = g.extraData.getCount();
-        map.put(prefix + "extra_count", Integer.toString(extraCount));
-        if (extraCount > 0) {
-            map.put(prefix + "extra_data", getExtraDataAsJSON(g.extraData));
-            map.put(prefix + "extra_emails", StringUtils.join(convertToTexts(g.extraData.getAttachments(GeoDataExtra.AttachType.EMAIL)), ','));
-            map.put(prefix + "extra_phones", StringUtils.join(convertToTexts(g.extraData.getAttachments(GeoDataExtra.AttachType.PHONE)), ','));
-            map.put(prefix + "extra_urls", StringUtils.join(convertToTexts(g.extraData.getAttachments(GeoDataExtra.AttachType.URL)), ','));
-            map.put(prefix + "extra_attachments", StringUtils.join(g.extraData.getAllAttachments(), ','));
+
+        GeoDataExtra extraData = g.getExtraData();
+        if(extraData != null) {
+            int extraCount = extraData.getCount();
+            map.put(prefix + "extra_count", Integer.toString(extraCount));
+            if (extraCount > 0) {
+                map.put(prefix + "extra_data", getExtraDataAsJSON(extraData));
+                map.put(prefix + "extra_emails", StringUtils.join(convertToTexts(extraData.getAttachments(GeoDataExtra.AttachType.EMAIL)), ','));
+                map.put(prefix + "extra_phones", StringUtils.join(convertToTexts(extraData.getAttachments(GeoDataExtra.AttachType.PHONE)), ','));
+                map.put(prefix + "extra_urls", StringUtils.join(convertToTexts(extraData.getAttachments(GeoDataExtra.AttachType.URL)), ','));
+                map.put(prefix + "extra_attachments", StringUtils.join(extraData.getAllAttachments(), ','));
+            }
         }
         return map;
     }
@@ -270,8 +274,8 @@ public class LocusRunTaskerActivity extends ProjectActivity {
         map.put(prefix + "cadence_avg", Integer.toString(stats.getCadenceAverage()));
         map.put(prefix + "cadence_max", Integer.toString(stats.getCadenceMax()));
         map.put(prefix + "energy_burned", Integer.toString(stats.getEnergy()));
-        map.put(prefix + "hrm_avg", Integer.toString(stats.getHrmAverage()));
-        map.put(prefix + "hrm_max", Integer.toString(stats.getHrmMax()));
+        map.put(prefix + "hrm_avg", Integer.toString(stats.getHeartRateAverage()));
+        map.put(prefix + "hrm_max", Integer.toString(stats.getHeartRateMax()));
         map.put(prefix + "strides_count", Integer.toString(stats.getNumOfStrides()));
         return map;
     }

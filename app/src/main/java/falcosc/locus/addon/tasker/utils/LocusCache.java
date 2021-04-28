@@ -16,10 +16,11 @@ import falcosc.locus.addon.tasker.BuildConfig;
 import falcosc.locus.addon.tasker.RequiredDataMissingException;
 import locus.api.android.ActionBasics;
 import locus.api.android.features.periodicUpdates.UpdateContainer;
+import locus.api.android.objects.LocusVersion;
+import locus.api.android.objects.VersionCode;
 import locus.api.android.utils.LocusUtils;
-import locus.api.android.utils.LocusUtils.LocusVersion;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
-import locus.api.objects.extra.Track;
+import locus.api.objects.geoData.Track;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.WordUtils;
@@ -67,7 +68,7 @@ public final class LocusCache {
 
         mApplicationContext = context;
 
-        mLocusVersion = LocusUtils.getActiveVersion(context);
+        mLocusVersion = LocusUtils.INSTANCE.getActiveVersion(context, VersionCode.UPDATE_01);
         Log.d(TAG, "Locus version: " + mLocusVersion);
 
         Resources locusRes = null;
@@ -191,8 +192,8 @@ public final class LocusCache {
     private ArrayList<TaskerField> createUpdateContainerFields() {
         ArrayList<TaskerField> list = new ArrayList<>();
         //this is a custom order
-        list.add(cField("my_latitude", "latitude", u -> u.getLocMyLocation().latitude));
-        list.add(cField("my_longitude", "longitude", u -> u.getLocMyLocation().longitude));
+        list.add(cField("my_latitude", "latitude", u -> u.getLocMyLocation().getLatitude()));
+        list.add(cField("my_longitude", "longitude", u -> u.getLocMyLocation().getLongitude()));
         list.add(cField("my_altitude", "altitude", u -> u.getLocMyLocation().getAltitude()));
         list.add(cField("my_accuracy", "accuracy", u -> u.getLocMyLocation().getAccuracy()));
         list.add(cField("my_gps_fix", "gps_fix", u -> u.getLocMyLocation().getTime()));
@@ -230,12 +231,12 @@ public final class LocusCache {
         list.add(cField("map_distance_to_gps", "distance_to_gps", u -> u.getLocMapCenter().distanceTo(u.getLocMyLocation())));
         list.add(cField("map_rotate_angle", null, UpdateContainer::getMapRotate));
         //no null checks needed, map locations are always available
-        list.add(cField("map_bottom_right_lon", null, u -> u.getMapBottomRight().longitude));
-        list.add(cField("map_bottom_right_lat", null, u -> u.getMapBottomRight().latitude));
-        list.add(cField("map_top_left_lon", null, u -> u.getMapTopLeft().longitude));
-        list.add(cField("map_top_left_lat", null, u -> u.getMapTopLeft().latitude));
-        list.add(cField("map_center_lon", null, u -> u.getLocMapCenter().longitude));
-        list.add(cField("map_center_lat", null, u -> u.getLocMapCenter().latitude));
+        list.add(cField("map_bottom_right_lon", null, u -> u.getMapBottomRight().getLongitude()));
+        list.add(cField("map_bottom_right_lat", null, u -> u.getMapBottomRight().getLatitude()));
+        list.add(cField("map_top_left_lon", null, u -> u.getMapTopLeft().getLongitude()));
+        list.add(cField("map_top_left_lat", null, u -> u.getMapTopLeft().getLatitude()));
+        list.add(cField("map_center_lon", null, u -> u.getLocMapCenter().getLongitude()));
+        list.add(cField("map_center_lat", null, u -> u.getLocMapCenter().getLatitude()));
 
         return list;
     }
@@ -264,8 +265,8 @@ public final class LocusCache {
         list.add(cField("rec_cadence_avg", "cadence_avg", u -> u.getTrackRecStats().getCadenceAverage()));
         list.add(cField("rec_cadence_max", "cadence_max", u -> u.getTrackRecStats().getCadenceMax()));
         list.add(cField("rec_energy_burned", "energy_burned", u -> u.getTrackRecStats().getEnergy()));
-        list.add(cField("rec_hrm_avg", "heart_rate_avg", u -> u.getTrackRecStats().getHrmAverage()));
-        list.add(cField("rec_hrm_max", "heart_rate_max", u -> u.getTrackRecStats().getHrmMax()));
+        list.add(cField("rec_hrm_avg", "heart_rate_avg", u -> u.getTrackRecStats().getHeartRateAverage()));
+        list.add(cField("rec_hrm_max", "heart_rate_max", u -> u.getTrackRecStats().getHeartRateMax()));
         list.add(cField("rec_strides_count", null, u -> u.getTrackRecStats().getNumOfStrides()));
 
         return list;
@@ -276,8 +277,8 @@ public final class LocusCache {
     private ArrayList<TaskerField> createGuideFields() {
         ArrayList<TaskerField> list = new ArrayList<>();
         //this is a custom order
-        list.add(cField("guide_target_lon", null, u -> u.getGuideWptLoc().longitude));
-        list.add(cField("guide_target_lat", null, u -> u.getGuideWptLoc().latitude));
+        list.add(cField("guide_target_lon", null, u -> u.getGuideWptLoc().getLongitude()));
+        list.add(cField("guide_target_lat", null, u -> u.getGuideWptLoc().getLatitude()));
         list.add(cField("guide_target_angle", null, UpdateContainer::getGuideWptAngle));
         list.add(cField("guide_target_azimuth", null, UpdateContainer::getGuideWptAzim));
         list.add(cField("guide_target_dist", null, UpdateContainer::getGuideWptDist));
@@ -292,15 +293,15 @@ public final class LocusCache {
         list.add(cField("guide_navpoint1_action", null, UpdateContainer::getGuideNavPoint1Action));
         list.add(cField("guide_navpoint1_dist", null, UpdateContainer::getGuideNavPoint1Dist));
         list.add(cField("guide_navpoint1_extra", null, UpdateContainer::getGuideNavPoint1Extra));
-        list.add(cField("guide_navpoint1_lon", null, u -> u.getGuideNavPoint1Loc().longitude));
-        list.add(cField("guide_navpoint1_lat", null, u -> u.getGuideNavPoint1Loc().latitude));
+        list.add(cField("guide_navpoint1_lon", null, u -> u.getGuideNavPoint1Loc().getLongitude()));
+        list.add(cField("guide_navpoint1_lat", null, u -> u.getGuideNavPoint1Loc().getLatitude()));
         list.add(cField("guide_navpoint1_name", null, UpdateContainer::getGuideNavPoint1Name));
         list.add(cField("guide_navpoint1_time", null, UpdateContainer::getGuideNavPoint1Time));
         list.add(cField("guide_navpoint2_action", null, UpdateContainer::getGuideNavPoint2Action));
         list.add(cField("guide_navpoint2_dist", null, UpdateContainer::getGuideNavPoint2Dist));
         list.add(cField("guide_navpoint2_extra", null, UpdateContainer::getGuideNavPoint2Extra));
-        list.add(cField("guide_navpoint2_lon", null, u -> u.getGuideNavPoint2Loc().longitude));
-        list.add(cField("guide_navpoint2_lat", null, u -> u.getGuideNavPoint2Loc().latitude));
+        list.add(cField("guide_navpoint2_lon", null, u -> u.getGuideNavPoint2Loc().getLongitude()));
+        list.add(cField("guide_navpoint2_lat", null, u -> u.getGuideNavPoint2Loc().getLatitude()));
         list.add(cField("guide_navpoint2_name", null, UpdateContainer::getGuideNavPoint2Name));
         list.add(cField("guide_navpoint2_time", null, UpdateContainer::getGuideNavPoint2Time));
 

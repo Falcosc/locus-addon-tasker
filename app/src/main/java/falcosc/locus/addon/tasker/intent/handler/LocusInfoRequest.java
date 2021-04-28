@@ -14,14 +14,14 @@ import falcosc.locus.addon.tasker.utils.LocusCache;
 import falcosc.locus.addon.tasker.utils.LocusInfoField;
 import falcosc.locus.addon.tasker.utils.TaskerField;
 import locus.api.android.ActionBasics;
-import locus.api.android.utils.LocusInfo;
+import locus.api.android.objects.LocusInfo;
 
 public class LocusInfoRequest extends AbstractTaskerAction {
 
     @SuppressWarnings("HardCodedStringLiteral")
     private static final ArrayList<LocusInfoField> FIELDS = new ArrayList<>(Arrays.asList(
             new LocusInfoField("dir_backup", "Backup Folder", LocusInfo::getRootDirBackup),
-            new LocusInfoField("dir_root", "Main Folder", LocusInfo::getRootDirectory),
+            new LocusInfoField("dir_root", "Main Folder", LocusInfo::getRootDir),
             new LocusInfoField("dir_export", "Export Folder", LocusInfo::getRootDirExport),
             new LocusInfoField("dir_geocaching", "Geocaching Folder", LocusInfo::getRootDirGeocaching),
             new LocusInfoField("dir_mapitems", "Map Items Folder", LocusInfo::getRootDirMapItems),
