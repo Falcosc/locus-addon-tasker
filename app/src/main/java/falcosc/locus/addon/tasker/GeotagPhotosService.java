@@ -371,8 +371,8 @@ public final class GeotagPhotosService extends JobIntentService {
         path = path.substring(path.lastIndexOf(':') + 1);
 
         ContentValues values = new ContentValues();
-        //noinspection StaticFieldReferencedViaSubclass because this is an api 29 refactoring
-        values.put(MediaStore.Images.ImageColumns.DATE_TAKEN, time);
+        values.put(MediaStore.MediaColumns.DATE_TAKEN, time);
+        //deprecation because these are not indexed anymore since API 29 because of privacy
         values.put(MediaStore.Images.ImageColumns.LATITUDE, loc.getLatitude());
         values.put(MediaStore.Images.ImageColumns.LONGITUDE, loc.getLongitude());
         int updatedRows = getContentResolver().update(mediaStore, values,
