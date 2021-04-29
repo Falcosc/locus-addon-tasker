@@ -23,6 +23,10 @@
         <item>-</item>
         <item>value</item>
     </string-array>
+    <string-array name="navigation_action">
+        <item>recalculate</item>
+        <item>stop</item>
+    </string-array>
     <string-array name="open_action">
         <item>menu</item>
     </string-array>

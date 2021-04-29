@@ -243,6 +243,20 @@
             </RelativeLayout>
 
             <CheckBox
+                android:id="@+id/navigation"
+                style="@style/listCheckbox"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Navigation" />
+
+            <Spinner
+                android:id="@+id/navigation_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/navigation_action"
+                android:visibility="gone" />
+
+            <CheckBox
                 android:id="@+id/open"
                 style="@style/listCheckbox"
                 android:layout_width="match_parent"

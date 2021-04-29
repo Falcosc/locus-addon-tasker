@@ -109,6 +109,15 @@ public class ActionTaskEdit extends TaskerEditActivity {
         }
     }
 
+    static class Navigation extends ActionTypeJSON {
+        Navigation(@NonNull View view) {
+            super(view.findViewById(R.id.navigation), view.findViewById(R.id.navigation_content));
+            Spinner spinner = (Spinner) mContent;
+            spinner.setOnItemSelectedListener(onItemSelected);
+            bindKey(ACTION, (v) -> setSpinnerValue(spinner, v), spinner::getSelectedItem);
+        }
+    }
+
     static class Open extends ActionTypeJSON {
         Open(@NonNull View view) {
             super(view.findViewById(R.id.open), view.findViewById(R.id.open_content));
@@ -189,6 +198,7 @@ public class ActionTaskEdit extends TaskerEditActivity {
         actionMap.put("map_move_x", new MapMoveX(view));
         actionMap.put("map_move_y", new MapMoveY(view));
         actionMap.put("map_zoom", new MapZoom(view, varSelectDialog));
+        actionMap.put("navigation", new Navigation(view));
         actionMap.put("open", new Open(view));
         actionMap.put("preset", new Preset(view, varSelectDialog));
         actionMap.put("screen_lock", new ScreenLock(view));
