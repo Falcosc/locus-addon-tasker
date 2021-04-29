@@ -97,6 +97,15 @@ public class ActionTaskEdit extends TaskerEditActivity {
         }
     }
 
+    static class MapRotate extends ActionTypeJSON {
+        MapRotate(@NonNull View view) {
+            super(view.findViewById(R.id.map_rotate), view.findViewById(R.id.map_rotate_content));
+            Spinner spinner = (Spinner) mContent;
+            spinner.setOnItemSelectedListener(onItemSelected);
+            bindKey(ACTION, (v) -> setSpinnerValue(spinner, v), spinner::getSelectedItem);
+        }
+    }
+
     static class MapZoom extends ActionTypeJSON {
         MapZoom(@NonNull View view, @Nullable Dialog varSelectDialog) {
             super(view.findViewById(R.id.map_zoom), view.findViewById(R.id.map_zoom_content));
@@ -197,6 +206,7 @@ public class ActionTaskEdit extends TaskerEditActivity {
         actionMap.put("live_tracking_custom", new LiveTrackingCustom(view, varSelectDialog));
         actionMap.put("map_move_x", new MapMoveX(view));
         actionMap.put("map_move_y", new MapMoveY(view));
+        actionMap.put("map_rotate", new MapRotate(view));
         actionMap.put("map_zoom", new MapZoom(view, varSelectDialog));
         actionMap.put("navigation", new Navigation(view));
         actionMap.put("open", new Open(view));
