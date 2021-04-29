@@ -393,7 +393,40 @@
                     android:layout_below="@id/track_record_allow_start_checkbox"
                     android:layout_toEndOf="@id/track_record_wpt_spinner_label"
                     android:entries="@array/track_record_wpt_after" />
+            </RelativeLayout>
 
+            <CheckBox
+                android:id="@+id/quick_bookmark"
+                style="@style/listCheckbox"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Quick Bookmark" />
+
+            <RelativeLayout
+                android:id="@+id/quick_bookmark_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+
+                <ImageButton
+                    android:id="@+id/quick_bookmark_var"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentEnd="true"
+                    android:contentDescription="Variable Selection"
+                    android:visibility="gone"
+                    android:src="@drawable/var_select" />
+
+                <EditText
+                    android:id="@+id/quick_bookmark_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignWithParentIfMissing="true"
+                    android:layout_toStartOf="@id/quick_bookmark_var"
+                    android:hint="Name of the bookmark"
+                    android:imeOptions="actionDone"
+                    android:inputType="text" />
             </RelativeLayout>
 
         </LinearLayout>

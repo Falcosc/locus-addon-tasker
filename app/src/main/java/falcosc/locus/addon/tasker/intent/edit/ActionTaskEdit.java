@@ -166,6 +166,17 @@ public class ActionTaskEdit extends TaskerEditActivity {
         }
     }
 
+    static class QuickBookmark extends ActionTypeJSON {
+        QuickBookmark(@NonNull View view, @Nullable Dialog varSelectDialog) {
+            super(view.findViewById(R.id.quick_bookmark), view.findViewById(R.id.quick_bookmark_content));
+            EditText text = view.findViewById(R.id.quick_bookmark_text);
+            setVarSelectDialog(varSelectDialog, text, view.findViewById(R.id.quick_bookmark_var));
+
+            bindKey(ACTION, null, () -> START);
+            bindKey(NAME, (v) -> text.setText((CharSequence) v), text::getText);
+        }
+    }
+
     private Map<String, ActionTypeJSON> actionMap;
 
     @SuppressWarnings("HardCodedStringLiteral")
@@ -183,6 +194,7 @@ public class ActionTaskEdit extends TaskerEditActivity {
         actionMap.put("screen_lock", new ScreenLock(view));
         actionMap.put("screen_on_off", new ScreenOnOff(view));
         actionMap.put("track_record", new TrackRecord(view, varSelectDialog));
+        actionMap.put("quick_bookmark", new QuickBookmark(view, varSelectDialog));
     }
 
     private void applyJSONToView(@Nullable String json) {
