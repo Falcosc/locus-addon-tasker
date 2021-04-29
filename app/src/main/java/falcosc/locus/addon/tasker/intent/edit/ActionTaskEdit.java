@@ -33,6 +33,7 @@ public class ActionTaskEdit extends TaskerEditActivity {
     private static final String ACTION = "action"; //NON-NLS
     private static final String ACTION_AFTER = "action_after"; //NON-NLS
     private static final String AUTO_SAVE = "auto_save"; //NON-NLS
+    private static final String ALLOW_START = "allow_start"; //NON-NLS
     private static final String NAME = "name"; //NON-NLS
     private static final String START = "start"; //NON-NLS
     private static final String VALUE = "value"; //NON-NLS
@@ -152,13 +153,15 @@ public class ActionTaskEdit extends TaskerEditActivity {
             Spinner spinner = view.findViewById(R.id.track_record_spinner);
             spinner.setOnItemSelectedListener(onItemSelected);
             EditText text = view.findViewById(R.id.track_record_text);
-            CheckBox checkbox = view.findViewById(R.id.track_record_checkbox);
+            CheckBox saveCheckbox = view.findViewById(R.id.track_record_save_checkbox);
+            CheckBox allowStartCheckbox = view.findViewById(R.id.track_record_allow_start_checkbox);
             Spinner wptSpinner = view.findViewById(R.id.track_record_wpt_spinner);
             setVarSelectDialog(varSelectDialog, text, view.findViewById(R.id.track_record_var));
 
             bindKey(ACTION, (v) -> setSpinnerValue(spinner, v), spinner::getSelectedItem);
             bindKey(NAME, (v) -> text.setText((CharSequence) v), text::getText);
-            bindKey(AUTO_SAVE, (v) -> checkbox.setChecked((boolean) v), checkbox::isChecked);
+            bindKey(AUTO_SAVE, (v) -> saveCheckbox.setChecked((boolean) v), saveCheckbox::isChecked);
+            bindKey(ALLOW_START, (v) -> allowStartCheckbox.setChecked((boolean) v), allowStartCheckbox::isChecked);
             bindKey(ACTION_AFTER, (v) -> setSpinnerValue(wptSpinner, v), wptSpinner::getSelectedItem);
         }
     }
