@@ -301,7 +301,7 @@
                 android:id="@+id/screen_lock_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:entries="@array/on_off_toggle"
+                android:entries="@array/on_off"
                 android:visibility="gone" />
 
             <CheckBox

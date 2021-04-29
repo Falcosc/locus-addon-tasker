@@ -5,6 +5,10 @@
         <item>off</item>
         <item>toggle</item>
     </string-array>
+    <string-array name="on_off">
+        <item>on</item>
+        <item>off</item>
+    </string-array>
     <string-array name="start_stop">
         <item>start</item>
         <item>stop</item>
