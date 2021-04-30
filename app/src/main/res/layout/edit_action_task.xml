@@ -641,7 +641,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/track_record_save_checkbox"
-                    android:text="allow start for toogle" />
+                    android:text="allow start for toggle" />
 
                 <TextView
                     android:id="@+id/track_record_wpt_spinner_label"
