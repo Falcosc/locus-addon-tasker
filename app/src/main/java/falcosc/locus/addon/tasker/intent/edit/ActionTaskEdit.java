@@ -39,12 +39,25 @@ public class ActionTaskEdit extends TaskerEditActivity {
     private static final String VALUE = "value"; //NON-NLS
     private static final String UNIT = "unit"; //NON-NLS
 
-    static class MapCenter extends ActionTypeJSON {
-        MapCenter(@NonNull View view) {
-            super(view.findViewById(R.id.map_center), view.findViewById(R.id.map_center_content));
+    static class Dashboard extends ActionTypeJSON {
+        Dashboard(@NonNull View view, @Nullable Dialog varSelectDialog) {
+            super(view.findViewById(R.id.dashboard), view.findViewById(R.id.dashboard_content));
+            Spinner spinner = view.findViewById(R.id.dashboard_spinner);
+            spinner.setOnItemSelectedListener(onItemSelected);
+            EditText text = view.findViewById(R.id.dashboard_text);
+            setVarSelectDialog(varSelectDialog, text, view.findViewById(R.id.dashboard_var));
+
+            bindKey(ACTION, (v) -> setSpinnerValue(spinner, v), spinner::getSelectedItem);
+            bindKey(NAME, (v) -> text.setText((CharSequence) v), text::getText);
+        }
+    }
+
+    static class OpenFunction extends ActionTypeJSON {
+        OpenFunction(@NonNull View view) {
+            super(view.findViewById(R.id.function), view.findViewById(R.id.function_content));
             Spinner spinner = (Spinner) mContent;
             spinner.setOnItemSelectedListener(onItemSelected);
-            bindKey(ACTION, (v) -> setSpinnerValue(spinner, v), spinner::getSelectedItem);
+            bindKey(VALUE, (v) -> setSpinnerValue(spinner, v), spinner::getSelectedItem);
         }
     }
 
@@ -72,6 +85,15 @@ public class ActionTaskEdit extends TaskerEditActivity {
 
             bindKey(ACTION, (v) -> setSpinnerValue(spinner, v), spinner::getSelectedItem);
             bindKey(NAME, (v) -> text.setText((CharSequence) v), text::getText);
+        }
+    }
+
+    static class MapCenter extends ActionTypeJSON {
+        MapCenter(@NonNull View view) {
+            super(view.findViewById(R.id.map_center), view.findViewById(R.id.map_center_content));
+            Spinner spinner = (Spinner) mContent;
+            spinner.setOnItemSelectedListener(onItemSelected);
+            bindKey(ACTION, (v) -> setSpinnerValue(spinner, v), spinner::getSelectedItem);
         }
     }
 
@@ -201,9 +223,11 @@ public class ActionTaskEdit extends TaskerEditActivity {
     private void initActionMapping(@Nullable Dialog varSelectDialog) {
         View view = findViewById(R.id.content);
         actionMap = new HashMap<>();
-        actionMap.put("map_center", new MapCenter(view));
+        actionMap.put("dashboard", new Dashboard(view, varSelectDialog));
+        actionMap.put("function", new OpenFunction(view));
         actionMap.put("live_tracking_asamm", new LiveTrackingAsamm(view, varSelectDialog));
         actionMap.put("live_tracking_custom", new LiveTrackingCustom(view, varSelectDialog));
+        actionMap.put("map_center", new MapCenter(view));
         actionMap.put("map_move_x", new MapMoveX(view));
         actionMap.put("map_move_y", new MapMoveY(view));
         actionMap.put("map_rotate", new MapRotate(view));

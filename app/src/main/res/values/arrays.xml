@@ -13,6 +13,18 @@
         <item>start</item>
         <item>stop</item>
     </string-array>
+    <string-array name="function_action">
+        <item>altitude_manager</item>
+        <item>quick_action_menu</item>
+        <item>screen_compass</item>
+        <item>screen_data</item>
+        <item>screen_data_points</item>
+        <item>screen_data_tracks</item>
+        <item>screen_gps</item>
+        <item>screen_map_items</item>
+        <item>screen_maps</item>
+        <item>screen_store</item>
+    </string-array>
     <string-array name="map_move_units">
         <item>%</item>
         <item>dp</item>
