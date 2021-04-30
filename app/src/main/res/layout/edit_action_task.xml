@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:ignore="Autofill">
+    tools:ignore="Autofill, TooManyViews">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -309,6 +309,190 @@
                     android:layout_below="@id/map_zoom_spinner"
                     android:layout_toStartOf="@id/map_zoom_value_var"
                     android:hint="value between 1 and 26"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"/>
+            </RelativeLayout>
+
+            <CheckBox
+                android:id="@+id/guide_to"
+                style="@style/listCheckbox"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Guide To" />
+
+            <RelativeLayout
+                android:id="@+id/guide_to_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <EditText
+                    android:id="@+id/guide_to_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignWithParentIfMissing="true"
+                    android:hint="Name of point (optional)"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"/>
+
+                <ImageButton
+                    android:id="@+id/guide_to_lon_var"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@id/guide_to_name"
+                    android:contentDescription="Variable Selection"
+                    android:visibility="gone"
+                    android:src="@drawable/var_select" />
+
+                <TextView
+                    android:id="@+id/guide_to_lon_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@id/guide_to_name"
+                    android:gravity="center"
+                    android:minHeight="48dp"
+                    android:padding="5dp"
+                    android:text="lon:" />
+
+                <EditText
+                    android:id="@+id/guide_to_lon_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignWithParentIfMissing="true"
+                    android:layout_below="@id/guide_to_name"
+                    android:layout_toStartOf="@id/guide_to_lon_var"
+                    android:layout_toEndOf="@id/guide_to_lon_label"
+                    android:hint="-180.00000 to 180.00000"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:nextFocusForward="@id/guide_to_lat_text"/>
+
+                <ImageButton
+                    android:id="@+id/guide_to_lat_var"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@id/guide_to_lon_label"
+                    android:contentDescription="Variable Selection"
+                    android:visibility="gone"
+                    android:src="@drawable/var_select" />
+
+                <TextView
+                    android:id="@+id/guide_to_lat_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@id/guide_to_lon_label"
+                    android:gravity="center"
+                    android:minHeight="48dp"
+                    android:padding="5dp"
+                    android:text="lat:" />
+
+                <EditText
+                    android:id="@+id/guide_to_lat_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignWithParentIfMissing="true"
+                    android:layout_below="@id/guide_to_lon_label"
+                    android:layout_toStartOf="@id/guide_to_lat_var"
+                    android:layout_toEndOf="@id/guide_to_lon_label"
+                    android:hint="-90.00000 to 90.00000"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"/>
+            </RelativeLayout>
+
+            <CheckBox
+                android:id="@+id/navigate_to"
+                style="@style/listCheckbox"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Navigate To" />
+
+            <RelativeLayout
+                android:id="@+id/navigate_to_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <EditText
+                    android:id="@+id/navigate_to_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignWithParentIfMissing="true"
+                    android:hint="Name of point (optional)"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"/>
+
+                <ImageButton
+                    android:id="@+id/navigate_to_lon_var"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@id/navigate_to_name"
+                    android:contentDescription="Variable Selection"
+                    android:visibility="gone"
+                    android:src="@drawable/var_select" />
+
+                <TextView
+                    android:id="@+id/navigate_to_lon_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@id/navigate_to_name"
+                    android:gravity="center"
+                    android:minHeight="48dp"
+                    android:padding="5dp"
+                    android:text="lon:" />
+
+                <EditText
+                    android:id="@+id/navigate_to_lon_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignWithParentIfMissing="true"
+                    android:layout_below="@id/navigate_to_name"
+                    android:layout_toStartOf="@id/navigate_to_lon_var"
+                    android:layout_toEndOf="@id/navigate_to_lon_label"
+                    android:hint="-180.00000 to 180.00000"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:nextFocusForward="@id/navigate_to_lat_text"/>
+
+                <ImageButton
+                    android:id="@+id/navigate_to_lat_var"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@id/navigate_to_lon_label"
+                    android:contentDescription="Variable Selection"
+                    android:visibility="gone"
+                    android:src="@drawable/var_select" />
+
+                <TextView
+                    android:id="@+id/navigate_to_lat_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@id/navigate_to_lon_label"
+                    android:gravity="center"
+                    android:minHeight="48dp"
+                    android:padding="5dp"
+                    android:text="lat:" />
+
+                <EditText
+                    android:id="@+id/navigate_to_lat_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignWithParentIfMissing="true"
+                    android:layout_below="@id/navigate_to_lon_label"
+                    android:layout_toStartOf="@id/navigate_to_lat_var"
+                    android:layout_toEndOf="@id/navigate_to_lon_label"
+                    android:hint="-90.00000 to 90.00000"
                     android:imeOptions="actionDone"
                     android:inputType="text"/>
             </RelativeLayout>

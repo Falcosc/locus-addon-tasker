@@ -38,6 +38,9 @@ public class ActionTaskEdit extends TaskerEditActivity {
     private static final String START = "start"; //NON-NLS
     private static final String VALUE = "value"; //NON-NLS
     private static final String UNIT = "unit"; //NON-NLS
+    private static final String LON = "lon"; //NON-NLS
+    private static final String LAT = "lat"; //NON-NLS
+
 
     static class Dashboard extends ActionTypeJSON {
         Dashboard(@NonNull View view, @Nullable Dialog varSelectDialog) {
@@ -140,6 +143,34 @@ public class ActionTaskEdit extends TaskerEditActivity {
         }
     }
 
+    static class GuideTo extends ActionTypeJSON {
+        GuideTo(@NonNull View view, @Nullable Dialog varSelectDialog) {
+            super(view.findViewById(R.id.guide_to), view.findViewById(R.id.guide_to_content));
+            EditText text = view.findViewById(R.id.guide_to_name);
+            bindKey(NAME, (v) -> text.setText((CharSequence) v), text::getText);
+            EditText lon = view.findViewById(R.id.guide_to_lon_text);
+            setVarSelectDialog(varSelectDialog, lon, view.findViewById(R.id.guide_to_lon_var));
+            bindKey(LON, (v) -> lon.setText((CharSequence) v), lon::getText);
+            EditText lat = view.findViewById(R.id.guide_to_lat_text);
+            setVarSelectDialog(varSelectDialog, lat, view.findViewById(R.id.guide_to_lat_var));
+            bindKey(LAT, (v) -> lat.setText((CharSequence) v), lat::getText);
+        }
+    }
+
+    static class NavigateTo extends ActionTypeJSON {
+        NavigateTo(@NonNull View view, @Nullable Dialog varSelectDialog) {
+            super(view.findViewById(R.id.navigate_to), view.findViewById(R.id.navigate_to_content));
+            EditText text = view.findViewById(R.id.navigate_to_name);
+            bindKey(NAME, (v) -> text.setText((CharSequence) v), text::getText);
+            EditText lon = view.findViewById(R.id.navigate_to_lon_text);
+            setVarSelectDialog(varSelectDialog, lon, view.findViewById(R.id.navigate_to_lon_var));
+            bindKey(LON, (v) -> lon.setText((CharSequence) v), lon::getText);
+            EditText lat = view.findViewById(R.id.navigate_to_lat_text);
+            setVarSelectDialog(varSelectDialog, lat, view.findViewById(R.id.navigate_to_lat_var));
+            bindKey(LAT, (v) -> lat.setText((CharSequence) v), lat::getText);
+        }
+    }
+    
     static class Navigation extends ActionTypeJSON {
         Navigation(@NonNull View view) {
             super(view.findViewById(R.id.navigation), view.findViewById(R.id.navigation_content));
@@ -232,6 +263,8 @@ public class ActionTaskEdit extends TaskerEditActivity {
         actionMap.put("map_move_y", new MapMoveY(view));
         actionMap.put("map_rotate", new MapRotate(view));
         actionMap.put("map_zoom", new MapZoom(view, varSelectDialog));
+        actionMap.put("guide_to", new GuideTo(view, varSelectDialog));
+        actionMap.put("navigate_to", new NavigateTo(view, varSelectDialog));
         actionMap.put("navigation", new Navigation(view));
         actionMap.put("open", new Open(view));
         actionMap.put("preset", new Preset(view, varSelectDialog));
