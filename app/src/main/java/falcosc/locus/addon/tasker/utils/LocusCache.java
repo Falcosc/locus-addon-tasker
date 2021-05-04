@@ -1,17 +1,23 @@
 package falcosc.locus.addon.tasker.utils;
 
 import android.app.Application;
-
-import androidx.arch.core.util.Function;
-
 import android.content.Context;
 import android.content.res.Resources;
+import android.util.Log;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.WordUtils;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import android.util.Log;
-
+import androidx.arch.core.util.Function;
 import falcosc.locus.addon.tasker.BuildConfig;
 import falcosc.locus.addon.tasker.RequiredDataMissingException;
 import locus.api.android.ActionBasics;
@@ -21,11 +27,6 @@ import locus.api.android.objects.VersionCode;
 import locus.api.android.utils.LocusUtils;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 import locus.api.objects.geoData.Track;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.WordUtils;
-
-import java.util.*;
 
 public final class LocusCache {
     private static final String TAG = "LocusCache"; //NON-NLS
@@ -351,10 +352,10 @@ public final class LocusCache {
     }
 
     @NonNull
-    public ExtUpdateContainer getUpdateContainer() throws RequiredVersionMissingException {
+    public ExtUpdateContainer getUpdateContainer() throws RequiredVersionMissingException, RequiredDataMissingException {
         long requestTime = System.currentTimeMillis();
         if (requestTime > mUpdateContainerExpiration) {
-            UpdateContainer container = ActionBasics.INSTANCE.getUpdateContainer(mApplicationContext, mLocusVersion);
+            UpdateContainer container = ActionBasics.INSTANCE.getUpdateContainer(mApplicationContext, requireLocusVersion());
             if (container != null) {
                 mExtUpdateContainer = new ExtUpdateContainer(container);
                 mUpdateContainerExpiration = requestTime + UPDATE_CONTAINER_EXPIRATION; //don't care about 1 second offset for manual update requests
