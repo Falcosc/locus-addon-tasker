@@ -68,7 +68,7 @@ public class ReportingHelper {
     @RequiresApi(api = Build.VERSION_CODES.O)
     public String createDefaultNotificationChannel() {
         NotificationChannel channel = new NotificationChannel(Const.NOTIFICATION_CHANNEL_ID,
-                mContext.getString(R.string.app_name), NotificationManager.IMPORTANCE_LOW);
+                mContext.getString(R.string.app_name), NotificationManager.IMPORTANCE_HIGH);
         channel.setDescription(mContext.getString(R.string.notification_channel_desc));
         NotificationManager notificationManager = mContext.getSystemService(NotificationManager.class);
         if (notificationManager != null) {

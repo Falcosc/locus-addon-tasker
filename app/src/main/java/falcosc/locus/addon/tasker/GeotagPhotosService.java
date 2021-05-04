@@ -1,16 +1,16 @@
 package falcosc.locus.addon.tasker;
 
-import android.Manifest;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
 import android.os.SystemClock;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.system.Os;
 import android.system.OsConstants;
@@ -29,6 +29,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -37,7 +38,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.JobIntentService;
 import androidx.core.app.NotificationCompat;
-import androidx.core.content.ContextCompat;
 import androidx.exifinterface.media.ExifInterface;
 import falcosc.locus.addon.tasker.utils.Const;
 import falcosc.locus.addon.tasker.utils.ReportingHelper;
@@ -48,6 +48,8 @@ import locus.api.objects.geoData.Track;
 public final class GeotagPhotosService extends JobIntentService {
 
     private static final String TAG = "GeotagPhotosService"; //NON-NLS
+    public static final Set<String> supportedMimeTypes = Set.of(Const.MIME_TYPE_JPEG, Const.MIME_TYPE_PNG, Const.MIME_TYPE_WEBP);
+
     private NotificationCompat.Builder mNotificationBuilder;
     private int progressEnd;
     private List<String> fileErrors;
@@ -62,6 +64,61 @@ public final class GeotagPhotosService extends JobIntentService {
     private boolean mNoMediaStoreAccess;
     private long mLastNotificationTime;
 
+    static final int JOB_ID = 1000;
+
+    static class DocumentInfo {
+        DocumentInfo(String documentId, String mimeType, long lastModified) {
+            mDocumentId = documentId;
+            mMimeType = mimeType;
+            mLastModified = lastModified;
+        }
+
+        String getMimeType() {
+            return mMimeType;
+        }
+
+        String getDocumentId() {
+            return mDocumentId;
+        }
+
+        long getLastModified() {
+            return mLastModified;
+        }
+
+        private final String mMimeType;
+        private final String mDocumentId;
+        private final long mLastModified;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private ArrayList<Parcelable> getFileUris(Uri folderUri){
+        ArrayList<Parcelable> fileUris;
+
+        Uri treeUrl = DocumentsContract.buildChildDocumentsUriUsingTree(folderUri, DocumentsContract.getTreeDocumentId(folderUri));
+        Log.i(TAG, "folderUri: " + folderUri + " \ntreeUrl: " + treeUrl); //NON-NLS
+        //selection and order is ignored by content resolver, use null and do it in ui thread
+        try (Cursor cursor = getContentResolver().query(treeUrl, new String[]{DocumentsContract.Document.COLUMN_DOCUMENT_ID, DocumentsContract.Document.COLUMN_MIME_TYPE, DocumentsContract.Document.COLUMN_LAST_MODIFIED},
+                null, null, null, null)) { //NON-NLS
+            List<DocumentInfo> info = new ArrayList<>();
+            if (cursor != null) {
+                while (cursor.moveToNext()) {
+                    info.add(new DocumentInfo(cursor.getString(0), cursor.getString(1), cursor.getLong(2)));
+                }
+            }
+
+            fileUris = info.stream()
+                    .filter(documentInfo -> supportedMimeTypes.contains(documentInfo.getMimeType()))
+                    .sorted(Comparator.comparing(DocumentInfo::getLastModified).reversed())
+                    .map(documentInfo -> DocumentsContract.buildDocumentUriUsingTree(folderUri, documentInfo.getDocumentId()))
+                    .collect(Collectors.toCollection(ArrayList::new));
+        } catch (Exception e) {
+            Log.e(TAG, "Can't read folder", e); //NON-NLS
+            fileUris = new ArrayList<>();
+        }
+
+        return fileUris;
+    }
+
     private NotificationCompat.Builder createNotificationBuilder() {
         NotificationCompat.Builder builder;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -73,18 +130,16 @@ public final class GeotagPhotosService extends JobIntentService {
 
         return builder
                 .setSmallIcon(R.drawable.ic_camera_alt)
-                .setContentTitle(getString(R.string.geotag_title));
-
+                .setContentTitle(getString(R.string.geotag_title))
+                .setPriority(NotificationCompat.PRIORITY_HIGH);
     }
 
     @Override
-    protected void onHandleWork(@Nullable Intent workIntent) {
+    protected void onHandleWork(@NonNull Intent workIntent) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             new ReportingHelper(this).createDefaultNotificationChannel();
         }
 
-        mNoMediaStoreAccess = ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
         mNotificationBuilder = createNotificationBuilder();
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
@@ -92,9 +147,7 @@ public final class GeotagPhotosService extends JobIntentService {
             return;
         }
 
-        ArrayList<Parcelable> fileUris = Optional.ofNullable(workIntent)
-                .map(intent -> intent.getParcelableArrayListExtra(Const.INTENT_EXTRA_GEOTAG_FILES))
-                .orElse(new ArrayList<>());
+        ArrayList<Parcelable> fileUris = getFileUris(workIntent.getData());
 
         if (fileUris.isEmpty()) {
             stopWithError(getString(R.string.err_geotag_no_images_found));
@@ -418,9 +471,8 @@ public final class GeotagPhotosService extends JobIntentService {
         fileErrors.add(errLine);
         Log.e(TAG, errLine);
 
-        int fileErrorCount = fileErrors.size();
-        mNotificationBuilder.setContentTitle(getText(R.string.geotag_title) + ", " +
-                getResources().getQuantityString(R.plurals.err_geotag_x_skipped, fileErrorCount, fileErrorCount));
+        int errorCount = fileErrors.size();
+        mNotificationBuilder.setContentTitle(getResources().getQuantityString(R.plurals.err_geotag_x_skipped, errorCount, errorCount));
 
         incrementNotificationProgress();
     }

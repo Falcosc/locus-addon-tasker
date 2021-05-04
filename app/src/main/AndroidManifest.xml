@@ -15,6 +15,7 @@
 
     <uses-permission android:name="net.dinglisch.android.tasker.PERMISSION_RUN_TASKS" />
     <uses-permission-sdk-23 android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission-sdk-23 android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission-sdk-23 android:name="android.permission.FOREGROUND_SERVICE" />
 
     <queries>
@@ -106,7 +107,8 @@
 
         <service
             android:name=".GeotagPhotosService"
-            android:exported="false">
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE">
         </service>
 
         <!-- listen tasker edit action -->

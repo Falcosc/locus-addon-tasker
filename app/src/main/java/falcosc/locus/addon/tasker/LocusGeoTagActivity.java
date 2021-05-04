@@ -23,16 +23,13 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.File;
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.app.JobIntentService;
 import androidx.core.content.ContextCompat;
 import androidx.exifinterface.media.ExifInterface;
 import falcosc.locus.addon.tasker.utils.Const;
@@ -42,30 +39,6 @@ import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 import locus.api.objects.geoData.Track;
 
 public class LocusGeoTagActivity extends ProjectActivity {
-
-    private static class DocumentInfo {
-        DocumentInfo(String documentId, String mimeType, long lastModified) {
-            mDocumentId = documentId;
-            mMimeType = mimeType;
-            mLastModified = lastModified;
-        }
-
-        String getMimeType() {
-            return mMimeType;
-        }
-
-        String getDocumentId() {
-            return mDocumentId;
-        }
-
-        long getLastModified() {
-            return mLastModified;
-        }
-
-        private final String mMimeType;
-        private final String mDocumentId;
-        private final long mLastModified;
-    }
 
     private static class TrackDetails {
         TrackDetails() {
@@ -96,10 +69,9 @@ public class LocusGeoTagActivity extends ProjectActivity {
             return;
         }
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            if (!shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-            }
+        if ((ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) ||
+                (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
         }
 
         //don't need to check for track intent because this is bound only to track intents
@@ -183,38 +155,32 @@ public class LocusGeoTagActivity extends ProjectActivity {
 
             Uri treeUrl = DocumentsContract.buildChildDocumentsUriUsingTree(mFolderUri, DocumentsContract.getTreeDocumentId(mFolderUri));
             Log.i(TAG, "mFolderUri: " + mFolderUri + " \ntreeUrl: " + treeUrl); //NON-NLS
-            //selection and order is ignored by content resolver, use null and do it in ui thread
-            try (Cursor cursor = getContentResolver().query(treeUrl, new String[]{Document.COLUMN_DOCUMENT_ID, Document.COLUMN_MIME_TYPE, Document.COLUMN_LAST_MODIFIED},
+
+            int fileCount = 0;
+            //selection and order is ignored by content resolver, use null and order manually
+            try (Cursor cursor = getContentResolver().query(treeUrl, new String[]{Document.COLUMN_DOCUMENT_ID, Document.COLUMN_MIME_TYPE},
                     null, null, null, null)) { //NON-NLS
-                List<DocumentInfo> info = new ArrayList<>();
                 if (cursor != null) {
                     while (cursor.moveToNext()) {
-                        info.add(new DocumentInfo(cursor.getString(0), cursor.getString(1), cursor.getLong(2)));
+                        if(GeotagPhotosService.supportedMimeTypes.contains(cursor.getString(1))){
+                            fileCount++;
+                        }
+                    }
+                    if(cursor.moveToFirst()){
+                        setExample(DocumentsContract.buildDocumentUriUsingTree(mFolderUri, cursor.getString(0)));
                     }
                 }
-
-                HashSet<String> supportedMimeTypes = new HashSet<>();
-                supportedMimeTypes.add(Const.MIME_TYPE_JPEG);
-                supportedMimeTypes.add(Const.MIME_TYPE_PNG);
-                supportedMimeTypes.add(Const.MIME_TYPE_WEBP);
-
-                mDocumentUris = info.stream()
-                        .filter(documentInfo -> supportedMimeTypes.contains(documentInfo.getMimeType()))
-                        .sorted(Comparator.comparing(DocumentInfo::getLastModified).reversed())
-                        .map(documentInfo -> DocumentsContract.buildDocumentUriUsingTree(mFolderUri, documentInfo.getDocumentId()))
-                        .collect(Collectors.toCollection(ArrayList::new));
             } catch (Exception e) {
                 Log.e(TAG, "Can't read folder", e); //NON-NLS
-                mDocumentUris = new ArrayList<>();
             }
 
-            if (mDocumentUris.isEmpty()) {
+            if (fileCount == 0) {
                 Toast.makeText(this, R.string.err_geotag_no_images_found, Toast.LENGTH_LONG).show();
                 pickFolder();
                 return;
             }
-            setExample(mDocumentUris.get(0));
-            setTitle(getResources().getQuantityString(R.plurals.geotag_x_photos, mDocumentUris.size(), mDocumentUris.size()));
+
+            setTitle(getResources().getQuantityString(R.plurals.geotag_x_photos, fileCount, fileCount));
         } else {
             finish();
         }
@@ -317,9 +283,9 @@ public class LocusGeoTagActivity extends ProjectActivity {
 
     private void pickFolder() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            intent.putExtra(DocumentsContract.EXTRA_PROMPT, R.string.geotag_select_folder);
-        }
+        intent.putExtra(DocumentsContract.EXTRA_PROMPT, R.string.geotag_select_folder);
+        //workaround to force displaying "use this folder" button
+        intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Uri.parse("content://com.android.externalstorage.documents/document/secondary:"));  //NON-NLS
         startActivityForResult(intent, REQUEST_CODE_OPEN_DIRECTORY);
     }
 
@@ -327,12 +293,18 @@ public class LocusGeoTagActivity extends ProjectActivity {
     private void startGeoTag() {
         Intent serviceIntent = new Intent(this,
                 GeotagPhotosService.class);
+        serviceIntent.setData(mFolderUri);
+        serviceIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION
+                | Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
+                | Intent.FLAG_GRANT_PREFIX_URI_PERMISSION
+        );
         serviceIntent.setPackage(getPackageName());
         //set locus intent data
         serviceIntent.putExtras(getIntent());
-        serviceIntent.putParcelableArrayListExtra(Const.INTENT_EXTRA_GEOTAG_FILES, mDocumentUris);
         serviceIntent.putExtra(Const.INTENT_EXTRA_GEOTAG_OFFSET, mTimeOffset);
-        ContextCompat.startForegroundService(this, serviceIntent);
+
+        JobIntentService.enqueueWork(this, GeotagPhotosService.class, GeotagPhotosService.JOB_ID, serviceIntent);
         setResult(RESULT_OK, getIntent());
         finish();
     }
