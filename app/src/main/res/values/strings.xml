@@ -101,4 +101,5 @@
     <string name="select_version_desc">This is only useful if you have multiple Locus versions installed and open
         because the first call searches the current running app and keeps it until the plugin got force closed.
     </string>
+    <string name="import_example_project">Import Example Project</string>
 </resources>
