@@ -18,6 +18,7 @@
     <string name="run_task_execute">Execute your tasks and get all event data as \'\%data\' and available fields as \'\%fields\'</string>
     <string name="action_not_implemented_desc">Following API functions are currently not implemented and would be added if somebody request it:
         \n
+        \n\t• Export rendered Map screenshot
         \n\t• Import points with dialog
         \n\t• Display new points
         \n\t• Display new geocaches
@@ -25,10 +26,8 @@
         \n\t• Search point by name
         \n\t• Display point detail screen
         \n\t• Display new tracks
-        \n\t• Start navigation to
         \n\t• Import GPX with dialog
         \n\t• Pick location from Locus
-        \n\t• Get Locus root directory
         \n\t• Add WMS map
         \n\t• Display circles
         \n\t• Log field notes online

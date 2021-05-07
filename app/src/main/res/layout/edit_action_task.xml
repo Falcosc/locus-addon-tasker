@@ -308,7 +308,7 @@
                     android:layout_alignWithParentIfMissing="true"
                     android:layout_below="@id/map_zoom_spinner"
                     android:layout_toStartOf="@id/map_zoom_value_var"
-                    android:hint="value between 1 and 26"
+                    android:hint="value between 0 and 24"
                     android:imeOptions="actionDone"
                     android:inputType="text"/>
             </RelativeLayout>
