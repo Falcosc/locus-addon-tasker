@@ -42,7 +42,7 @@ public class MainActivity extends ProjectActivity {
     }
 
     private void importExample(){
-        Intent importIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("taskershare://AS35m8nytVVnttotPQy6hJkFoiF7SP8inNsRyp6w6aftTqGPuSZdMKSOCUof8qCeloir1kEQkbB1o0s%3D/Project%3ALocusMap%20Examples"));
+        Intent importIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.TaskerExampleProjectImportLink)));
         try{
             startActivity(importIntent); //taskershare does allways return 0 with null data
             getPreferences(Context.MODE_PRIVATE).edit().putInt(IMPORTED_EXAMPLE_PROJECT_VER, 1).apply();
@@ -55,12 +55,9 @@ public class MainActivity extends ProjectActivity {
         try (Cursor cursor = getContentResolver().query(Uri.parse("content://net.dinglisch.android.tasker/tasks"), //NON-NLS
                 null, null, null, null)) {
             if(cursor != null) {
-                int nameCol = cursor.getColumnIndex("name"); //NON-NLS
                 int projNameCol = cursor.getColumnIndex( "project_name" ); //NON-NLS
-
                 while (cursor.moveToNext()) {
-                    Log.i(TAG,  cursor.getString(projNameCol) + "/" + cursor.getString(nameCol));
-                    if("LocusMap Example".equalsIgnoreCase(cursor.getString(projNameCol))){ //NON-NLS
+                    if("LocusMap Examples".equalsIgnoreCase(cursor.getString(projNameCol))){ //NON-NLS
                         return false;
                     }
                 }

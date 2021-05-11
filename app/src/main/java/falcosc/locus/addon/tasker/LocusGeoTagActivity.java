@@ -22,7 +22,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
 
@@ -53,7 +52,6 @@ public class LocusGeoTagActivity extends ProjectActivity {
     private static final int REQUEST_CODE_OPEN_DOCUMENT = 2;
     private final DateFormat mLocalDateTimeFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM);
     private long mExampleDateTime;
-    private ArrayList<Uri> mDocumentUris;
     private Uri mFolderUri;
     private EditText mEditOffset;
     private int mTimeOffset;

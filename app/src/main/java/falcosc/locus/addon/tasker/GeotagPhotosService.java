@@ -1,9 +1,11 @@
 package falcosc.locus.addon.tasker;
 
+import android.Manifest;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -38,6 +40,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.JobIntentService;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 import androidx.exifinterface.media.ExifInterface;
 import falcosc.locus.addon.tasker.utils.Const;
 import falcosc.locus.addon.tasker.utils.ReportingHelper;
@@ -140,6 +143,8 @@ public final class GeotagPhotosService extends JobIntentService {
             new ReportingHelper(this).createDefaultNotificationChannel();
         }
 
+        mNoMediaStoreAccess = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
         mNotificationBuilder = createNotificationBuilder();
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {

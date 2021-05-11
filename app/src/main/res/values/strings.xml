@@ -102,4 +102,5 @@
         because the first call searches the current running app and keeps it until the plugin got force closed.
     </string>
     <string name="import_example_project">Import Example Project</string>
+    <string name="TaskerExampleProjectImportLink">taskershare://AS35m8nytVVnttotPQy6hJkFoiF7SP8inNsRyp6w6aftTqGPuSZdMKSOCUof8qCeloir1kEQkbB1o0s%3D/Project%3ALocusMap%20Examples</string>
 </resources>
