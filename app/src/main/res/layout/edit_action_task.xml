@@ -632,21 +632,28 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/track_record_text"
-                    android:text="auto save for stop / add_wpt" />
+                    android:text="auto save" />
 
                 <CheckBox
                     android:id="@+id/track_record_allow_start_checkbox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/track_record_save_checkbox"
-                    android:text="allow start for toggle" />
+                    android:text="allow start" />
+
+                <CheckBox
+                    android:id="@+id/track_record_confirm_checkbox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/track_record_allow_start_checkbox"
+                    android:text="confirm" />
 
                 <TextView
                     android:id="@+id/track_record_wpt_spinner_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
-                    android:layout_below="@id/track_record_allow_start_checkbox"
+                    android:layout_below="@id/track_record_confirm_checkbox"
                     android:gravity="center"
                     android:minHeight="48dp"
                     android:padding="5dp"
@@ -657,7 +664,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:layout_below="@id/track_record_allow_start_checkbox"
+                    android:layout_below="@id/track_record_confirm_checkbox"
                     android:layout_toEndOf="@id/track_record_wpt_spinner_label"
                     android:entries="@array/track_record_wpt_after" />
             </RelativeLayout>

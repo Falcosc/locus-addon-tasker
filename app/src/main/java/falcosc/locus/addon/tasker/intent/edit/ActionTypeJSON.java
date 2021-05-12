@@ -1,21 +1,26 @@
 package falcosc.locus.addon.tasker.intent.edit;
 
 import android.app.Dialog;
-
-import androidx.annotation.Nullable;
-import falcosc.locus.addon.tasker.utils.ReportingHelper;
-
 import android.util.Log;
 import android.view.View;
-import android.widget.*;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.Spinner;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import falcosc.locus.addon.tasker.utils.ReportingHelper;
+import falcosc.locus.addon.tasker.utils.listener.ItemSelectListener;
 
 class ActionTypeJSON {
     private static final String TAG = "ActionTypeJSON"; //NON-NLS
@@ -29,8 +34,8 @@ class ActionTypeJSON {
     }
 
     final View mContent;
-    @SuppressWarnings("WeakerAccess") //not private because of anonymous access
     final CheckBox mCheckbox;
+    final OnItemSelectedListener onItemSelected;
 
     static class Bind {
         final Setter<Object> mSetter;
@@ -44,10 +49,11 @@ class ActionTypeJSON {
 
     private final Map<String, Bind> mKeyBindMap;
 
-    ActionTypeJSON(CheckBox checkbox, View content) {
+    ActionTypeJSON(@NonNull CheckBox checkbox, View content) {
         mContent = content;
         mCheckbox = checkbox;
         mKeyBindMap = new HashMap<>();
+        onItemSelected = new ItemSelectListener(mCheckbox.getText());
         checkbox.setOnCheckedChangeListener((buttonView, isChecked) -> setContentVisibility(isChecked));
     }
 
@@ -60,6 +66,19 @@ class ActionTypeJSON {
         }
     }
 
+    void setVisibility(List<View> views, int visibility){
+        if(views != null){
+            View view = null;
+            for (int i = 0; i < views.size(); i++) {
+                view = views.get(i);
+                view.setVisibility(visibility);
+            }
+            if((view != null) && (visibility == View.VISIBLE)){
+                mContent.getParent().requestChildFocus(view, view);
+            }
+        }
+    }
+
     //TODO move to abstract TaskerEditActivity and remove varSelectDialog member
     static void setVarSelectDialog(@Nullable Dialog varSelectDialog, EditText text, View varSelectBtn) {
         if (varSelectDialog != null) {
@@ -67,28 +86,6 @@ class ActionTypeJSON {
             varSelectBtn.setOnClickListener(v -> varSelectDialog.show());
         }
     }
-
-    final OnItemSelectedListener onItemSelected = new OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            //selection can't be null;
-            String selection = parent.getSelectedItem().toString();
-            //set spinner description
-            parent.setContentDescription(mCheckbox.getText() + ": " + selection);
-            //view could be null during view recreation
-            if (view != null) {
-                //the inside text is not important anymore because of duplicate information
-                view.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO);
-                //view.setContentDescription(mCheckbox.getText() + ": " + selection);
-            }
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {
-            parent.setContentDescription(mCheckbox.getText() + ": - ");
-        }
-    };
-
 
     void bindKey(String key, Setter<Object> setter, Getter<Object> getter) {
         mKeyBindMap.put(key, new Bind(setter, getter));

@@ -3,28 +3,32 @@ package falcosc.locus.addon.tasker.intent.edit;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.*;
-import java.util.Map.Entry;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import falcosc.locus.addon.tasker.R;
 import falcosc.locus.addon.tasker.intent.LocusActionType;
 import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
 import falcosc.locus.addon.tasker.utils.Const;
 import falcosc.locus.addon.tasker.utils.ReportingHelper;
+import falcosc.locus.addon.tasker.utils.listener.SimpleItemSelectListener;
 
 
 public class ActionTaskEdit extends TaskerEditActivity {
@@ -34,6 +38,7 @@ public class ActionTaskEdit extends TaskerEditActivity {
     private static final String ACTION_AFTER = "action_after"; //NON-NLS
     private static final String AUTO_SAVE = "auto_save"; //NON-NLS
     private static final String ALLOW_START = "allow_start"; //NON-NLS
+    private static final String CONFIRM = "confirm"; //NON-NLS
     private static final String NAME = "name"; //NON-NLS
     private static final String START = "start"; //NON-NLS
     private static final String VALUE = "value"; //NON-NLS
@@ -218,21 +223,40 @@ public class ActionTaskEdit extends TaskerEditActivity {
         }
     }
 
+    @SuppressWarnings("HardCodedStringLiteral")
     static class TrackRecord extends ActionTypeJSON {
         TrackRecord(@NonNull View view, @Nullable Dialog varSelectDialog) {
             super(view.findViewById(R.id.track_record), view.findViewById(R.id.track_record_content));
             Spinner spinner = view.findViewById(R.id.track_record_spinner);
-            spinner.setOnItemSelectedListener(onItemSelected);
-            EditText text = view.findViewById(R.id.track_record_text);
+            EditText name = view.findViewById(R.id.track_record_text);
             CheckBox saveCheckbox = view.findViewById(R.id.track_record_save_checkbox);
             CheckBox allowStartCheckbox = view.findViewById(R.id.track_record_allow_start_checkbox);
+            CheckBox confirmCheckbox = view.findViewById(R.id.track_record_confirm_checkbox);
+            TextView wptSpinnerLabel = view.findViewById(R.id.track_record_wpt_spinner_label);
             Spinner wptSpinner = view.findViewById(R.id.track_record_wpt_spinner);
-            setVarSelectDialog(varSelectDialog, text, view.findViewById(R.id.track_record_var));
+            setVarSelectDialog(varSelectDialog, name, view.findViewById(R.id.track_record_var));
+
+            List<View> optionalViews = Arrays.asList(name, saveCheckbox, allowStartCheckbox, confirmCheckbox, wptSpinnerLabel, wptSpinner);
+            Map<String, List<View>> neededViewsByAction = new HashMap<>();
+            neededViewsByAction.put("start", Collections.singletonList(name));
+            neededViewsByAction.put("stop", Arrays.asList(name, saveCheckbox));
+            neededViewsByAction.put("pause", Collections.singletonList(name));
+            neededViewsByAction.put("discard", Arrays.asList(name, confirmCheckbox));
+            neededViewsByAction.put("toggle", Collections.singletonList(allowStartCheckbox));
+            neededViewsByAction.put("add_wpt", Arrays.asList(name, saveCheckbox, wptSpinnerLabel, wptSpinner));
+
+            setVisibility(optionalViews, View.GONE);
+
+            spinner.setOnItemSelectedListener(new SimpleItemSelectListener(mCheckbox.getText(), (selectedValue) -> {
+                setVisibility(optionalViews, View.GONE);
+                setVisibility(neededViewsByAction.get(selectedValue), View.VISIBLE);
+            }));
 
             bindKey(ACTION, (v) -> setSpinnerValue(spinner, v), spinner::getSelectedItem);
-            bindKey(NAME, (v) -> text.setText((CharSequence) v), text::getText);
+            bindKey(NAME, (v) -> name.setText((CharSequence) v), name::getText);
             bindKey(AUTO_SAVE, (v) -> saveCheckbox.setChecked((boolean) v), saveCheckbox::isChecked);
             bindKey(ALLOW_START, (v) -> allowStartCheckbox.setChecked((boolean) v), allowStartCheckbox::isChecked);
+            bindKey(CONFIRM, (v) -> confirmCheckbox.setChecked((boolean) v), confirmCheckbox::isChecked);
             bindKey(ACTION_AFTER, (v) -> setSpinnerValue(wptSpinner, v), wptSpinner::getSelectedItem);
         }
     }
@@ -331,7 +355,7 @@ public class ActionTaskEdit extends TaskerEditActivity {
 
         JSONObject locusJSON = new JSONObject();
 
-        for (Entry<String, ActionTypeJSON> stringActionTypeJSONEntry : actionMap.entrySet()) {
+        for (Map.Entry<String, ActionTypeJSON> stringActionTypeJSONEntry : actionMap.entrySet()) {
             ActionTypeJSON actionType = stringActionTypeJSONEntry.getValue();
             if (actionType.isChecked()) {
                 try {

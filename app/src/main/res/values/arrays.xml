@@ -46,6 +46,7 @@
         <item>start</item>
         <item>stop</item>
         <item>pause</item>
+        <item>discard</item>
         <item>toggle</item>
         <item>add_wpt</item>
     </string-array>
