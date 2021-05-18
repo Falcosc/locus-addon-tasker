@@ -16,6 +16,7 @@
     <string-array name="function_action">
         <item>altitude_manager</item>
         <item>quick_action_menu</item>
+        <item>floating_menu</item>
         <item>screen_compass</item>
         <item>screen_data</item>
         <item>screen_data_points</item>

@@ -43,8 +43,8 @@ public class MainActivity extends ProjectActivity {
 
     private void importExample(){
         Intent importIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.TaskerExampleProjectImportLink)));
-        try{
-            startActivity(importIntent); //taskershare does allways return 0 with null data
+        try {
+            startActivity(importIntent); //taskershare does allways respond 0 with null data, does not make sense to check it
             getPreferences(Context.MODE_PRIVATE).edit().putInt(IMPORTED_EXAMPLE_PROJECT_VER, 1).apply();
         } catch (ActivityNotFoundException e){
             Log.e(TAG, ReportingHelper.getUserFriendlyName(e), e);
