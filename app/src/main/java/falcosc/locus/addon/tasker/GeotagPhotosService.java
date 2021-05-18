@@ -27,7 +27,9 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -51,7 +53,8 @@ import locus.api.objects.geoData.Track;
 public final class GeotagPhotosService extends JobIntentService {
 
     private static final String TAG = "GeotagPhotosService"; //NON-NLS
-    public static final Set<String> supportedMimeTypes = Set.of(Const.MIME_TYPE_JPEG, Const.MIME_TYPE_PNG, Const.MIME_TYPE_WEBP);
+    public static final Set<String> supportedMimeTypes = Collections.unmodifiableSet(
+            new HashSet<>(Arrays.asList(Const.MIME_TYPE_JPEG, Const.MIME_TYPE_PNG, Const.MIME_TYPE_WEBP)));
 
     private NotificationCompat.Builder mNotificationBuilder;
     private int progressEnd;
@@ -134,7 +137,9 @@ public final class GeotagPhotosService extends JobIntentService {
         return builder
                 .setSmallIcon(R.drawable.ic_camera_alt)
                 .setContentTitle(getString(R.string.geotag_title))
-                .setPriority(NotificationCompat.PRIORITY_HIGH);
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setSound(null)
+                .setVibrate(new long[]{ 0 });
     }
 
     @Override
@@ -169,6 +174,7 @@ public final class GeotagPhotosService extends JobIntentService {
         mNotificationBuilder.setProgress(progressEnd, fileProgress, false);
         mNotificationBuilder.setContentText(getString(R.string.start_process));
         startForeground(Const.NOTIFICATION_ID_GEOTAG, mNotificationBuilder.build());
+        mNotificationBuilder.setNotificationSilent();
 
         try {
             loadTrack(workIntent);
@@ -197,7 +203,7 @@ public final class GeotagPhotosService extends JobIntentService {
 
     private void stopWithError(@NonNull String errMsg) {
         Log.e(TAG, errMsg);
-        NotificationCompat.Builder builder = createNotificationBuilder().setContentText(errMsg);
+        NotificationCompat.Builder builder = createNotificationBuilder().setContentText(errMsg).setNotificationSilent();
         SystemClock.sleep(Const.NOTIFICATION_REPEAT_AFTER); //detach does sometimes not work if notifications fire close to each other
         startForeground(Const.NOTIFICATION_ID_GEOTAG, builder.build());
         //detach notification to keep
@@ -238,7 +244,7 @@ public final class GeotagPhotosService extends JobIntentService {
     }
 
     private void sendResultNotification(@NonNull ArrayList<Uri> imageUris) {
-        NotificationCompat.Builder builder = createNotificationBuilder();
+        NotificationCompat.Builder builder = createNotificationBuilder().setNotificationSilent();
 
         Intent filesIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
         filesIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
