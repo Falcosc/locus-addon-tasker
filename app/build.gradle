@@ -3,13 +3,12 @@ apply plugin: 'com.android.application'
 android {
     // setup SDK
     compileSdkVersion Integer.valueOf(PARAM_COMPILE_SDK_VERSION)
-    buildToolsVersion '29.0.2'
 
     defaultConfig {
         minSdkVersion Integer.valueOf(PARAM_MIN_SDK_VERSION)
         targetSdkVersion Integer.valueOf(PARAM_TARGET_SDK_VERSION)
-        versionCode 39
-        versionName '1.4.0-SNAPSHOT'
+        versionCode 42
+        versionName '1.4.0'
         buildConfigField 'String', 'CONTACT_EMAIL', '"' + getContactEmail() + '"'
     }
 
@@ -37,7 +36,7 @@ dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.2.0'
 
-    implementation 'com.asamm:locus-api-android:0.9.34'
+    implementation 'com.asamm:locus-api-android:0.9.35'
 
     implementation 'com.twofortyfouram:android-plugin-api-for-locale:1.0.4'
     implementation 'org.apache.commons:commons-lang3:3.12.0'
