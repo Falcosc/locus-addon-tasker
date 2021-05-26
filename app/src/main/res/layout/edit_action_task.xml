@@ -524,6 +524,20 @@
                 android:visibility="gone" />
 
             <CheckBox
+                android:id="@+id/poi_alert"
+                style="@style/listCheckbox"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="POI Alert" />
+
+            <Spinner
+                android:id="@+id/poi_alert_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/start_stop"
+                android:visibility="gone" />
+
+            <CheckBox
                 android:id="@+id/preset"
                 style="@style/listCheckbox"
                 android:layout_width="match_parent"

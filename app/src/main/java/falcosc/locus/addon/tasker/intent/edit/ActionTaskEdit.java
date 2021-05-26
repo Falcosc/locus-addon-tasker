@@ -194,6 +194,15 @@ public class ActionTaskEdit extends TaskerEditActivity {
         }
     }
 
+    static class POIAlert extends ActionTypeJSON {
+        POIAlert(@NonNull View view) {
+            super(view.findViewById(R.id.poi_alert), view.findViewById(R.id.poi_alert_content));
+            Spinner spinner = (Spinner) mContent;
+            spinner.setOnItemSelectedListener(onItemSelected);
+            bindKey(ACTION, (v) -> setSpinnerValue(spinner, v), spinner::getSelectedItem);
+        }
+    }
+
     static class Preset extends ActionTypeJSON {
         Preset(@NonNull View view, @Nullable Dialog varSelectDialog) {
             super(view.findViewById(R.id.preset), view.findViewById(R.id.preset_content));
@@ -291,6 +300,7 @@ public class ActionTaskEdit extends TaskerEditActivity {
         actionMap.put("navigate_to", new NavigateTo(view, varSelectDialog));
         actionMap.put("navigation", new Navigation(view));
         actionMap.put("open", new Open(view));
+        actionMap.put("poi_alert", new POIAlert(view));
         actionMap.put("preset", new Preset(view, varSelectDialog));
         actionMap.put("screen_lock", new ScreenLock(view));
         actionMap.put("screen_on_off", new ScreenOnOff(view));
