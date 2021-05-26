@@ -11,10 +11,13 @@ import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.provider.DocumentsContract;
 import android.provider.DocumentsContract.Document;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.widget.Button;
+import android.widget.Checkable;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,7 +26,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.text.DateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.Objects;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -46,14 +49,9 @@ public class LocusGeoTagActivity extends ProjectActivity {
 
     //workaround to force displaying "use this folder" button
     private static final Uri LAST_FOLDER_URI = Uri.parse("content://com.android.externalstorage.documents/document/secondary:"); //NON-NLS
-
-    private static class TrackDetails {
-        TrackDetails() {
-        }
-
-        String startTime;
-        String endTime;
-    }
+    private final ArrayList<Long> photoTimestamps = new ArrayList<>();
+    private long mTrackStartTime;
+    private long mTrackEndTime;
 
     private static final String TAG = "LocusGeoTagActivity"; //NON-NLS
     private final DateFormat mLocalDateTimeFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM);
@@ -83,9 +81,9 @@ public class LocusGeoTagActivity extends ProjectActivity {
 
         //don't need to check for track intent because this is bound only to track intents
         try {
-            TrackDetails trackDetails = getAndValidateTrackDetails();
+            getAndValidateTrackDetails();
             pickFolder.launch(LAST_FOLDER_URI);
-            createGeotagView(trackDetails);
+            createGeotagView();
         } catch (Exception e) {
             createMessageView(ReportingHelper.getUserFriendlyName(e));
             Log.e(TAG, ReportingHelper.getUserFriendlyName(e), e);
@@ -105,7 +103,7 @@ public class LocusGeoTagActivity extends ProjectActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    private void createGeotagView(@NonNull TrackDetails trackDetails) {
+    private void createGeotagView() {
         setContentView(R.layout.geotag_start);
         Button cancelButton = findViewById(R.id.btnCancel);
         cancelButton.setOnClickListener(v -> finish());
@@ -113,7 +111,7 @@ public class LocusGeoTagActivity extends ProjectActivity {
         Button okButton = findViewById(R.id.btnOk);
         okButton.setOnClickListener(v -> startGeoTag());
 
-        findViewById(R.id.viewExamplePhoto).setOnClickListener(v -> pickExampleFile.launch(mFolderUri));
+        //findViewById(R.id.viewExamplePhoto).setOnClickListener(v -> pickExampleFile());
 
         mPhotoTime = findViewById(R.id.textPhotoTime);
         mEditOffset = findViewById(R.id.editOffset);
@@ -130,15 +128,15 @@ public class LocusGeoTagActivity extends ProjectActivity {
         });
 
         TextView textStartTime = findViewById(R.id.textStartTime);
-        textStartTime.setText(trackDetails.startTime);
+        textStartTime.setText(mLocalDateTimeFormat.format(mTrackStartTime));
         TextView textEndTime = findViewById(R.id.textEndTime);
-        textEndTime.setText(trackDetails.endTime);
+        textEndTime.setText(mLocalDateTimeFormat.format(mTrackEndTime));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private void setFolder(@Nullable Uri uri) {
         if (isMessageView) {
-            //do nothing during message view or if user aborted
+            //do nothing during message view
             return;
         }
         if (uri == null) {
@@ -148,35 +146,66 @@ public class LocusGeoTagActivity extends ProjectActivity {
         }
 
         mFolderUri = uri;
+        findViewById(R.id.viewExamplePhoto).setOnClickListener(v -> pickExampleFile.launch(mFolderUri));
 
         Uri treeUrl = DocumentsContract.buildChildDocumentsUriUsingTree(mFolderUri, DocumentsContract.getTreeDocumentId(mFolderUri));
         Log.i(TAG, "mFolderUri: " + mFolderUri + " \ntreeUrl: " + treeUrl); //NON-NLS
 
-        int fileCount = 0;
+        long timeToTrackStart = mTrackStartTime;
+        String exampleUri = null;
+        photoTimestamps.clear();
         //selection and order is ignored by content resolver, use null and order manually
-        try (Cursor cursor = getContentResolver().query(treeUrl, new String[]{Document.COLUMN_DOCUMENT_ID, Document.COLUMN_MIME_TYPE},
+        try (Cursor cursor = getContentResolver().query(treeUrl, new String[]{
+                        Document.COLUMN_DOCUMENT_ID, Document.COLUMN_MIME_TYPE, MediaStore.MediaColumns.DATE_TAKEN, MediaStore.MediaColumns.DATE_MODIFIED, DocumentsContract.Document.COLUMN_LAST_MODIFIED},
                 null, null, null, null)) { //NON-NLS
             if (cursor != null) {
                 while (cursor.moveToNext()) {
                     if (GeotagPhotosService.supportedMimeTypes.contains(cursor.getString(1))) {
-                        fileCount++;
+                        long date = getFileDateFromCursor(cursor);
+                        photoTimestamps.add(date);
+                        long newTimeToTrackStart = date - mTrackStartTime;
+                        if (newTimeToTrackStart < timeToTrackStart) {
+                            timeToTrackStart = newTimeToTrackStart;
+                            exampleUri = cursor.getString(0);
+                        }
                     }
                 }
-                if (cursor.moveToFirst()) {
-                    setExample(DocumentsContract.buildDocumentUriUsingTree(mFolderUri, cursor.getString(0)));
+                if (exampleUri != null) {
+                    setExample(DocumentsContract.buildDocumentUriUsingTree(mFolderUri, exampleUri));
                 }
             }
         } catch (Exception e) {
             Log.e(TAG, "Can't read folder", e); //NON-NLS
         }
 
-        if (fileCount == 0) {
+        if (photoTimestamps.isEmpty()) {
             Toast.makeText(this, R.string.err_geotag_no_images_found, Toast.LENGTH_LONG).show();
             pickFolder.launch(LAST_FOLDER_URI);
             return;
         }
+        updatePhotoCount();
+    }
 
-        setTitle(getResources().getQuantityString(R.plurals.geotag_x_photos, fileCount, fileCount));
+    private void updatePhotoCount() {
+        long startTime = mTrackStartTime - (DateUtils.HOUR_IN_MILLIS * -mTimeOffset);
+        long endTime = mTrackEndTime - (DateUtils.HOUR_IN_MILLIS * -mTimeOffset);
+        int photoCount = (int) photoTimestamps.stream().filter(date -> ((startTime < date) && (date < endTime))).count();
+        if (photoCount == 0) {
+            //no matching fotos found, display photos which don't have any time
+            photoCount = (int) photoTimestamps.stream().filter(date -> (date == 0)).count();
+        }
+        setTitle(getResources().getQuantityString(R.plurals.geotag_x_photos, photoTimestamps.size(), photoCount, photoTimestamps.size()));
+    }
+
+    private static Long getFileDateFromCursor(Cursor cursor) {
+        long datetime = 0;
+        for (int i = 2; i < 5; i++) {
+            datetime = cursor.getLong(i);
+            if (datetime > 0) {
+                return datetime;
+            }
+        }
+        return datetime;
     }
 
     public static class PickExampleFile extends ActivityResultContract<Uri, Uri> {
@@ -241,20 +270,16 @@ public class LocusGeoTagActivity extends ProjectActivity {
             } else {
                 mTimeOffset = Integer.parseInt(offset.toString());
                 long newTime = mExampleDateTime;
-                newTime += mTimeOffset * Const.ONE_HOUR;
+                newTime += mTimeOffset * DateUtils.HOUR_IN_MILLIS;
                 mPhotoTime.setText(mLocalDateTimeFormat.format(newTime));
             }
+            updatePhotoCount();
         } catch (NumberFormatException e) {
             mEditOffset.setError(getString(R.string.err_invalid_number));
         }
     }
 
-    /**
-     * @return Error Message
-     */
-    @SuppressWarnings("UseOfObsoleteDateTimeApi")
-    @NonNull
-    private TrackDetails getAndValidateTrackDetails() throws RequiredDataMissingException, RequiredVersionMissingException {
+    private void getAndValidateTrackDetails() throws RequiredDataMissingException, RequiredVersionMissingException {
         Track track = IntentHelper.INSTANCE.getTrackFromIntent(this, getIntent());
 
         if (track == null) {
@@ -272,10 +297,8 @@ public class LocusGeoTagActivity extends ProjectActivity {
             throw new RequiredDataMissingException("Can't use this track, because first or last point doesn't have a time");
         }
 
-        TrackDetails details = new TrackDetails();
-        details.startTime = mLocalDateTimeFormat.format(new Date(firstPointTime));
-        details.endTime = mLocalDateTimeFormat.format(new Date(lastPointTime));
-        return details;
+        mTrackStartTime = firstPointTime;
+        mTrackEndTime = lastPointTime;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -292,6 +315,7 @@ public class LocusGeoTagActivity extends ProjectActivity {
         //set locus intent data
         serviceIntent.putExtras(getIntent());
         serviceIntent.putExtra(Const.INTENT_EXTRA_GEOTAG_OFFSET, mTimeOffset);
+        serviceIntent.putExtra(Const.INTENT_EXTRA_GEOTAG_REPORT_NON_MATCH, ((Checkable) findViewById(R.id.reportNonMatch)).isChecked());
 
         JobIntentService.enqueueWork(this, GeotagPhotosService.class, GeotagPhotosService.JOB_ID, serviceIntent);
         setResult(RESULT_OK, getIntent());

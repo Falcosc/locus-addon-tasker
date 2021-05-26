@@ -122,12 +122,19 @@
             android:text="@string/geotag_offset_default" />
     </RelativeLayout>
 
+    <CheckBox
+        android:id="@+id/reportNonMatch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/viewDateAdjust"
+        android:text="@string/geotag_report_non_match"
+        />
 
     <LinearLayout
         style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/viewDateAdjust"
+        android:layout_below="@id/reportNonMatch"
         android:orientation="horizontal">
 
         <Button

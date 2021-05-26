@@ -59,8 +59,8 @@
     <string name="err_geotag_required_android_version">Geotagging is only supported for Android Nougat to reduce code complexity.</string>
     <string name="err_geotag_no_images_found">Can\'t find any supported impages, please select an other folder or abort</string>
     <plurals name="geotag_x_photos">
-        <item quantity="one">Geotag %d photo</item>
-        <item quantity="other">Geotag %d photos</item>
+        <item quantity="one">Geotag ~%1$d of %2$d photo</item>
+        <item quantity="other">Geotag ~%1$d of %2$d photos</item>
     </plurals>
     <string name="err_invalid_number">Is not a valid number</string>
     <string name="geotag_select_example">Select Example</string>
@@ -102,4 +102,5 @@
     </string>
     <string name="import_example_project">Import Example Project</string>
     <string name="TaskerExampleProjectImportLink">taskershare://AS35m8nytVVnttotPQy6hJkFoiF7SP8inNsRyp6w6aftTqGPuSZdMKSOCUof8qCeloir1kEQkbB1o0s%3D/Project%3ALocusMap%20Examples</string>
+    <string name="geotag_report_non_match">Report files which does not fit track as skipped</string>
 </resources>

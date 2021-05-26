@@ -21,7 +21,7 @@ public final class Const {
 
     public static final String INTENT_EXTRA_GEOTAG_OFFSET = "offset";
 
-    public static final long ONE_HOUR = 3600000L;
+    public static final String INTENT_EXTRA_GEOTAG_REPORT_NON_MATCH = "REPORT_NON_MATCH";
 
     public static final int NOTIFICATION_ID_GEOTAG = 1;
     public static final int NOTIFICATION_ID_COMMON_ERROR = 2;

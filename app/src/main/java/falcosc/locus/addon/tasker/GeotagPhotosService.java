@@ -16,6 +16,7 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.system.Os;
 import android.system.OsConstants;
+import android.text.format.DateUtils;
 import android.util.Log;
 
 import org.apache.commons.lang3.StringUtils;
@@ -58,7 +59,7 @@ public final class GeotagPhotosService extends JobIntentService {
 
     private NotificationCompat.Builder mNotificationBuilder;
     private int progressEnd;
-    private List<String> fileErrors;
+    private List<ErrorLine> fileErrors;
     private int fileProgress;
     private List<Location> mPoints;
     private long[] mPointTimestamps;
@@ -71,6 +72,33 @@ public final class GeotagPhotosService extends JobIntentService {
     private long mLastNotificationTime;
 
     static final int JOB_ID = 1000;
+    private boolean reportNonMatchingFiles;
+
+    static class ErrorLine {
+        final String mFileName;
+        final String mErrorMsg;
+        final int mOrder;
+
+        ErrorLine(String fileName, String errorMsg, int order) {
+            mFileName = fileName;
+            mErrorMsg = errorMsg;
+            mOrder = order;
+        }
+
+        public String getErrorMsg() {
+            return mErrorMsg;
+        }
+
+        public int getOrder() {
+            return mOrder;
+        }
+
+        @NonNull
+        @Override
+        public String toString() {
+            return mFileName + ": " + mErrorMsg;
+        }
+    }
 
     static class DocumentInfo {
         DocumentInfo(String documentId, String mimeType, long lastModified) {
@@ -97,7 +125,7 @@ public final class GeotagPhotosService extends JobIntentService {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    private ArrayList<Parcelable> getFileUris(Uri folderUri){
+    private ArrayList<Parcelable> getFileUris(Uri folderUri) {
         ArrayList<Parcelable> fileUris;
 
         Uri treeUrl = DocumentsContract.buildChildDocumentsUriUsingTree(folderUri, DocumentsContract.getTreeDocumentId(folderUri));
@@ -139,7 +167,7 @@ public final class GeotagPhotosService extends JobIntentService {
                 .setContentTitle(getString(R.string.geotag_title))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setSound(null)
-                .setVibrate(new long[]{ 0 })
+                .setVibrate(new long[]{0})
                 .setSilent(true);
     }
 
@@ -170,7 +198,8 @@ public final class GeotagPhotosService extends JobIntentService {
         fileProgress = 0;
         fileErrors = new ArrayList<>();
         mOpenFiles = new AtomicInteger(0);
-        mTimeOffset = Objects.requireNonNull(workIntent).getIntExtra(Const.INTENT_EXTRA_GEOTAG_OFFSET, 0) * Const.ONE_HOUR;
+        mTimeOffset = workIntent.getIntExtra(Const.INTENT_EXTRA_GEOTAG_OFFSET, 0) * DateUtils.HOUR_IN_MILLIS;
+        reportNonMatchingFiles = workIntent.getBooleanExtra(Const.INTENT_EXTRA_GEOTAG_REPORT_NON_MATCH, false);
 
         mNotificationBuilder.setProgress(progressEnd, fileProgress, false);
         mNotificationBuilder.setContentText(getString(R.string.start_process));
@@ -250,12 +279,12 @@ public final class GeotagPhotosService extends JobIntentService {
         NotificationCompat.Builder builder = createNotificationBuilder();
 
         Intent filesIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
-        filesIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, (ArrayList<Uri>) imageUris
-                .stream().limit(100).collect(Collectors.toCollection(ArrayList::new)));
+        ArrayList<Uri> shareUris = imageUris.stream().limit(100).collect(Collectors.toCollection(ArrayList::new));
+        filesIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, shareUris);
         filesIntent.setType(Const.MIME_TYPE_IMAGES);
         filesIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
-        String title = getResources().getQuantityString(R.plurals.share_x_photos, imageUris.size(), imageUris.size());
+        String title = getResources().getQuantityString(R.plurals.share_x_photos, shareUris.size(), shareUris.size());
         PendingIntent pendingSendFiles = PendingIntent.getActivity(this, 2,
                 Intent.createChooser(filesIntent, title), PendingIntent.FLAG_UPDATE_CURRENT);
         builder.addAction(android.R.drawable.ic_menu_share, title, pendingSendFiles);
@@ -265,10 +294,13 @@ public final class GeotagPhotosService extends JobIntentService {
             builder.setContentTitle(getString(R.string.geotag_title_done));
             builder.setContentText(getResources().getQuantityString(R.plurals.geotag_x_photos_successful, imageUris.size(), imageUris.size()));
         } else {
-            String errorLongText = StringUtils.join(fileErrors.subList(0, Math.min(100, fileErrors.size()) - 1), '\n');
+            String errorLongText = fileErrors.stream()
+                    .sorted(Comparator.comparingInt(ErrorLine::getOrder).thenComparing(ErrorLine::getErrorMsg))
+                    .limit(100).map(Object::toString)
+                    .collect(Collectors.joining("\n"));
             builder.setContentTitle(getResources().getQuantityString(R.plurals.geotag_x_photos_successful, imageUris.size(), imageUris.size())
                     + ", " + getResources().getQuantityString(R.plurals.err_geotag_x_skipped, fileErrors.size(), fileErrors.size()))
-                    .setContentText(fileErrors.get(0))
+                    .setContentText(fileErrors.get(0).toString())
                     .setStyle(new NotificationCompat.BigTextStyle()
                             .bigText(StringUtils.join(errorLongText, '\n'))
                             .setSummaryText(getString(R.string.geotag_title))
@@ -319,7 +351,7 @@ public final class GeotagPhotosService extends JobIntentService {
             //don't need setRequireOriginal because we are just writing
             pfd = getContentResolver().openFileDescriptor(uri, "rw"); //NON-NLS
             if (pfd == null) {
-                incrementProgressWithError(uri, getString(R.string.err_geotag_open_file));
+                incrementProgressWithError(uri, getString(R.string.err_geotag_open_file), 0);
                 return null;
             }
 
@@ -327,12 +359,12 @@ public final class GeotagPhotosService extends JobIntentService {
             pendingChange = createPendingExifChange(pfd, uri);
         } catch (IOException e) {
             incrementProgressWithError(uri, getString(R.string.err_geotag_read_file)
-                    + " " + ReportingHelper.getUserFriendlyName(e));
+                    + " " + ReportingHelper.getUserFriendlyName(e), 0);
             Log.e(TAG, "exif IOException", e); //NON-NLS
         } catch (ParseException e) {
-            incrementProgressWithError(uri, getString(R.string.err_geotag_date_invalid));
+            incrementProgressWithError(uri, getString(R.string.err_geotag_date_invalid), 0);
         } catch (Exception e) {
-            incrementProgressWithError(uri, ReportingHelper.getUserFriendlyName(e));
+            incrementProgressWithError(uri, ReportingHelper.getUserFriendlyName(e), 0);
         } finally {
             //only close if we don't have a pending change
             if (pendingChange == null) {
@@ -386,7 +418,7 @@ public final class GeotagPhotosService extends JobIntentService {
 
         String exifTime = getOriginalDateTime(exif);
         if (exifTime == null) {
-            incrementProgressWithError(uri, getString(R.string.err_geotag_no_date));
+            incrementProgressWithError(uri, getString(R.string.err_geotag_no_date), 2);
             return null;
         }
         setAttributeIfBlank(exif, ExifInterface.TAG_DATETIME_ORIGINAL, exifTime);
@@ -397,10 +429,14 @@ public final class GeotagPhotosService extends JobIntentService {
 
         Location loc = findNearestLocation(time);
         long timeDiff = Math.abs(loc.getTime() - time);
-        if (timeDiff > Const.ONE_HOUR) {
+        if (timeDiff > DateUtils.HOUR_IN_MILLIS) {
             //noinspection NumericCastThatLosesPrecision
-            int hoursAway = (int) (timeDiff / Const.ONE_HOUR);
-            incrementProgressWithError(uri, getResources().getQuantityString(R.plurals.err_geotag_x_hours_away, hoursAway, hoursAway));
+            int hoursAway = (int) (timeDiff / DateUtils.HOUR_IN_MILLIS);
+            if (reportNonMatchingFiles) {
+                incrementProgressWithError(uri, getResources().getQuantityString(R.plurals.err_geotag_x_hours_away, hoursAway, hoursAway), hoursAway);
+            } else {
+                incrementNotificationProgress();
+            }
             return null;
         }
 
@@ -458,7 +494,7 @@ public final class GeotagPhotosService extends JobIntentService {
             incrementNotificationProgress();
         } catch (IOException e) {
             incrementProgressWithError(pendingChange.getUri(), getString(R.string.err_geotag_write_exif)
-                    + " " + ReportingHelper.getUserFriendlyName(e));
+                    + " " + ReportingHelper.getUserFriendlyName(e), 0);
             Log.e(TAG, "exif IOException", e); //NON-NLS
         } finally {
             closeQuietly(pendingChange.mPfd);
@@ -475,20 +511,18 @@ public final class GeotagPhotosService extends JobIntentService {
         }
     }
 
-    private synchronized void incrementProgressWithError(@NonNull Uri uri, @NonNull String error) {
+    private synchronized void incrementProgressWithError(@NonNull Uri uri, @NonNull String error, int order) {
         String uriPath = uri.getPath();
         if (uriPath == null) {
             uriPath = uri.toString();
         }
-        String fileName = new File(uriPath).getName();
-        String errLine = fileName + ": " + error;
 
+        ErrorLine errLine = new ErrorLine(new File(uriPath).getName(), error, order);
         fileErrors.add(errLine);
-        Log.e(TAG, errLine);
+        Log.e(TAG, errLine.toString());
 
         int errorCount = fileErrors.size();
         mNotificationBuilder.setContentTitle(getResources().getQuantityString(R.plurals.err_geotag_x_skipped, errorCount, errorCount));
-
         incrementNotificationProgress();
     }
 
