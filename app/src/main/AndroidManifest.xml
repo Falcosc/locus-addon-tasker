@@ -19,10 +19,6 @@
     <uses-permission-sdk-23 android:name="android.permission.FOREGROUND_SERVICE" />
 
     <queries>
-        <package android:name="menion.android.locus" />
-        <package android:name="menion.android.locus.pro" />
-        <package android:name="menion.android.locus.free.amazon" />
-        <package android:name="menion.android.locus.pro.amazon" />
         <package android:name="net.dinglisch.android.taskerm" />
     </queries>
 
