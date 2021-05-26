@@ -1,6 +1,7 @@
 package falcosc.locus.addon.tasker;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -25,6 +26,9 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.Objects;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -37,7 +41,11 @@ import locus.api.android.utils.IntentHelper;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 import locus.api.objects.geoData.Track;
 
+@RequiresApi(api = Build.VERSION_CODES.N)
 public class LocusGeoTagActivity extends ProjectActivity {
+
+    //workaround to force displaying "use this folder" button
+    private static final Uri LAST_FOLDER_URI = Uri.parse("content://com.android.externalstorage.documents/document/secondary:"); //NON-NLS
 
     private static class TrackDetails {
         TrackDetails() {
@@ -48,8 +56,6 @@ public class LocusGeoTagActivity extends ProjectActivity {
     }
 
     private static final String TAG = "LocusGeoTagActivity"; //NON-NLS
-    private static final int REQUEST_CODE_OPEN_DIRECTORY = 1;
-    private static final int REQUEST_CODE_OPEN_DOCUMENT = 2;
     private final DateFormat mLocalDateTimeFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM);
     private long mExampleDateTime;
     private Uri mFolderUri;
@@ -57,6 +63,9 @@ public class LocusGeoTagActivity extends ProjectActivity {
     private int mTimeOffset;
     private TextView mPhotoTime;
     private boolean isMessageView;
+
+    final ActivityResultLauncher<Uri> pickExampleFile = registerForActivityResult(new PickExampleFile(), this::setExample);
+    final ActivityResultLauncher<Uri> pickFolder = registerForActivityResult(new ActivityResultContracts.OpenDocumentTree(), this::setFolder);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,7 +84,7 @@ public class LocusGeoTagActivity extends ProjectActivity {
         //don't need to check for track intent because this is bound only to track intents
         try {
             TrackDetails trackDetails = getAndValidateTrackDetails();
-            pickFolder();
+            pickFolder.launch(LAST_FOLDER_URI);
             createGeotagView(trackDetails);
         } catch (Exception e) {
             createMessageView(ReportingHelper.getUserFriendlyName(e));
@@ -104,7 +113,7 @@ public class LocusGeoTagActivity extends ProjectActivity {
         Button okButton = findViewById(R.id.btnOk);
         okButton.setOnClickListener(v -> startGeoTag());
 
-        findViewById(R.id.viewExamplePhoto).setOnClickListener(v -> pickExampleFile());
+        findViewById(R.id.viewExamplePhoto).setOnClickListener(v -> pickExampleFile.launch(mFolderUri));
 
         mPhotoTime = findViewById(R.id.textPhotoTime);
         mEditOffset = findViewById(R.id.editOffset);
@@ -126,78 +135,80 @@ public class LocusGeoTagActivity extends ProjectActivity {
         textEndTime.setText(trackDetails.endTime);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent resultData) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            return;
-        }
-
-        if (requestCode == REQUEST_CODE_OPEN_DIRECTORY) {
-            handleOpenDir(resultCode, resultData);
-        } else if (requestCode == REQUEST_CODE_OPEN_DOCUMENT) {
-            handleOpenFile(resultCode, resultData);
-        }
-        super.onActivityResult(requestCode, resultCode, resultData);
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.N)
-    private void handleOpenDir(int resultCode, @Nullable Intent resultData) {
+    private void setFolder(@Nullable Uri uri) {
         if (isMessageView) {
-            //do nothing during message view
+            //do nothing during message view or if user aborted
+            return;
+        }
+        if (uri == null) {
+            //user did abort
+            finish();
             return;
         }
 
-        if ((resultCode == RESULT_OK) && (resultData != null)) {
+        mFolderUri = uri;
 
-            mFolderUri = resultData.getData();
+        Uri treeUrl = DocumentsContract.buildChildDocumentsUriUsingTree(mFolderUri, DocumentsContract.getTreeDocumentId(mFolderUri));
+        Log.i(TAG, "mFolderUri: " + mFolderUri + " \ntreeUrl: " + treeUrl); //NON-NLS
 
-            Uri treeUrl = DocumentsContract.buildChildDocumentsUriUsingTree(mFolderUri, DocumentsContract.getTreeDocumentId(mFolderUri));
-            Log.i(TAG, "mFolderUri: " + mFolderUri + " \ntreeUrl: " + treeUrl); //NON-NLS
-
-            int fileCount = 0;
-            //selection and order is ignored by content resolver, use null and order manually
-            try (Cursor cursor = getContentResolver().query(treeUrl, new String[]{Document.COLUMN_DOCUMENT_ID, Document.COLUMN_MIME_TYPE},
-                    null, null, null, null)) { //NON-NLS
-                if (cursor != null) {
-                    while (cursor.moveToNext()) {
-                        if(GeotagPhotosService.supportedMimeTypes.contains(cursor.getString(1))){
-                            fileCount++;
-                        }
-                    }
-                    if(cursor.moveToFirst()){
-                        setExample(DocumentsContract.buildDocumentUriUsingTree(mFolderUri, cursor.getString(0)));
+        int fileCount = 0;
+        //selection and order is ignored by content resolver, use null and order manually
+        try (Cursor cursor = getContentResolver().query(treeUrl, new String[]{Document.COLUMN_DOCUMENT_ID, Document.COLUMN_MIME_TYPE},
+                null, null, null, null)) { //NON-NLS
+            if (cursor != null) {
+                while (cursor.moveToNext()) {
+                    if (GeotagPhotosService.supportedMimeTypes.contains(cursor.getString(1))) {
+                        fileCount++;
                     }
                 }
-            } catch (Exception e) {
-                Log.e(TAG, "Can't read folder", e); //NON-NLS
+                if (cursor.moveToFirst()) {
+                    setExample(DocumentsContract.buildDocumentUriUsingTree(mFolderUri, cursor.getString(0)));
+                }
             }
+        } catch (Exception e) {
+            Log.e(TAG, "Can't read folder", e); //NON-NLS
+        }
 
-            if (fileCount == 0) {
-                Toast.makeText(this, R.string.err_geotag_no_images_found, Toast.LENGTH_LONG).show();
-                pickFolder();
-                return;
+        if (fileCount == 0) {
+            Toast.makeText(this, R.string.err_geotag_no_images_found, Toast.LENGTH_LONG).show();
+            pickFolder.launch(LAST_FOLDER_URI);
+            return;
+        }
+
+        setTitle(getResources().getQuantityString(R.plurals.geotag_x_photos, fileCount, fileCount));
+    }
+
+    public static class PickExampleFile extends ActivityResultContract<Uri, Uri> {
+
+        @NonNull
+        @Override
+        public Intent createIntent(@NonNull Context context, @NonNull Uri folderUri) {
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT)
+                    .putExtra(Intent.EXTRA_MIME_TYPES, GeotagPhotosService.supportedMimeTypes.toArray())
+                    .setType("*/*");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, folderUri);
             }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                intent.putExtra(DocumentsContract.EXTRA_PROMPT, R.string.geotag_select_example);
+            }
+            return intent;
+        }
 
-            setTitle(getResources().getQuantityString(R.plurals.geotag_x_photos, fileCount, fileCount));
-        } else {
-            finish();
+        @Nullable
+        @Override
+        public Uri parseResult(int resultCode, @Nullable Intent intent) {
+            if ((resultCode != RESULT_OK) || (intent == null)) return null;
+            return intent.getData();
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    private void handleOpenFile(int resultCode, @Nullable Intent resultData) {
-        if (resultCode == RESULT_OK) {
-            try {
-                //noinspection ConstantConditions use try catch because this would need 3 null checks
-                setExample(resultData.getData());
-            } catch (Exception e) {
-                Log.e(TAG, "can't open file", e); //NON-NLS
-            }
+    private void setExample(@Nullable Uri uri) {
+        if (uri == null) {
+            return;
         }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    private void setExample(@NonNull Uri uri) {
         try (ParcelFileDescriptor pfd = getContentResolver().openFileDescriptor(uri, "r")) { //NON-NLS
             assert pfd != null;
             String fileName = new File(Objects.requireNonNull(uri.getPath())).getName();
@@ -211,12 +222,12 @@ public class LocusGeoTagActivity extends ProjectActivity {
                 handleExampleTimeOffset(mEditOffset.getText());
             } else {
                 Toast.makeText(this, fileName + ": " + getString(R.string.err_geotag_example_no_date), Toast.LENGTH_LONG).show();
-                pickExampleFile();
+                pickExampleFile.launch(mFolderUri);
             }
         } catch (Exception e) {
             Log.e(TAG, "can't set example", e); //NON-NLS
             Toast.makeText(this, R.string.err_geotag_example_load_exif, Toast.LENGTH_LONG).show();
-            pickExampleFile();
+            pickExampleFile.launch(mFolderUri);
         }
     }
 
@@ -265,26 +276,6 @@ public class LocusGeoTagActivity extends ProjectActivity {
         details.startTime = mLocalDateTimeFormat.format(new Date(firstPointTime));
         details.endTime = mLocalDateTimeFormat.format(new Date(lastPointTime));
         return details;
-    }
-
-    private void pickExampleFile() {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.setType(Const.MIME_TYPE_JPEG);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, mFolderUri);
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            intent.putExtra(DocumentsContract.EXTRA_PROMPT, R.string.geotag_select_example);
-        }
-        startActivityForResult(intent, REQUEST_CODE_OPEN_DOCUMENT);
-    }
-
-    private void pickFolder() {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-        intent.putExtra(DocumentsContract.EXTRA_PROMPT, R.string.geotag_select_folder);
-        //workaround to force displaying "use this folder" button
-        intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, Uri.parse("content://com.android.externalstorage.documents/document/secondary:"));  //NON-NLS
-        startActivityForResult(intent, REQUEST_CODE_OPEN_DIRECTORY);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)

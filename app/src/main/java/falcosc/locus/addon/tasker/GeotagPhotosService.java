@@ -139,7 +139,8 @@ public final class GeotagPhotosService extends JobIntentService {
                 .setContentTitle(getString(R.string.geotag_title))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setSound(null)
-                .setVibrate(new long[]{ 0 });
+                .setVibrate(new long[]{ 0 })
+                .setSilent(true);
     }
 
     @Override
@@ -173,8 +174,9 @@ public final class GeotagPhotosService extends JobIntentService {
 
         mNotificationBuilder.setProgress(progressEnd, fileProgress, false);
         mNotificationBuilder.setContentText(getString(R.string.start_process));
+        mNotificationBuilder.setSilent(false);
         startForeground(Const.NOTIFICATION_ID_GEOTAG, mNotificationBuilder.build());
-        mNotificationBuilder.setNotificationSilent();
+        mNotificationBuilder.setSilent(true);
 
         try {
             loadTrack(workIntent);
@@ -203,7 +205,7 @@ public final class GeotagPhotosService extends JobIntentService {
 
     private void stopWithError(@NonNull String errMsg) {
         Log.e(TAG, errMsg);
-        NotificationCompat.Builder builder = createNotificationBuilder().setContentText(errMsg).setNotificationSilent();
+        NotificationCompat.Builder builder = createNotificationBuilder().setContentText(errMsg);
         SystemClock.sleep(Const.NOTIFICATION_REPEAT_AFTER); //detach does sometimes not work if notifications fire close to each other
         startForeground(Const.NOTIFICATION_ID_GEOTAG, builder.build());
         //detach notification to keep
@@ -244,7 +246,7 @@ public final class GeotagPhotosService extends JobIntentService {
     }
 
     private void sendResultNotification(@NonNull ArrayList<Uri> imageUris) {
-        NotificationCompat.Builder builder = createNotificationBuilder().setNotificationSilent();
+        NotificationCompat.Builder builder = createNotificationBuilder();
 
         Intent filesIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
         filesIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);

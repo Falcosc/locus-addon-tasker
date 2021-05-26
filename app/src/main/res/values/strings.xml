@@ -64,7 +64,6 @@
     </plurals>
     <string name="err_invalid_number">Is not a valid number</string>
     <string name="geotag_select_example">Select Example</string>
-    <string name="geotag_select_folder">Folder for Geotag</string>
     <plurals name="err_geotag_x_skipped">
         <item quantity="one">%d Photo skipped</item>
         <item quantity="other">%d Photos skipped</item>
