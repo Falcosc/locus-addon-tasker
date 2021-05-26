@@ -245,11 +245,13 @@ public final class GeotagPhotosService extends JobIntentService {
         Log.i(TAG, "done"); //NON-NLS
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void sendResultNotification(@NonNull ArrayList<Uri> imageUris) {
         NotificationCompat.Builder builder = createNotificationBuilder();
 
         Intent filesIntent = new Intent(Intent.ACTION_SEND_MULTIPLE);
-        filesIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
+        filesIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, (ArrayList<Uri>) imageUris
+                .stream().limit(100).collect(Collectors.toCollection(ArrayList::new)));
         filesIntent.setType(Const.MIME_TYPE_IMAGES);
         filesIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
@@ -263,7 +265,7 @@ public final class GeotagPhotosService extends JobIntentService {
             builder.setContentTitle(getString(R.string.geotag_title_done));
             builder.setContentText(getResources().getQuantityString(R.plurals.geotag_x_photos_successful, imageUris.size(), imageUris.size()));
         } else {
-            String errorLongText = StringUtils.join(fileErrors, '\n');
+            String errorLongText = StringUtils.join(fileErrors.subList(0, Math.min(100, fileErrors.size()) - 1), '\n');
             builder.setContentTitle(getResources().getQuantityString(R.plurals.geotag_x_photos_successful, imageUris.size(), imageUris.size())
                     + ", " + getResources().getQuantityString(R.plurals.err_geotag_x_skipped, fileErrors.size(), fileErrors.size()))
                     .setContentText(fileErrors.get(0))
