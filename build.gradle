@@ -32,7 +32,6 @@ allprojects {
 }
 
 task clean(type: Delete) {
-    //noinspection GroovyAssignabilityCheck
     delete rootProject.buildDir
 }
 

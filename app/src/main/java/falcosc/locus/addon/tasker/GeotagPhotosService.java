@@ -154,15 +154,7 @@ public final class GeotagPhotosService extends JobIntentService {
     }
 
     private NotificationCompat.Builder createNotificationBuilder() {
-        NotificationCompat.Builder builder;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            builder = new NotificationCompat.Builder(getApplicationContext(), Const.NOTIFICATION_CHANNEL_ID);
-        } else {
-            //noinspection deprecation
-            builder = new NotificationCompat.Builder(getApplicationContext());
-        }
-
-        return builder
+        return new NotificationCompat.Builder(getApplicationContext(), ReportingHelper.createDefaultNotificationChannel(this))
                 .setSmallIcon(R.drawable.ic_camera_alt)
                 .setContentTitle(getString(R.string.geotag_title))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -173,10 +165,6 @@ public final class GeotagPhotosService extends JobIntentService {
 
     @Override
     protected void onHandleWork(@NonNull Intent workIntent) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            new ReportingHelper(this).createDefaultNotificationChannel();
-        }
-
         mNoMediaStoreAccess = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
         mNotificationBuilder = createNotificationBuilder();
@@ -430,7 +418,7 @@ public final class GeotagPhotosService extends JobIntentService {
         Location loc = findNearestLocation(time);
         long timeDiff = Math.abs(loc.getTime() - time);
         if (timeDiff > DateUtils.HOUR_IN_MILLIS) {
-            //noinspection NumericCastThatLosesPrecision
+            //noinspection NumericCastThatLosesPrecision because we don't need it
             int hoursAway = (int) (timeDiff / DateUtils.HOUR_IN_MILLIS);
             if (reportNonMatchingFiles) {
                 incrementProgressWithError(uri, getResources().getQuantityString(R.plurals.err_geotag_x_hours_away, hoursAway, hoursAway), hoursAway);

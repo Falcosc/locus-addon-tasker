@@ -4,11 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog.Builder;
-
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -24,9 +19,19 @@ import android.widget.CheckedTextView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.lang.reflect.Field;
-import java.util.*;
+import com.twofortyfouram.locale.api.Intent;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog.Builder;
 import falcosc.locus.addon.tasker.R;
 import falcosc.locus.addon.tasker.intent.LocusActionType;
 import falcosc.locus.addon.tasker.utils.Const;
@@ -48,7 +53,7 @@ public class UpdateContainerEdit extends TaskerEditActivity {
 
         if (savedInstanceState == null) {
 
-            Bundle taskerBundle = getIntent().getBundleExtra(com.twofortyfouram.locale.api.Intent.EXTRA_BUNDLE);
+            Bundle taskerBundle = getIntent().getBundleExtra(Intent.EXTRA_BUNDLE);
             if (taskerBundle != null) {
                 String[] savedSelectedFieldsArray = taskerBundle.getStringArray(Const.INTENT_EXTRA_FIELD_LIST);
                 if (savedSelectedFieldsArray != null) {
@@ -66,8 +71,8 @@ public class UpdateContainerEdit extends TaskerEditActivity {
 
         WindowManager.LayoutParams params = getWindow().getAttributes();
         params.width = getResources().getDimensionPixelSize(R.dimen.edit_list_dialog_width);
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
         if(params.width > metrics.widthPixels){
             params.width = metrics.widthPixels;
         }
@@ -185,6 +190,7 @@ public class UpdateContainerEdit extends TaskerEditActivity {
             view.setOnClickListener((v) -> {
                 field.mIsChecked = !field.mIsChecked;
                 viewHolder.label.setChecked(field.mIsChecked);
+                viewHolder.desc.setText(field.getHelpText(getContext()));
                 setVisibile(viewHolder.desc, field.mIsChecked);
             });
 

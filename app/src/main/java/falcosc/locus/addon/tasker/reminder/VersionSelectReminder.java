@@ -2,10 +2,10 @@ package falcosc.locus.addon.tasker.reminder;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.text.format.DateUtils;
 import android.widget.Toast;
 
+import androidx.preference.PreferenceManager;
 import falcosc.locus.addon.tasker.R;
 import locus.api.android.ActionBasics;
 import locus.api.android.objects.LocusInfo;

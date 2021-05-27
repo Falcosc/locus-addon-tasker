@@ -6,14 +6,12 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.util.Log;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import falcosc.locus.addon.tasker.BuildConfig;
 import falcosc.locus.addon.tasker.R;
@@ -31,13 +29,7 @@ public class ReportingHelper {
         Log.e(tag, message, throwable);
 
         try {
-            NotificationCompat.Builder builder;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                builder = new NotificationCompat.Builder(mContext, createDefaultNotificationChannel());
-            } else {
-                //noinspection deprecation
-                builder = new NotificationCompat.Builder(mContext);
-            }
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext, createDefaultNotificationChannel(mContext));
 
             Intent emailIntent = new Intent(Intent.ACTION_SENDTO)
                     .setData(Uri.fromParts(Const.SCHEMA_MAIL, BuildConfig.CONTACT_EMAIL, null))
@@ -65,12 +57,15 @@ public class ReportingHelper {
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public String createDefaultNotificationChannel() {
+    @NonNull
+    public static String createDefaultNotificationChannel(Context context) {
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.O) {
+            return Const.NOTIFICATION_CHANNEL_ID;
+        }
         NotificationChannel channel = new NotificationChannel(Const.NOTIFICATION_CHANNEL_ID,
-                mContext.getString(R.string.app_name), NotificationManager.IMPORTANCE_HIGH);
-        channel.setDescription(mContext.getString(R.string.notification_channel_desc));
-        NotificationManager notificationManager = mContext.getSystemService(NotificationManager.class);
+                context.getString(R.string.app_name), NotificationManager.IMPORTANCE_HIGH);
+        channel.setDescription(context.getString(R.string.notification_channel_desc));
+        NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
         if (notificationManager != null) {
             notificationManager.createNotificationChannel(channel);
         }
