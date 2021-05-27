@@ -13,6 +13,7 @@ import falcosc.locus.addon.tasker.R;
 import falcosc.locus.addon.tasker.intent.LocusActionType;
 import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
 import falcosc.locus.addon.tasker.utils.Const;
+import falcosc.locus.addon.tasker.utils.LocusCache;
 import locus.api.android.objects.LocusVersion;
 import locus.api.android.utils.LocusConst;
 import locus.api.android.utils.LocusUtils;
@@ -63,6 +64,8 @@ public class SelectVersion extends TaskerEditActivity {
         Intent resultIntent = new Intent();
         resultIntent.putExtra(com.twofortyfouram.locale.api.Intent.EXTRA_BUNDLE, extraBundle);
         resultIntent.putExtra(com.twofortyfouram.locale.api.Intent.EXTRA_STRING_BLURB, packageName);
+
+        LocusCache.getInstance(getApplication()).versionSelectReminder.setVersionSelectLastUsage();
 
         if (!TaskerPlugin.Setting.hostSupportsSynchronousExecution(getIntent().getExtras())) {
             Toast.makeText(this, R.string.err_no_support_sync_exec, Toast.LENGTH_LONG).show();

@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.arch.core.util.Function;
 import falcosc.locus.addon.tasker.BuildConfig;
 import falcosc.locus.addon.tasker.RequiredDataMissingException;
+import falcosc.locus.addon.tasker.reminder.VersionSelectReminder;
 import locus.api.android.ActionBasics;
 import locus.api.android.features.periodicUpdates.UpdateContainer;
 import locus.api.android.objects.LocusVersion;
@@ -62,6 +63,9 @@ public final class LocusCache {
     private ExtUpdateContainer mExtUpdateContainer = new ExtUpdateContainer(new UpdateContainer());
     private long mUpdateContainerExpiration;
 
+    //reminders
+    public final VersionSelectReminder versionSelectReminder;
+
     @SuppressWarnings("HardCodedStringLiteral")
     private LocusCache(Application context) {
         Log.d(TAG, "init Locus cache");
@@ -101,6 +105,8 @@ public final class LocusCache {
         Log.d(TAG, "Locus fields created: " + mUpdateContainerFields.size());
         Log.d(TAG, "Locus Field keys mapped - recording keys: " + mTrackRecordingKeys.size());
         Log.d(TAG, "Locus Field keys mapped - guiding keys: " + mTrackGuideKeys.size());
+
+        versionSelectReminder = new VersionSelectReminder(mApplicationContext);
     }
 
     @NonNull

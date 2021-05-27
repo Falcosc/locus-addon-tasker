@@ -5,12 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import androidx.annotation.NonNull;
 import falcosc.locus.addon.tasker.R;
 import falcosc.locus.addon.tasker.RequiredDataMissingException;
 import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
@@ -41,6 +40,8 @@ abstract class AbstractTaskerAction implements TaskerAction {
 
         try {
             doHandle(apiExtraBundle);
+            LocusCache lc = LocusCache.getInstanceUnsafe(mContext);
+            lc.versionSelectReminder.remindIfWrongVersionSelected(lc.mLocusVersion);
         } catch (LocusCache.MissingAppContextException | RequiredVersionMissingException | RequiredDataMissingException e) {
             if (mReceiver.isOrderedBroadcast()) {
                 Bundle varsBundle = new Bundle();
