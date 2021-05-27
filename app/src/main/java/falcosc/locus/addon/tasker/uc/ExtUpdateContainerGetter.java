@@ -1,4 +1,4 @@
-package falcosc.locus.addon.tasker.utils;
+package falcosc.locus.addon.tasker.uc;
 
 public interface ExtUpdateContainerGetter {
     String apply(ExtUpdateContainer u);

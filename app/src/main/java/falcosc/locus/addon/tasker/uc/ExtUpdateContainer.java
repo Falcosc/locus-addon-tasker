@@ -1,4 +1,4 @@
-package falcosc.locus.addon.tasker.utils;
+package falcosc.locus.addon.tasker.uc;
 
 import androidx.annotation.NonNull;
 import locus.api.android.features.periodicUpdates.UpdateContainer;
@@ -9,16 +9,16 @@ public class ExtUpdateContainer {
     @NonNull
     public final UpdateContainer mUpdateContainer;
 
-    ExtUpdateContainer(@NonNull UpdateContainer updateContainer) {
+    public ExtUpdateContainer(@NonNull UpdateContainer updateContainer) {
         mUpdateContainer = updateContainer;
     }
 
     @SuppressWarnings("InstanceVariableOfConcreteClass")
     private NavigationProgress mNavigationProgress;
 
-    NavigationProgress getNavigationProgress() {
+    public NavigationProgress getNavigationProgress() {
         if (mNavigationProgress == null) {
-            mNavigationProgress = NavigationProgress.calculate(mUpdateContainer);
+            mNavigationProgress = new NavigationProgress(mUpdateContainer);
         }
         return mNavigationProgress;
     }

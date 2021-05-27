@@ -1,12 +1,13 @@
-package falcosc.locus.addon.tasker.utils;
+package falcosc.locus.addon.tasker.uc;
 
 import androidx.annotation.NonNull;
 import androidx.arch.core.util.Function;
+import falcosc.locus.addon.tasker.utils.TaskerField;
 
-class ExtendedUpdateContainerField extends TaskerField implements ExtUpdateContainerGetter {
+public class ExtendedUpdateContainerField extends TaskerField implements ExtUpdateContainerGetter {
     private final Function<ExtUpdateContainer, Object> mExtUpdateContainerGetter;
 
-    ExtendedUpdateContainerField(@NonNull String taskerName, @NonNull String label, Function<ExtUpdateContainer, Object> extUpdateContainerGetter) {
+    public ExtendedUpdateContainerField(@NonNull String taskerName, @NonNull String label, Function<ExtUpdateContainer, Object> extUpdateContainerGetter) {
         super(taskerName, label);
         mExtUpdateContainerGetter = extUpdateContainerGetter;
     }

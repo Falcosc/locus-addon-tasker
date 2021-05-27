@@ -11,7 +11,7 @@ public class TaskerField {
     public final String mTaskerName;
     public final String mLabel;
 
-    TaskerField(@NonNull String taskerName, @Nullable String label) {
+    protected TaskerField(@NonNull String taskerName, @Nullable String label) {
         if (!TaskerPlugin.variableNameValid("%" + taskerName)) {
             throw new IllegalArgumentException("mTaskerName: " + taskerName + " is not valid");
         }

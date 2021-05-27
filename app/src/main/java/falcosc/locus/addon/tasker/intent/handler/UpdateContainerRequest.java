@@ -2,17 +2,16 @@ package falcosc.locus.addon.tasker.intent.handler;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
+import java.util.Set;
 
+import androidx.annotation.NonNull;
 import falcosc.locus.addon.tasker.RequiredDataMissingException;
 import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
-import falcosc.locus.addon.tasker.utils.ExtUpdateContainer;
-import falcosc.locus.addon.tasker.utils.ExtUpdateContainerGetter;
+import falcosc.locus.addon.tasker.uc.ExtUpdateContainer;
+import falcosc.locus.addon.tasker.uc.ExtUpdateContainerGetter;
 import falcosc.locus.addon.tasker.utils.LocusCache;
 import locus.api.android.features.periodicUpdates.UpdateContainer;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
-
-import java.util.Set;
 
 public class UpdateContainerRequest extends AbstractTaskerAction {
 
