@@ -184,24 +184,23 @@ public class UpdateContainerEdit extends TaskerEditActivity {
                 viewHolder = (ViewHolder) view.getTag();
             }
             viewHolder.label.setText(field.mLabel);
-            viewHolder.label.setChecked(field.mIsChecked);
-            viewHolder.desc.setText(field.getHelpText(getContext()));
-            setVisibile(viewHolder.desc, field.mIsChecked);
+            setCheckstateDependendFields(viewHolder, field);
+
             view.setOnClickListener((v) -> {
                 field.mIsChecked = !field.mIsChecked;
-                viewHolder.label.setChecked(field.mIsChecked);
-                viewHolder.desc.setText(field.getHelpText(getContext()));
-                setVisibile(viewHolder.desc, field.mIsChecked);
+                setCheckstateDependendFields(viewHolder, field);
             });
 
             return view;
         }
 
-        private static void setVisibile(View view, boolean visible) {
-            if (visible) {
-                view.setVisibility(View.VISIBLE);
+        private void setCheckstateDependendFields(ViewHolder viewHolder, TaskerFieldSelection field){
+            viewHolder.label.setChecked(field.mIsChecked);
+            viewHolder.desc.setText(field.getHelpText(getContext()));
+            if (field.mIsChecked) {
+                viewHolder.desc.setVisibility(View.VISIBLE);
             } else {
-                view.setVisibility(View.GONE);
+                viewHolder.desc.setVisibility(View.GONE);
             }
         }
     }
