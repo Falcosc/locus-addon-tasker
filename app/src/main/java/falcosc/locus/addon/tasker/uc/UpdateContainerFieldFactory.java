@@ -65,7 +65,7 @@ public class UpdateContainerFieldFactory {
 
     }
 
-    @SuppressWarnings("HardCodedStringLiteral")
+    @SuppressWarnings({"HardCodedStringLiteral", "OverlyLongMethod"})
     @NonNull
     public ArrayList<TaskerField> createUpdateContainerFields() {
         ArrayList<TaskerField> list = new ArrayList<>();
@@ -81,18 +81,23 @@ public class UpdateContainerFieldFactory {
         list.add(cField("sensor_speed", "bicycle_speed", u -> u.getLocMyLocation().getSensorSpeed()));
         list.add(cField("sensor_strides", "strides_label", u -> u.getLocMyLocation().getSensorStrides()));
         list.add(cField("sensor_temperature", "temperature", u -> u.getLocMyLocation().getSensorTemperature()));
+        list.add(cField("pace", "pace", UpdateContainer::getPace));
         list.add(cField("speed_vertical", new String[]{"speed", "vertical"}, UpdateContainer::getSpeedVertical));
         list.add(cField("slope", "slope", UpdateContainer::getSlope));
+        list.add(cField("is_gps_valid", "", UpdateContainer::isGpsLocValid));
         list.add(cField("gps_sat_used", "satellites_used", UpdateContainer::getGpsSatsUsed));
         list.add(cField("gps_sat_all", "satellites_all", UpdateContainer::getGpsSatsAll));
         list.add(cField("declination", "declination", UpdateContainer::getDeclination));
         list.add(cField("heading", "heading", UpdateContainer::getOrientHeading));
+        list.add(cField("gps_angle", "", UpdateContainer::getOrientGpsAngle));
         list.add(cField("course", "course", UpdateContainer::getOrientCourse));
         list.add(cField("roll", "roll", UpdateContainer::getOrientRoll));
         list.add(cField("pitch", "orientation_pitch", UpdateContainer::getOrientPitch));
+        list.add(cField("is_user_touching", "", UpdateContainer::isUserTouching));
         list.add(cField("is_guide_enabled", "guide_on", UpdateContainer::isGuideEnabled));
         list.add(cField("is_track_rec_recording", "recording", UpdateContainer::isTrackRecRecording));
         list.add(cField("is_track_rec_paused", new String[]{"track_record","paused"}, UpdateContainer::isTrackRecPaused));
+        list.add(cField("track_rec_profile", "track_rec_profile", UpdateContainer::getTrackRecProfileName));
         list.add(cField("is_enabled_my_location", "gps_on", UpdateContainer::isEnabledMyLocation));
         list.add(cField("is_map_visible", new String[]{"map", "visible"}, UpdateContainer::isMapVisible));
         list.add(cField("active_live_track_id", "", UpdateContainer::getActiveLiveTrackId));
@@ -125,6 +130,7 @@ public class UpdateContainerFieldFactory {
         ArrayList<TaskerField> list = new ArrayList<>();
         //this is a custom order
         list.add(cField("rec_total_length", "distance", u -> u.getTrackRecStats().getTotalLength()));
+        list.add(cField("rec_total_length_move", "", u -> u.getTrackRecStats().getTotalLengthMove()));
         list.add(cField("rec_eleva_neg_length", new String[]{"distance", "downhill"}, u -> u.getTrackRecStats().getEleNegativeDistance()));
         list.add(cField("rec_eleva_pos_length", new String[]{"distance", "uphill"}, u -> u.getTrackRecStats().getElePositiveDistance()));
         list.add(cField("rec_eleva_neutral_length", "", u -> u.getTrackRecStats().getEleNeutralDistance()));
@@ -137,6 +143,7 @@ public class UpdateContainerFieldFactory {
         list.add(cField("rec_stop_time", "", u -> u.getTrackRecStats().getStopTime()));
         list.add(cField("rec_time", "track_time", u -> u.getTrackRecStats().getTotalTime()));
         list.add(cField("rec_time_move", "moving_time", u -> u.getTrackRecStats().getTotalTimeMove()));
+        list.add(cField("rec_speed_max", "max_speed", u -> u.getTrackRecStats().getSpeedMax()));
         list.add(cField("rec_average_speed_total", "average_speed", u -> u.getTrackRecStats().getSpeedAverage(false)));
         list.add(cField("rec_average_speed_move", "average_moving_speed", u -> u.getTrackRecStats().getSpeedAverage(true)));
         list.add(cField("rec_point_count", "points_count", u -> u.getTrackRecStats().getNumOfPoints()));
