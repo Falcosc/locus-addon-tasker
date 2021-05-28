@@ -8,9 +8,11 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import falcosc.locus.addon.tasker.R;
 import falcosc.locus.addon.tasker.intent.LocusActionType;
+import falcosc.locus.addon.tasker.intent.handler.SelectVersionRequest;
 import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
 import falcosc.locus.addon.tasker.utils.Const;
 import falcosc.locus.addon.tasker.utils.LocusCache;
@@ -20,7 +22,24 @@ import locus.api.android.utils.LocusUtils;
 
 public class SelectVersion extends TaskerEditActivity {
 
-    Spinner mPackageSelection;
+    private Spinner mPackageSelection;
+    private ArrayAdapter<Option> mSpinnerArrayAdapter;
+
+    static class Option {
+        final String key;
+        final String label;
+
+        Option(@NonNull String optionKey, @NonNull String displayLabel) {
+            key = optionKey;
+            label = displayLabel;
+        }
+
+        @NonNull
+        @Override
+        public String toString() {
+            return label;
+        }
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -28,25 +47,31 @@ public class SelectVersion extends TaskerEditActivity {
 
         setContentView(R.layout.select_version);
 
-        ArrayList<String> availablePackageNames = new ArrayList<>();
+        ArrayList<Option> availablePackageNames = new ArrayList<>();
         for(LocusVersion lv : LocusUtils.INSTANCE.getAvailableVersions(this)){
-            availablePackageNames.add(lv.getPackageName());
+            availablePackageNames.add(new Option(lv.getPackageName(), lv.toString()));
+        }
+        if(availablePackageNames.size() > 1){
+            //only add autoselection if we have multiple versions
+            availablePackageNames.add(new Option(SelectVersionRequest.LAST_ACTIVE, getString(R.string.find_recent_version)));
         }
 
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, availablePackageNames);
-        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinnerArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, availablePackageNames);
+        mSpinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mPackageSelection = findViewById(R.id.package_select);
-        mPackageSelection.setAdapter(spinnerArrayAdapter);
+        mPackageSelection.setAdapter(mSpinnerArrayAdapter);
 
-        if(!spinnerArrayAdapter.isEmpty()) {
+        if(!mSpinnerArrayAdapter.isEmpty()) {
             mPackageSelection.setSelection(0);
         }
 
         Bundle taskerBundle = getIntent().getBundleExtra(com.twofortyfouram.locale.api.Intent.EXTRA_BUNDLE);
         if (taskerBundle != null) {
-            int savedPosition = spinnerArrayAdapter.getPosition(taskerBundle.getString(LocusConst.INTENT_EXTRA_PACKAGE_NAME));
-            if(savedPosition > 0){
-                mPackageSelection.setSelection(savedPosition);
+            String oldPackage = taskerBundle.getString(LocusConst.INTENT_EXTRA_PACKAGE_NAME);
+            for(int i = 0; i < availablePackageNames.size(); i++){
+                if(availablePackageNames.get(i).key.equals(oldPackage)){
+                    mPackageSelection.setSelection(i);
+                }
             }
         }
     }
@@ -57,7 +82,7 @@ public class SelectVersion extends TaskerEditActivity {
         Bundle extraBundle = new Bundle();
         extraBundle.putString(Const.INTEND_EXTRA_ADDON_ACTION_TYPE, LocusActionType.SELECT_VERSION.name());
 
-        String packageName = mPackageSelection.getSelectedItem().toString();
+        String packageName = mSpinnerArrayAdapter.getItem(mPackageSelection.getSelectedItemPosition()).key;
 
         extraBundle.putString(LocusConst.INTENT_EXTRA_PACKAGE_NAME, packageName);
 

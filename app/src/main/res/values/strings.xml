@@ -104,4 +104,5 @@
     <string name="TaskerExampleProjectImportLink">taskershare://AS35m8nytVVnttotPQy6hJkFoiF7SP8inNsRyp6w6aftTqGPuSZdMKSOCUof8qCeloir1kEQkbB1o0s%3D/Project%3ALocusMap%20Examples</string>
     <string name="geotag_report_non_match">Report files which does not fit track as skipped</string>
     <string name="version_select_reminder">You have installed multiple Locus Maps Versions. Please use Select Version Task when switching between your installed Locus Versions to tell the plugin that you start another Version.</string>
+    <string name="find_recent_version">Find recently opened Version</string>
 </resources>
