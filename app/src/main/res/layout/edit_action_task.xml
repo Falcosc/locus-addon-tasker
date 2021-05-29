@@ -245,6 +245,222 @@
             </RelativeLayout>
 
             <CheckBox
+                android:id="@+id/map_mz"
+                style="@style/listCheckbox"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Map Move Zoom (Animated)" />
+
+            <RelativeLayout
+                android:id="@+id/map_mz_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/map_mz_move_by_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="move by: " />
+
+                <Spinner
+                    android:id="@+id/map_mz_by_x_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/map_mz_move_by_label"
+                    android:layout_alignParentEnd="true"
+                    android:entries="@array/map_move_units" />
+
+                <ImageButton
+                    android:id="@+id/map_mz_by_x_var"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_below="@id/map_mz_move_by_label"
+                    android:layout_toStartOf="@id/map_mz_by_x_spinner"
+                    android:contentDescription="Variable Selection"
+                    android:visibility="gone"
+                    android:src="@drawable/var_select" />
+
+                <EditText
+                    android:id="@+id/map_mz_by_x_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/map_mz_move_by_label"
+                    android:layout_alignParentStart="true"
+                    android:layout_toStartOf="@id/map_mz_by_x_var"
+                    android:gravity="end"
+                    android:hint="horizontal amount"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:nextFocusForward="@id/map_mz_by_y_text" />
+
+                <Spinner
+                    android:id="@+id/map_mz_by_y_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/map_mz_by_x_text"
+                    android:layout_alignParentEnd="true"
+                    android:entries="@array/map_move_units" />
+
+                <ImageButton
+                    android:id="@+id/map_mz_by_y_var"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_below="@id/map_mz_by_x_text"
+                    android:layout_toStartOf="@id/map_mz_by_y_spinner"
+                    android:contentDescription="Variable Selection"
+                    android:visibility="gone"
+                    android:src="@drawable/var_select" />
+
+                <EditText
+                    android:id="@+id/map_mz_by_y_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/map_mz_by_x_text"
+                    android:layout_alignParentStart="true"
+                    android:layout_toStartOf="@id/map_mz_by_y_var"
+                    android:gravity="end"
+                    android:hint="vertical amount"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:nextFocusForward="@id/map_mz_to_lon_text" />
+
+                <TextView
+                    android:id="@+id/map_mz_move_to_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/map_mz_by_y_text"
+                    android:padding="5dp"
+                    android:text="or move to: " />
+
+                <ImageButton
+                    android:id="@+id/map_mz_to_lon_var"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@id/map_mz_move_to_label"
+                    android:contentDescription="Variable Selection"
+                    android:visibility="gone"
+                    android:src="@drawable/var_select" />
+
+                <TextView
+                    android:id="@+id/map_mz_to_lon_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@id/map_mz_move_to_label"
+                    android:gravity="center"
+                    android:minHeight="48dp"
+                    android:padding="5dp"
+                    android:text="lon:" />
+
+                <EditText
+                    android:id="@+id/map_mz_to_lon_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignWithParentIfMissing="true"
+                    android:layout_below="@id/map_mz_move_to_label"
+                    android:layout_toStartOf="@id/map_mz_to_lon_var"
+                    android:layout_toEndOf="@id/map_mz_to_lon_label"
+                    android:hint="-180.00000 to 180.00000"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:nextFocusForward="@id/map_mz_to_lat_text" />
+
+                <ImageButton
+                    android:id="@+id/map_mz_to_lat_var"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@id/map_mz_to_lon_label"
+                    android:contentDescription="Variable Selection"
+                    android:visibility="gone"
+                    android:src="@drawable/var_select" />
+
+                <TextView
+                    android:id="@+id/map_mz_to_lat_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@id/map_mz_to_lon_label"
+                    android:gravity="center"
+                    android:minHeight="48dp"
+                    android:padding="5dp"
+                    android:text="lat:" />
+
+                <EditText
+                    android:id="@+id/map_mz_to_lat_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignWithParentIfMissing="true"
+                    android:layout_below="@id/map_mz_to_lon_label"
+                    android:layout_toStartOf="@id/map_mz_to_lat_var"
+                    android:layout_toEndOf="@id/map_mz_to_lon_label"
+                    android:hint="-90.00000 to 90.00000"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:nextFocusForward="@id/map_mz_zoom_text" />
+
+                <TextView
+                    android:id="@+id/map_mz_optional_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/map_mz_to_lat_label"
+                    android:padding="5dp"
+                    android:text="optional: " />
+
+                <ImageButton
+                    android:id="@+id/map_mz_zoom_var"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@id/map_mz_optional_label"
+                    android:contentDescription="Variable Selection"
+                    android:visibility="gone"
+                    android:src="@drawable/var_select" />
+
+                <TextView
+                    android:id="@+id/map_mz_zoom_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@id/map_mz_optional_label"
+                    android:gravity="center"
+                    android:minHeight="48dp"
+                    android:padding="5dp"
+                    android:text="zoom:" />
+
+                <EditText
+                    android:id="@+id/map_mz_zoom_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignWithParentIfMissing="true"
+                    android:layout_below="@id/map_mz_optional_label"
+                    android:layout_toStartOf="@id/map_mz_zoom_var"
+                    android:layout_toEndOf="@id/map_mz_zoom_label"
+                    android:hint="value between 0 and 24"
+                    android:imeOptions="actionDone"
+                    android:inputType="text" />
+
+                <CheckBox
+                    android:id="@+id/map_mz_animate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/map_mz_zoom_text"
+                    android:text="animate"
+                    android:checked="true"/>
+
+                <CheckBox
+                    android:id="@+id/map_mz_centering"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/map_mz_animate"
+                    android:text="keep centering" />
+            </RelativeLayout>
+
+            <CheckBox
                 android:id="@+id/map_rotate"
                 style="@style/listCheckbox"
                 android:layout_width="match_parent"

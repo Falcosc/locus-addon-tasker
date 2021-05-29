@@ -127,6 +127,38 @@ public class ActionTaskEdit extends TaskerEditActivity {
         }
     }
 
+    static class MapMoveZoom extends ActionTypeJSON {
+        @SuppressWarnings("HardCodedStringLiteral")
+        MapMoveZoom(@NonNull View view, @Nullable Dialog varSelectDialog) {
+            super(view.findViewById(R.id.map_mz), view.findViewById(R.id.map_mz_content));
+            EditText x = view.findViewById(R.id.map_mz_by_x_text);
+            setVarSelectDialog(varSelectDialog, x, view.findViewById(R.id.map_mz_by_x_var));
+            bindKey("move_by_x", (v) -> x.setText((CharSequence) v), x::getText);
+            Spinner xUnit = view.findViewById(R.id.map_mz_by_x_spinner);
+            xUnit.setOnItemSelectedListener(onItemSelected);
+            bindKey("move_by_x_unit", (v) -> setSpinnerValue(xUnit, v), xUnit::getSelectedItem);
+            EditText y = view.findViewById(R.id.map_mz_by_y_text);
+            setVarSelectDialog(varSelectDialog, y, view.findViewById(R.id.map_mz_by_y_var));
+            bindKey("move_by_y", (v) -> y.setText((CharSequence) v), y::getText);
+            Spinner yUnit = view.findViewById(R.id.map_mz_by_y_spinner);
+            yUnit.setOnItemSelectedListener(onItemSelected);
+            bindKey("move_by_y_unit", (v) -> setSpinnerValue(yUnit, v), yUnit::getSelectedItem);
+            EditText lon = view.findViewById(R.id.map_mz_to_lon_text);
+            setVarSelectDialog(varSelectDialog, lon, view.findViewById(R.id.map_mz_to_lon_var));
+            bindKey("move_to_lon", (v) -> lon.setText((CharSequence) v), lon::getText);
+            EditText lat = view.findViewById(R.id.map_mz_to_lat_text);
+            setVarSelectDialog(varSelectDialog, lat, view.findViewById(R.id.map_mz_to_lat_var));
+            bindKey("move_to_lat", (v) -> lat.setText((CharSequence) v), lat::getText);
+            EditText zoom = view.findViewById(R.id.map_mz_zoom_text);
+            setVarSelectDialog(varSelectDialog, zoom, view.findViewById(R.id.map_mz_zoom_var));
+            bindKey("zoom", (v) -> zoom.setText((CharSequence) v), zoom::getText);
+            CheckBox animate = view.findViewById(R.id.map_mz_animate);
+            bindKey("animate", (v) -> animate.setChecked((boolean) v), animate::isChecked);
+            CheckBox centering = view.findViewById(R.id.map_mz_centering);
+            bindKey("keep_centering", (v) -> centering.setChecked((boolean) v), centering::isChecked);
+        }
+    }
+
     static class MapRotate extends ActionTypeJSON {
         MapRotate(@NonNull View view) {
             super(view.findViewById(R.id.map_rotate), view.findViewById(R.id.map_rotate_content));
@@ -294,6 +326,7 @@ public class ActionTaskEdit extends TaskerEditActivity {
         actionMap.put("map_center", new MapCenter(view));
         actionMap.put("map_move_x", new MapMoveX(view));
         actionMap.put("map_move_y", new MapMoveY(view));
+        actionMap.put("map_move_zoom", new MapMoveZoom(view, varSelectDialog));
         actionMap.put("map_rotate", new MapRotate(view));
         actionMap.put("map_zoom", new MapZoom(view, varSelectDialog));
         actionMap.put("guide_to", new GuideTo(view, varSelectDialog));
