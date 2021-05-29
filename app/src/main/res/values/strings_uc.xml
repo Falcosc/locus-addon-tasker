@@ -4,10 +4,10 @@
     <string name="uc_my_altitude">Last known location - Altitude value (in m). If [hasAltitude] is false, 0.0f is returned</string>
     <string name="uc_my_accuracy">Last known location - Accuracy of the fix (in m). If hasAccuracy() is false, 0.0 is returned</string>
     <string name="uc_my_gps_fix">Last known location - UTC time of this location (in ms)</string>
-    <string name="uc_my_speed">Get stored speed useful for display to users or for compute with some operations, based on best available speed. If speed from sensors is stored (more precise) it is returned. Otherwise basic GPS speed is returned.\n@return speed for display purpose</string>
+    <string name="uc_my_speed">Speed of the device in meters/second. If [hasSpeed] is \'false\', 0.0f is returned.</string>
     <string name="uc_sensor_hrm">Heart rate value in BMP. If hasSensorHeartRate() is false, 0.0 is returned.</string>
     <string name="uc_sensor_cadence">Cadence value. If hasCadence() is false, 0 is returned.</string>
-    <string name="uc_sensor_speed">Speed of the fix in meters per sec. If hasSensorSpeed() is false, 0.0 is returned.</string>
+    <string name="uc_sensor_speed">Speed of the device over ground in meters/second. This speed is defined only when \'speed sensor\' is connected and supply valid values. If [hasSensorSpeed] is \'false\', 0.0f is returned (in m/s).</string>
     <string name="uc_sensor_strides">The num of strides. If hasSensorStrides() is false, 0 is returned.</string>
     <string name="uc_sensor_temperature">Temperature value. If hasSensorTemperature() is false, 0.0f is returned.</string>
     <string name="uc_pace">Current users pace value (min / km). Computed pace is from highly filtered speed, not from real speed included in current my location object.</string>
