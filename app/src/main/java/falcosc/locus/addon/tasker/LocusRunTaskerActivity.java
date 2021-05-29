@@ -4,10 +4,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,19 +11,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import falcosc.locus.addon.tasker.thridparty.TaskerIntent;
-import falcosc.locus.addon.tasker.utils.LocusCache;
-import falcosc.locus.addon.tasker.utils.ReportingHelper;
-import locus.api.android.utils.IntentHelper;
-import locus.api.android.utils.LocusConst;
-import locus.api.objects.extra.GeoDataExtra;
-import locus.api.objects.extra.Location;
-import locus.api.objects.extra.TrackStats;
-import locus.api.objects.geoData.GeoData;
-import locus.api.objects.geoData.Point;
-import locus.api.objects.geoData.Track;
-import locus.api.utils.Utils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
@@ -42,6 +25,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import falcosc.locus.addon.tasker.thridparty.TaskerIntent;
+import falcosc.locus.addon.tasker.utils.LocusCache;
+import falcosc.locus.addon.tasker.utils.ReportingHelper;
+import locus.api.android.utils.IntentHelper;
+import locus.api.android.utils.LocusConst;
+import locus.api.objects.extra.GeoDataExtra;
+import locus.api.objects.extra.Location;
+import locus.api.objects.extra.TrackStats;
+import locus.api.objects.geoData.GeoData;
+import locus.api.objects.geoData.Point;
+import locus.api.objects.geoData.Track;
+import locus.api.utils.Utils;
 
 public class LocusRunTaskerActivity extends ProjectActivity {
 
@@ -77,7 +75,7 @@ public class LocusRunTaskerActivity extends ProjectActivity {
 
         try (Cursor cursor = getContentResolver().query(Uri.parse("content://net.dinglisch.android.tasker/tasks"), //NON-NLS
                 null, null, null, null)) {
-            if(cursor != null) {
+            if (cursor != null) {
                 int nameCol = cursor.getColumnIndex("name"); //NON-NLS
 
                 while (cursor.moveToNext()) {
@@ -203,7 +201,7 @@ public class LocusRunTaskerActivity extends ProjectActivity {
             GeoDataExtra.PAR_OSM_NOTES_CLOSED
     };
 
-    private static String getExtraDataAsJSON(GeoDataExtra extraData){
+    private static String getExtraDataAsJSON(GeoDataExtra extraData) {
         JSONStringer stringer = new JSONStringer();
         try {
             stringer.object();
@@ -238,7 +236,7 @@ public class LocusRunTaskerActivity extends ProjectActivity {
 
 
         GeoDataExtra extraData = g.getExtraData();
-        if(extraData != null) {
+        if (extraData != null) {
             int extraCount = extraData.getCount();
             map.put(prefix + "extra_count", Integer.toString(extraCount));
             if (extraCount > 0) {

@@ -207,7 +207,7 @@ public class ActionTaskEdit extends TaskerEditActivity {
             bindKey(LAT, (v) -> lat.setText((CharSequence) v), lat::getText);
         }
     }
-    
+
     static class Navigation extends ActionTypeJSON {
         Navigation(@NonNull View view) {
             super(view.findViewById(R.id.navigation), view.findViewById(R.id.navigation_content));

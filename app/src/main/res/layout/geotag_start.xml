@@ -12,8 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="48dp"
-        android:paddingBottom="10dp"
-        android:paddingTop="10dp">
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
 
         <ImageView
             android:id="@+id/imgRefresh"
@@ -55,8 +55,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingEnd="5dp"
-            android:paddingStart="5dp">
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -127,8 +127,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/viewDateAdjust"
-        android:text="@string/geotag_report_non_match"
-        />
+        android:text="@string/geotag_report_non_match" />
 
     <LinearLayout
         style="?android:attr/buttonBarStyle"

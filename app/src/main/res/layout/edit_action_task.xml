@@ -45,19 +45,19 @@
                     android:id="@+id/dashboard_var"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:layout_alignParentEnd="true"
                     android:layout_below="@id/dashboard_spinner"
+                    android:layout_alignParentEnd="true"
                     android:contentDescription="Variable Selection"
-                    android:visibility="gone"
-                    android:src="@drawable/var_select" />
+                    android:src="@drawable/var_select"
+                    android:visibility="gone" />
 
                 <EditText
                     android:id="@+id/dashboard_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
                     android:layout_alignWithParentIfMissing="true"
                     android:layout_below="@id/dashboard_spinner"
+                    android:layout_alignParentStart="true"
                     android:layout_toStartOf="@id/dashboard_var"
                     android:hint="Name of dashboard"
                     android:imeOptions="actionDone"
@@ -102,19 +102,19 @@
                     android:id="@+id/live_tracking_asamm_var"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:layout_alignParentEnd="true"
                     android:layout_below="@id/live_tracking_asamm_spinner"
+                    android:layout_alignParentEnd="true"
                     android:contentDescription="Variable Selection"
-                    android:visibility="gone"
-                    android:src="@drawable/var_select" />
+                    android:src="@drawable/var_select"
+                    android:visibility="gone" />
 
                 <EditText
                     android:id="@+id/live_tracking_asamm_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
                     android:layout_alignWithParentIfMissing="true"
                     android:layout_below="@id/live_tracking_asamm_spinner"
+                    android:layout_alignParentStart="true"
                     android:layout_toStartOf="@id/live_tracking_asamm_var"
                     android:hint="ASAMM tracking config name (optional)"
                     android:imeOptions="actionDone"
@@ -145,19 +145,19 @@
                     android:id="@+id/live_tracking_custom_var"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:layout_alignParentEnd="true"
                     android:layout_below="@id/live_tracking_custom_spinner"
+                    android:layout_alignParentEnd="true"
                     android:contentDescription="Variable Selection"
-                    android:visibility="gone"
-                    android:src="@drawable/var_select" />
+                    android:src="@drawable/var_select"
+                    android:visibility="gone" />
 
                 <EditText
                     android:id="@+id/live_tracking_custom_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
                     android:layout_alignWithParentIfMissing="true"
                     android:layout_below="@id/live_tracking_custom_spinner"
+                    android:layout_alignParentStart="true"
                     android:layout_toStartOf="@id/live_tracking_custom_var"
                     android:hint="Custom tracking config name (optional)"
                     android:imeOptions="actionDone"
@@ -280,8 +280,8 @@
                     android:layout_below="@id/map_mz_move_by_label"
                     android:layout_toStartOf="@id/map_mz_by_x_spinner"
                     android:contentDescription="Variable Selection"
-                    android:visibility="gone"
-                    android:src="@drawable/var_select" />
+                    android:src="@drawable/var_select"
+                    android:visibility="gone" />
 
                 <EditText
                     android:id="@+id/map_mz_by_x_text"
@@ -311,8 +311,8 @@
                     android:layout_below="@id/map_mz_by_x_text"
                     android:layout_toStartOf="@id/map_mz_by_y_spinner"
                     android:contentDescription="Variable Selection"
-                    android:visibility="gone"
-                    android:src="@drawable/var_select" />
+                    android:src="@drawable/var_select"
+                    android:visibility="gone" />
 
                 <EditText
                     android:id="@+id/map_mz_by_y_text"
@@ -339,18 +339,18 @@
                     android:id="@+id/map_mz_to_lon_var"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:layout_alignParentEnd="true"
                     android:layout_below="@id/map_mz_move_to_label"
+                    android:layout_alignParentEnd="true"
                     android:contentDescription="Variable Selection"
-                    android:visibility="gone"
-                    android:src="@drawable/var_select" />
+                    android:src="@drawable/var_select"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/map_mz_to_lon_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
                     android:layout_below="@id/map_mz_move_to_label"
+                    android:layout_alignParentStart="true"
                     android:gravity="center"
                     android:minHeight="48dp"
                     android:padding="5dp"
@@ -373,18 +373,18 @@
                     android:id="@+id/map_mz_to_lat_var"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:layout_alignParentEnd="true"
                     android:layout_below="@id/map_mz_to_lon_label"
+                    android:layout_alignParentEnd="true"
                     android:contentDescription="Variable Selection"
-                    android:visibility="gone"
-                    android:src="@drawable/var_select" />
+                    android:src="@drawable/var_select"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/map_mz_to_lat_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
                     android:layout_below="@id/map_mz_to_lon_label"
+                    android:layout_alignParentStart="true"
                     android:gravity="center"
                     android:minHeight="48dp"
                     android:padding="5dp"
@@ -415,18 +415,18 @@
                     android:id="@+id/map_mz_zoom_var"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:layout_alignParentEnd="true"
                     android:layout_below="@id/map_mz_optional_label"
+                    android:layout_alignParentEnd="true"
                     android:contentDescription="Variable Selection"
-                    android:visibility="gone"
-                    android:src="@drawable/var_select" />
+                    android:src="@drawable/var_select"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/map_mz_zoom_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
                     android:layout_below="@id/map_mz_optional_label"
+                    android:layout_alignParentStart="true"
                     android:gravity="center"
                     android:minHeight="48dp"
                     android:padding="5dp"
@@ -449,8 +449,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/map_mz_zoom_text"
-                    android:text="animate"
-                    android:checked="true"/>
+                    android:checked="true"
+                    android:text="animate" />
 
                 <CheckBox
                     android:id="@+id/map_mz_centering"
@@ -510,23 +510,23 @@
                     android:id="@+id/map_zoom_value_var"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:layout_alignParentEnd="true"
                     android:layout_below="@id/map_zoom_spinner"
+                    android:layout_alignParentEnd="true"
                     android:contentDescription="Variable Selection"
-                    android:visibility="gone"
-                    android:src="@drawable/var_select" />
+                    android:src="@drawable/var_select"
+                    android:visibility="gone" />
 
                 <EditText
                     android:id="@+id/map_zoom_value_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
                     android:layout_alignWithParentIfMissing="true"
                     android:layout_below="@id/map_zoom_spinner"
+                    android:layout_alignParentStart="true"
                     android:layout_toStartOf="@id/map_zoom_value_var"
                     android:hint="value between 0 and 24"
                     android:imeOptions="actionDone"
-                    android:inputType="text"/>
+                    android:inputType="text" />
             </RelativeLayout>
 
             <CheckBox
@@ -547,28 +547,28 @@
                     android:id="@+id/guide_to_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
                     android:layout_alignWithParentIfMissing="true"
+                    android:layout_alignParentStart="true"
                     android:hint="Name of point (optional)"
                     android:imeOptions="actionNext"
-                    android:inputType="text"/>
+                    android:inputType="text" />
 
                 <ImageButton
                     android:id="@+id/guide_to_lon_var"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:layout_alignParentEnd="true"
                     android:layout_below="@id/guide_to_name"
+                    android:layout_alignParentEnd="true"
                     android:contentDescription="Variable Selection"
-                    android:visibility="gone"
-                    android:src="@drawable/var_select" />
+                    android:src="@drawable/var_select"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/guide_to_lon_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
                     android:layout_below="@id/guide_to_name"
+                    android:layout_alignParentStart="true"
                     android:gravity="center"
                     android:minHeight="48dp"
                     android:padding="5dp"
@@ -585,23 +585,23 @@
                     android:hint="-180.00000 to 180.00000"
                     android:imeOptions="actionNext"
                     android:inputType="text"
-                    android:nextFocusForward="@id/guide_to_lat_text"/>
+                    android:nextFocusForward="@id/guide_to_lat_text" />
 
                 <ImageButton
                     android:id="@+id/guide_to_lat_var"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:layout_alignParentEnd="true"
                     android:layout_below="@id/guide_to_lon_label"
+                    android:layout_alignParentEnd="true"
                     android:contentDescription="Variable Selection"
-                    android:visibility="gone"
-                    android:src="@drawable/var_select" />
+                    android:src="@drawable/var_select"
+                    android:visibility="gone" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
                     android:layout_below="@id/guide_to_lon_label"
+                    android:layout_alignParentStart="true"
                     android:gravity="center"
                     android:minHeight="48dp"
                     android:padding="5dp"
@@ -617,7 +617,7 @@
                     android:layout_toEndOf="@id/guide_to_lon_label"
                     android:hint="-90.00000 to 90.00000"
                     android:imeOptions="actionDone"
-                    android:inputType="text"/>
+                    android:inputType="text" />
             </RelativeLayout>
 
             <CheckBox
@@ -638,28 +638,28 @@
                     android:id="@+id/navigate_to_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
                     android:layout_alignWithParentIfMissing="true"
+                    android:layout_alignParentStart="true"
                     android:hint="Name of point (optional)"
                     android:imeOptions="actionNext"
-                    android:inputType="text"/>
+                    android:inputType="text" />
 
                 <ImageButton
                     android:id="@+id/navigate_to_lon_var"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:layout_alignParentEnd="true"
                     android:layout_below="@id/navigate_to_name"
+                    android:layout_alignParentEnd="true"
                     android:contentDescription="Variable Selection"
-                    android:visibility="gone"
-                    android:src="@drawable/var_select" />
+                    android:src="@drawable/var_select"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/navigate_to_lon_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
                     android:layout_below="@id/navigate_to_name"
+                    android:layout_alignParentStart="true"
                     android:gravity="center"
                     android:minHeight="48dp"
                     android:padding="5dp"
@@ -676,23 +676,23 @@
                     android:hint="-180.00000 to 180.00000"
                     android:imeOptions="actionNext"
                     android:inputType="text"
-                    android:nextFocusForward="@id/navigate_to_lat_text"/>
+                    android:nextFocusForward="@id/navigate_to_lat_text" />
 
                 <ImageButton
                     android:id="@+id/navigate_to_lat_var"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:layout_alignParentEnd="true"
                     android:layout_below="@id/navigate_to_lon_label"
+                    android:layout_alignParentEnd="true"
                     android:contentDescription="Variable Selection"
-                    android:visibility="gone"
-                    android:src="@drawable/var_select" />
+                    android:src="@drawable/var_select"
+                    android:visibility="gone" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
                     android:layout_below="@id/navigate_to_lon_label"
+                    android:layout_alignParentStart="true"
                     android:gravity="center"
                     android:minHeight="48dp"
                     android:padding="5dp"
@@ -708,7 +708,7 @@
                     android:layout_toEndOf="@id/navigate_to_lon_label"
                     android:hint="-90.00000 to 90.00000"
                     android:imeOptions="actionDone"
-                    android:inputType="text"/>
+                    android:inputType="text" />
             </RelativeLayout>
 
             <CheckBox
@@ -772,15 +772,15 @@
                     android:layout_height="48dp"
                     android:layout_alignParentEnd="true"
                     android:contentDescription="Variable Selection"
-                    android:visibility="gone"
-                    android:src="@drawable/var_select" />
+                    android:src="@drawable/var_select"
+                    android:visibility="gone" />
 
                 <EditText
                     android:id="@+id/preset_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
                     android:layout_alignWithParentIfMissing="true"
+                    android:layout_alignParentStart="true"
                     android:layout_toStartOf="@id/preset_var"
                     android:hint="Name of preset"
                     android:imeOptions="actionDone"
@@ -839,19 +839,19 @@
                     android:id="@+id/track_record_var"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:layout_alignParentEnd="true"
                     android:layout_below="@id/track_record_spinner"
+                    android:layout_alignParentEnd="true"
                     android:contentDescription="Variable Selection"
-                    android:visibility="gone"
-                    android:src="@drawable/var_select" />
+                    android:src="@drawable/var_select"
+                    android:visibility="gone" />
 
                 <EditText
                     android:id="@+id/track_record_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
                     android:layout_alignWithParentIfMissing="true"
                     android:layout_below="@id/track_record_spinner"
+                    android:layout_alignParentStart="true"
                     android:layout_toStartOf="@id/track_record_var"
                     android:hint="Profile name / Point name (Optional)"
                     android:imeOptions="actionDone"
@@ -882,8 +882,8 @@
                     android:id="@+id/track_record_wpt_spinner_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
                     android:layout_below="@id/track_record_confirm_checkbox"
+                    android:layout_alignParentStart="true"
                     android:gravity="center"
                     android:minHeight="48dp"
                     android:padding="5dp"
@@ -893,8 +893,8 @@
                     android:id="@+id/track_record_wpt_spinner"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
                     android:layout_below="@id/track_record_confirm_checkbox"
+                    android:layout_alignParentEnd="true"
                     android:layout_toEndOf="@id/track_record_wpt_spinner_label"
                     android:entries="@array/track_record_wpt_after" />
             </RelativeLayout>
@@ -918,15 +918,15 @@
                     android:layout_height="48dp"
                     android:layout_alignParentEnd="true"
                     android:contentDescription="Variable Selection"
-                    android:visibility="gone"
-                    android:src="@drawable/var_select" />
+                    android:src="@drawable/var_select"
+                    android:visibility="gone" />
 
                 <EditText
                     android:id="@+id/quick_bookmark_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
                     android:layout_alignWithParentIfMissing="true"
+                    android:layout_alignParentStart="true"
                     android:layout_toStartOf="@id/quick_bookmark_var"
                     android:hint="Name of the bookmark"
                     android:imeOptions="actionDone"

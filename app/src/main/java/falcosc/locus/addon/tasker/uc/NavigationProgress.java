@@ -70,8 +70,8 @@ public final class NavigationProgress {
                 }
 
                 Point p = new Point();
-                p.remainingUphill = (int)uphillElevation;
-                p.remainingDownhill = (int)downhillElevation;
+                p.remainingUphill = (int) uphillElevation;
+                p.remainingDownhill = (int) downhillElevation;
                 remainingElevation[i + 1] = p;
 
                 nextAltitude = currentAltitude;
@@ -113,7 +113,7 @@ public final class NavigationProgress {
             locusCache.mLastSelectedTrack = getActiveTrack(locusCache, updateContainer);
 
             mError = validateNavigationProgress(locusCache.mLastSelectedTrack, updateContainer);
-            if(StringUtils.isNotBlank(mError)){
+            if (StringUtils.isNotBlank(mError)) {
                 return;
             }
 
@@ -145,7 +145,7 @@ public final class NavigationProgress {
             return NO_TRK;
         }
 
-        if(track.mRemainingTrackElevation[0].remainingUphill == 0){
+        if (track.mRemainingTrackElevation[0].remainingUphill == 0) {
             return NO_ELE;
         }
 
@@ -176,7 +176,8 @@ public final class NavigationProgress {
                 //recalculate or clear if null
                 return new TrackData(newTrack);
             }
-        } catch (RequiredVersionMissingException ignored) {}
+        } catch (RequiredVersionMissingException ignored) {
+        }
 
         return null;
     }

@@ -19,7 +19,7 @@ public class UpdateContainerFieldFactory {
     private final Resources mLocusResources;
     private final LocusVersion mLocusVersion;
 
-    public UpdateContainerFieldFactory(@Nullable Resources locusResources, @Nullable LocusVersion locusVersion){
+    public UpdateContainerFieldFactory(@Nullable Resources locusResources, @Nullable LocusVersion locusVersion) {
         mLocusResources = locusResources;
         mLocusVersion = locusVersion;
     }
@@ -47,9 +47,9 @@ public class UpdateContainerFieldFactory {
     @NonNull
     private UpdateContainerField cField(@NonNull String taskerVar, @NonNull String[] locusResNames, @NonNull Function<UpdateContainer, Object> updateContainerGetter) {
         StringBuilder label = new StringBuilder(TASKER_FIELD_LABEL_SIZE);
-        for(String locusResName : locusResNames) {
+        for (String locusResName : locusResNames) {
             String resolvedLabel = getLocusLabelByName(locusResName);
-            if(resolvedLabel != null) {
+            if (resolvedLabel != null) {
                 label.append(resolvedLabel).append(" ");
             }
         }
@@ -96,7 +96,7 @@ public class UpdateContainerFieldFactory {
         list.add(cField("is_user_touching", "", UpdateContainer::isUserTouching));
         list.add(cField("is_guide_enabled", "guide_on", UpdateContainer::isGuideEnabled));
         list.add(cField("is_track_rec_recording", "recording", UpdateContainer::isTrackRecRecording));
-        list.add(cField("is_track_rec_paused", new String[]{"track_record","paused"}, UpdateContainer::isTrackRecPaused));
+        list.add(cField("is_track_rec_paused", new String[]{"track_record", "paused"}, UpdateContainer::isTrackRecPaused));
         list.add(cField("track_rec_profile", "track_rec_profile", UpdateContainer::getTrackRecProfileName));
         list.add(cField("is_enabled_my_location", "gps_on", UpdateContainer::isEnabledMyLocation));
         list.add(cField("is_map_visible", new String[]{"map", "visible"}, UpdateContainer::isMapVisible));

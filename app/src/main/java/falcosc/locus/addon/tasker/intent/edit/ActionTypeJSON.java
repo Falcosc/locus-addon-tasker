@@ -66,14 +66,14 @@ class ActionTypeJSON {
         }
     }
 
-    void setVisibility(List<View> views, int visibility){
-        if(views != null){
+    void setVisibility(List<View> views, int visibility) {
+        if (views != null) {
             View view = null;
             for (int i = 0; i < views.size(); i++) {
                 view = views.get(i);
                 view.setVisibility(visibility);
             }
-            if((view != null) && (visibility == View.VISIBLE)){
+            if ((view != null) && (visibility == View.VISIBLE)) {
                 mContent.getParent().requestChildFocus(view, view);
             }
         }

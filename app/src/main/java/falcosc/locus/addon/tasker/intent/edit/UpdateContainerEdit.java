@@ -73,7 +73,7 @@ public class UpdateContainerEdit extends TaskerEditActivity {
         params.width = getResources().getDimensionPixelSize(R.dimen.edit_list_dialog_width);
 
         DisplayMetrics metrics = getResources().getDisplayMetrics();
-        if(params.width > metrics.widthPixels){
+        if (params.width > metrics.widthPixels) {
             params.width = metrics.widthPixels;
         }
         getWindow().setAttributes(params);
@@ -131,17 +131,17 @@ public class UpdateContainerEdit extends TaskerEditActivity {
         public boolean mIsChecked;
         public SpannableStringBuilder mHelpText;
 
-        public TaskerFieldSelection(TaskerField field, boolean isChecked){
+        public TaskerFieldSelection(TaskerField field, boolean isChecked) {
             super(field);
             mIsChecked = isChecked;
             mHelpText = null;
         }
 
         public Spannable getHelpText(Context context) {
-            if(!mIsChecked){
+            if (!mIsChecked) {
                 return null;
             }
-            if(mHelpText != null){
+            if (mHelpText != null) {
                 return mHelpText;
             }
             mHelpText = new SpannableStringBuilder();
@@ -150,12 +150,13 @@ public class UpdateContainerEdit extends TaskerEditActivity {
             try {
                 Field idField = R.string.class.getDeclaredField("uc_" + mTaskerName); //NON-NLS
                 mHelpText.append(context.getResources().getText(idField.getInt(idField)));
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
             return mHelpText;
         }
     }
 
-    public static class ViewHolder{
+    public static class ViewHolder {
         CheckedTextView label;
         TextView desc;
     }
@@ -194,7 +195,7 @@ public class UpdateContainerEdit extends TaskerEditActivity {
             return view;
         }
 
-        private void setCheckstateDependendFields(ViewHolder viewHolder, TaskerFieldSelection field){
+        private void setCheckstateDependendFields(ViewHolder viewHolder, TaskerFieldSelection field) {
             viewHolder.label.setChecked(field.mIsChecked);
             viewHolder.desc.setText(field.getHelpText(getContext()));
             if (field.mIsChecked) {

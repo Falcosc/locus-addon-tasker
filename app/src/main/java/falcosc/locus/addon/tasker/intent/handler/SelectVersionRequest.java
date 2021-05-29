@@ -24,12 +24,12 @@ public class SelectVersionRequest extends AbstractTaskerAction {
         String packageName = apiExtraBundle.getString(LocusConst.INTENT_EXTRA_PACKAGE_NAME);
 
         LocusVersion lv = null;
-        if(LAST_ACTIVE.equals(packageName)){
+        if (LAST_ACTIVE.equals(packageName)) {
             LocusInfo activeLocusInfo = new LocusInfo();
-            for(LocusVersion availableVersion : LocusUtils.INSTANCE.getAvailableVersions(mContext)){
+            for (LocusVersion availableVersion : LocusUtils.INSTANCE.getAvailableVersions(mContext)) {
                 LocusInfo info = ActionBasics.INSTANCE.getLocusInfo(mContext, availableVersion);
-                if(info != null){
-                    if(info.getLastActive() > activeLocusInfo.getLastActive()){
+                if (info != null) {
+                    if (info.getLastActive() > activeLocusInfo.getLastActive()) {
                         activeLocusInfo = info;
                         lv = availableVersion;
                     }
@@ -38,7 +38,7 @@ public class SelectVersionRequest extends AbstractTaskerAction {
         } else {
             lv = LocusUtils.INSTANCE.createLocusVersion(mContext, packageName);
         }
-        if(lv == null) {
+        if (lv == null) {
             throw new RequiredDataMissingException("Could not found version for package: " + packageName);
         }
         locusCache.mLocusVersion = lv;

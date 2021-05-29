@@ -18,10 +18,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:textAlignment="center"
         android:padding="10dp"
         android:text="@string/app_name_long"
-        android:textAppearance="?android:attr/textAppearanceLarge"/>
+        android:textAlignment="center"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <Button
         android:id="@+id/import_example"
@@ -37,8 +37,8 @@
         android:layout_height="wrap_content"
         android:gravity="start"
         android:paddingTop="20dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/app_main_description" />
+        android:text="@string/app_main_description"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:layout_width="wrap_content"

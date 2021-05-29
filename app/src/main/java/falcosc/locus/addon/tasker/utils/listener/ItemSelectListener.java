@@ -7,7 +7,7 @@ public class ItemSelectListener implements AdapterView.OnItemSelectedListener {
 
     private final CharSequence mName;
 
-    public ItemSelectListener(CharSequence name){
+    public ItemSelectListener(CharSequence name) {
         mName = name;
     }
 

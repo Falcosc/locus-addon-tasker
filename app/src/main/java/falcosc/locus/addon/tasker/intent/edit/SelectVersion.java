@@ -48,10 +48,10 @@ public class SelectVersion extends TaskerEditActivity {
         setContentView(R.layout.select_version);
 
         ArrayList<Option> availablePackageNames = new ArrayList<>();
-        for(LocusVersion lv : LocusUtils.INSTANCE.getAvailableVersions(this)){
+        for (LocusVersion lv : LocusUtils.INSTANCE.getAvailableVersions(this)) {
             availablePackageNames.add(new Option(lv.getPackageName(), lv.toString()));
         }
-        if(availablePackageNames.size() > 1){
+        if (availablePackageNames.size() > 1) {
             //only add autoselection if we have multiple versions
             availablePackageNames.add(new Option(SelectVersionRequest.LAST_ACTIVE, getString(R.string.find_recent_version)));
         }
@@ -61,15 +61,15 @@ public class SelectVersion extends TaskerEditActivity {
         mPackageSelection = findViewById(R.id.package_select);
         mPackageSelection.setAdapter(mSpinnerArrayAdapter);
 
-        if(!mSpinnerArrayAdapter.isEmpty()) {
+        if (!mSpinnerArrayAdapter.isEmpty()) {
             mPackageSelection.setSelection(0);
         }
 
         Bundle taskerBundle = getIntent().getBundleExtra(com.twofortyfouram.locale.api.Intent.EXTRA_BUNDLE);
         if (taskerBundle != null) {
             String oldPackage = taskerBundle.getString(LocusConst.INTENT_EXTRA_PACKAGE_NAME);
-            for(int i = 0; i < availablePackageNames.size(); i++){
-                if(availablePackageNames.get(i).key.equals(oldPackage)){
+            for (int i = 0; i < availablePackageNames.size(); i++) {
+                if (availablePackageNames.get(i).key.equals(oldPackage)) {
                     mPackageSelection.setSelection(i);
                 }
             }

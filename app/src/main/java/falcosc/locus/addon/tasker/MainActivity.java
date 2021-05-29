@@ -36,28 +36,28 @@ public class MainActivity extends ProjectActivity {
         findViewById(R.id.imageView).setOnLongClickListener((v) -> mockTaskerEditStart());
         findViewById(R.id.import_example).setOnClickListener((v) -> importExample());
 
-        if(examplesAreMissing()){
+        if (examplesAreMissing()) {
             importExample();
         }
     }
 
-    private void importExample(){
+    private void importExample() {
         Intent importIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.TaskerExampleProjectImportLink)));
         try {
             startActivity(importIntent); //taskershare does allways respond 0 with null data, does not make sense to check it
             getPreferences(Context.MODE_PRIVATE).edit().putInt(IMPORTED_EXAMPLE_PROJECT_VER, 1).apply();
-        } catch (ActivityNotFoundException e){
+        } catch (ActivityNotFoundException e) {
             Log.e(TAG, ReportingHelper.getUserFriendlyName(e), e);
         }
     }
 
-    private boolean examplesAreMissing(){
+    private boolean examplesAreMissing() {
         try (Cursor cursor = getContentResolver().query(Uri.parse("content://net.dinglisch.android.tasker/tasks"), //NON-NLS
                 null, null, null, null)) {
-            if(cursor != null) {
-                int projNameCol = cursor.getColumnIndex( "project_name" ); //NON-NLS
+            if (cursor != null) {
+                int projNameCol = cursor.getColumnIndex("project_name"); //NON-NLS
                 while (cursor.moveToNext()) {
-                    if("LocusMap Examples".equalsIgnoreCase(cursor.getString(projNameCol))){ //NON-NLS
+                    if ("LocusMap Examples".equalsIgnoreCase(cursor.getString(projNameCol))) { //NON-NLS
                         return false;
                     }
                 }
