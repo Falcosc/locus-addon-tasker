@@ -91,6 +91,9 @@
     <string name="uc_guide_navpoint2_lat">Location of next navigation point - Latitude in WGS coordinates</string>
     <string name="uc_guide_navpoint2_name">Name of next navigation target point.</string>
     <string name="uc_guide_navpoint2_time">Time to next navigation point.</string>
+    <string name="uc_guide_nextvia_dist">Distance to the next via-point (or destination in case, no other via points exists).</string>
+    <string name="uc_guide_nextvia_name">Name of the next via-point (or destination in case, no other via points exists).</string>
+    <string name="uc_guide_nextvia_time">Relative time to the next via-point (or destination in case, no other via points exists).</string>
     <string name="uc_calc_remain_uphill_elevation">Remaining uphill elevation based on altitude values of each track point. Accuracy is dependent on the amount and quality of track point altitude values. Only available during Navigation based on an existing track.</string>
     <string name="uc_calc_remain_downhill_elevation">Remaining downhill elevation based on altitude values of each track point. Accuracy is dependent on the amount and quality of track point altitude values. Only available during Navigation based on an existing track.</string>
     <string name="uc_navigation_point_index">Index of nearest Point of the current navigation track. Only available during Navigation based on an existing track.</string>

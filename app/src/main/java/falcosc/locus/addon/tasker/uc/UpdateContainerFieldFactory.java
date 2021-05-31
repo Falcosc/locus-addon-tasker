@@ -13,6 +13,7 @@ import falcosc.locus.addon.tasker.utils.TaskerField;
 import locus.api.android.features.periodicUpdates.UpdateContainer;
 import locus.api.android.objects.LocusVersion;
 
+@SuppressWarnings({"OverlyLongMethod", "HardCodedStringLiteral"}) //because it is a factory for API methods
 public class UpdateContainerFieldFactory {
 
     private static final int TASKER_FIELD_LABEL_SIZE = 80;
@@ -65,7 +66,6 @@ public class UpdateContainerFieldFactory {
 
     }
 
-    @SuppressWarnings({"HardCodedStringLiteral", "OverlyLongMethod"})
     @NonNull
     public ArrayList<TaskerField> createUpdateContainerFields() {
         ArrayList<TaskerField> list = new ArrayList<>();
@@ -106,7 +106,7 @@ public class UpdateContainerFieldFactory {
         return list;
     }
 
-    @SuppressWarnings({"HardCodedStringLiteral", "ConstantConditions"}) //don't make null because if map data is missing locus isn't active
+    @SuppressWarnings("ConstantConditions") //don't make null because if map data is missing locus isn't active
     @NonNull
     public ArrayList<TaskerField> createMapFields() {
         ArrayList<TaskerField> list = new ArrayList<>();
@@ -124,7 +124,7 @@ public class UpdateContainerFieldFactory {
         return list;
     }
 
-    @SuppressWarnings({"HardCodedStringLiteral", "ConstantConditions"}) //don't make null checks here, we do it based on key
+    @SuppressWarnings("ConstantConditions") //don't make null checks here, we do it based on key
     @NonNull
     public ArrayList<TaskerField> createTrackRecStatsFields() {
         ArrayList<TaskerField> list = new ArrayList<>();
@@ -157,7 +157,7 @@ public class UpdateContainerFieldFactory {
         return list;
     }
 
-    @SuppressWarnings({"HardCodedStringLiteral", "ConstantConditions"}) //don't make null checks here, we do it based on key
+    @SuppressWarnings("ConstantConditions") //don't make null checks here, we do it based on key
     @NonNull
     public ArrayList<TaskerField> createGuideFields() {
         ArrayList<TaskerField> list = new ArrayList<>();
@@ -189,11 +189,13 @@ public class UpdateContainerFieldFactory {
         list.add(cField("guide_navpoint2_lat", "", u -> u.getGuideNavPoint2Loc().getLatitude()));
         list.add(cField("guide_navpoint2_name", "", UpdateContainer::getGuideNavPoint2Name));
         list.add(cField("guide_navpoint2_time", "", UpdateContainer::getGuideNavPoint2Time));
+        list.add(cField("guide_nextvia_dist", "", UpdateContainer::getGuideNextViaDist));
+        list.add(cField("guide_nextvia_name", "", UpdateContainer::getGuideNextViaName));
+        list.add(cField("guide_nextvia_time", "", UpdateContainer::getGuideNextViaTime));
 
         return list;
     }
 
-    @SuppressWarnings("HardCodedStringLiteral")
     @NonNull
     public static ArrayList<TaskerField> createNavigationProgressFields() {
         ArrayList<TaskerField> list = new ArrayList<>();
