@@ -51,6 +51,7 @@ public final class LocusCache {
     public LocusVersion mLocusVersion;
 
     //selected track fields
+    @Nullable
     public NavigationProgress.TrackData mLastSelectedTrack;
 
     //empty update container to avoid null checks because result is normally never null

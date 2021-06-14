@@ -2,8 +2,6 @@ package falcosc.locus.addon.tasker.uc;
 
 import android.util.Log;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -22,14 +20,30 @@ public final class NavigationProgress {
     private int mRemainingDownhill;
     public int pointIndex = -1;
     public String trackName;
-    private String mError;
+    private ErrorStatus mError;
 
-    private static final String NO_TRK = "noTRK"; //NON-NLS
-    private static final String NO_NAV = "noNAV"; //NON-NLS
-    private static final String NO_ELE = "noELE"; //NON-NLS
-    private static final String OFF_TRK = "offTRK"; //NON-NLS
-    private static final String RESET = "RESET"; //NON-NLS
     private static final String TAG = "CalcElevationToTarget"; //NON-NLS
+
+    @SuppressWarnings("HardCodedStringLiteral")
+    public enum ErrorStatus {
+        NO_TRK("noTRK"),
+        NO_NAV("noNAV"),
+        NO_ELE("noELE"),
+        OFF_TRK("offTRK"),
+        RESET("RESET");
+
+        private final String mText;
+
+        ErrorStatus(String text) {
+            mText = text;
+        }
+
+        @NonNull
+        @Override
+        public String toString() {
+            return mText;
+        }
+    }
 
     public static class Point {
         int remainingUphill;
@@ -87,14 +101,14 @@ public final class NavigationProgress {
 
     public String getRemainingUphill() {
         if (mError != null) {
-            return mError;
+            return mError.toString();
         }
         return Integer.toString(mRemainingUphill);
     }
 
     public String getRemainingDownhill() {
         if (mError != null) {
-            return mError;
+            return mError.toString();
         }
         return Integer.toString(mRemainingDownhill);
     }
@@ -110,19 +124,24 @@ public final class NavigationProgress {
 
         try {
 
-            locusCache.mLastSelectedTrack = getActiveTrack(locusCache, updateContainer);
-
-            mError = validateNavigationProgress(locusCache.mLastSelectedTrack, updateContainer);
-            if (StringUtils.isNotBlank(mError)) {
-                return;
+            if (locusCache.mLastSelectedTrack == null) {
+                setActiveTrack(locusCache, updateContainer);
+                mError = validateNavigationProgress(locusCache.mLastSelectedTrack, updateContainer);
+            } else {
+                mError = validateNavigationProgress(locusCache.mLastSelectedTrack, updateContainer);
+                if ((mError != null) && (mError != ErrorStatus.NO_NAV)) {
+                    //reset track if any error state detected, but avoid searching if no navigation is running
+                    setActiveTrack(locusCache, updateContainer);
+                    mError = validateNavigationProgress(locusCache.mLastSelectedTrack, updateContainer);
+                }
             }
 
-            locusCache.mLastSelectedTrack.mPreviousFoundIndex = pointIndex;
-            mRemainingUphill = locusCache.mLastSelectedTrack.mRemainingTrackElevation[pointIndex].remainingUphill;
-            mRemainingDownhill = locusCache.mLastSelectedTrack.mRemainingTrackElevation[pointIndex].remainingDownhill;
-            trackName = locusCache.mLastSelectedTrack.mTrack.getName();
-
-
+            if (mError == null) {
+                locusCache.mLastSelectedTrack.mPreviousFoundIndex = pointIndex;
+                mRemainingUphill = locusCache.mLastSelectedTrack.mRemainingTrackElevation[pointIndex].remainingUphill;
+                mRemainingDownhill = locusCache.mLastSelectedTrack.mRemainingTrackElevation[pointIndex].remainingDownhill;
+                trackName = locusCache.mLastSelectedTrack.mTrack.getName();
+            }
         } catch (Exception e) {
             new ReportingHelper(locusCache.getApplicationContext())
                     .sendErrorNotification(TAG, "Can not get remaining elevation", e); //NON-NLS
@@ -131,22 +150,22 @@ public final class NavigationProgress {
             //Don't search for the current track, this is done at the entry point of a new update request
             //reset track on error
             locusCache.mLastSelectedTrack = null;
-            mError = RESET;
+            mError = ErrorStatus.RESET;
         }
     }
 
-    private String validateNavigationProgress(TrackData track, UpdateContainer updateContainer) {
+    private ErrorStatus validateNavigationProgress(@NonNull TrackData track, @NonNull UpdateContainer updateContainer) {
         if ((updateContainer.getGuideType() != UpdateContainer.GUIDE_TYPE_TRACK_GUIDE)
                 && (updateContainer.getGuideType() != UpdateContainer.GUIDE_TYPE_TRACK_NAVIGATION)) {
-            return NO_NAV;
+            return ErrorStatus.NO_NAV;
         }
 
-        if (track == null) {
-            return NO_TRK;
+        if (track.mTrack == null) {
+            return ErrorStatus.NO_TRK;
         }
 
         if (track.mRemainingTrackElevation[0].remainingUphill == 0) {
-            return NO_ELE;
+            return ErrorStatus.NO_ELE;
         }
 
         Location nextPoint = updateContainer.getGuideWptLoc();
@@ -159,12 +178,12 @@ public final class NavigationProgress {
         }
 
         if (pointIndex < 0) {
-            return OFF_TRK;
+            return ErrorStatus.OFF_TRK;
         }
         return null;
     }
 
-    private static TrackData getActiveTrack(@NonNull LocusCache locusCache, UpdateContainer updateContainer) throws RequiredDataMissingException {
+    private static void setActiveTrack(@NonNull LocusCache locusCache, @NonNull UpdateContainer updateContainer) throws RequiredDataMissingException {
         try {
             Track newTrack = null;
             long guideTargetId = updateContainer.getGuideTargetId();
@@ -172,14 +191,13 @@ public final class NavigationProgress {
                 newTrack = ActionBasics.INSTANCE.getTrack(locusCache.getApplicationContext(), locusCache.requireLocusVersion(), guideTargetId);
             }
 
-            if (!isSameTrack(locusCache.mLastSelectedTrack.mTrack, newTrack)) {
+            if ((locusCache.mLastSelectedTrack == null) || !isSameTrack(locusCache.mLastSelectedTrack.mTrack, newTrack)) {
                 //recalculate or clear if null
-                return new TrackData(newTrack);
+                locusCache.mLastSelectedTrack = new TrackData(newTrack);
             }
         } catch (RequiredVersionMissingException ignored) {
+            locusCache.mLastSelectedTrack = new TrackData(null);
         }
-
-        return null;
     }
 
     private static boolean isSameTrack(Track track1, Track track2) {
@@ -200,7 +218,7 @@ public final class NavigationProgress {
             return false;
         }
 
-        if (track1.getPoint(0).getHasAltitude() != track1.getPoint(0).getHasAltitude()) {
+        if (track1.getPoint(0).getHasAltitude() != track2.getPoint(0).getHasAltitude()) {
             Log.d(TAG, "is not same track because altitude miss match"); //NON-NLS
             return false;
         }

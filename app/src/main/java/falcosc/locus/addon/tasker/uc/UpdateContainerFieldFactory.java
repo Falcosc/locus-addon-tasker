@@ -185,8 +185,10 @@ public class UpdateContainerFieldFactory {
         list.add(cField("guide_navpoint2_action", "", UpdateContainer::getGuideNavPoint2Action));
         list.add(cField("guide_navpoint2_dist", "", UpdateContainer::getGuideNavPoint2Dist));
         list.add(cField("guide_navpoint2_extra", "", UpdateContainer::getGuideNavPoint2Extra));
-        list.add(cField("guide_navpoint2_lon", "", u -> u.getGuideNavPoint2Loc().getLongitude()));
-        list.add(cField("guide_navpoint2_lat", "", u -> u.getGuideNavPoint2Loc().getLatitude()));
+        list.add(cField("guide_navpoint2_lon", "",
+                u -> (u.getGuideNavPoint2Loc() == null) ? null : u.getGuideNavPoint2Loc().getLongitude()));
+        list.add(cField("guide_navpoint2_lat", "",
+                u -> (u.getGuideNavPoint2Loc() == null) ? null : u.getGuideNavPoint2Loc().getLatitude()));
         list.add(cField("guide_navpoint2_name", "", UpdateContainer::getGuideNavPoint2Name));
         list.add(cField("guide_navpoint2_time", "", UpdateContainer::getGuideNavPoint2Time));
         list.add(cField("guide_nextvia_dist", "", UpdateContainer::getGuideNextViaDist));
