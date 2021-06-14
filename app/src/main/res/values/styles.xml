@@ -10,6 +10,7 @@
         <item name="android:checkboxStyle">@style/CheckboxStyle</item>
         <item name="editTextStyle">@style/EditTextStyle</item>
         <item name="android:colorBackground">@android:color/background_light</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
     </style>
 
     <style name="AlertDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
@@ -77,11 +78,6 @@
     <style name="textBullet">
         <item name="android:paddingLeft">10dp</item>
         <item name="android:paddingTop">8dp</item>
-    </style>
-
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
     </style>
 
 </resources>

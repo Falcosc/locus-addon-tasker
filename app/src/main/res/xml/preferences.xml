@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="Get Location Actions">
+
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:key="falcosc.locus.addon.tasker.RunTasker_GET_LOCATION"
+            app:persistent="false"
+            app:summary="appear in list of available locations"
+            app:title="Run Task from Get Location" />
+
+        <EditTextPreference
+            app:defaultValue=".*"
+            app:dependency="falcosc.locus.addon.tasker.RunTasker_GET_LOCATION"
+            app:dialogMessage="@string/pref_task_filter_dialog_message"
+            app:enableCopying="true"
+            app:iconSpaceReserved="false"
+            app:key="RunTasker_GET_LOCATION_filter"
+            app:title="Task Regex-filter Get Location"
+            app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:key="falcosc.locus.addon.tasker.RunTasker2_GET_LOCATION"
+            app:persistent="false"
+            app:summary="appear in list of available locations"
+            app:title="Run other Task from Get Location" />
+
+        <EditTextPreference
+            app:defaultValue=".*"
+            app:dependency="falcosc.locus.addon.tasker.RunTasker2_GET_LOCATION"
+            app:dialogMessage="@string/pref_task_filter_dialog_message"
+            app:enableCopying="true"
+            app:iconSpaceReserved="false"
+            app:key="RunTasker2_GET_LOCATION_filter"
+            app:title="Other Task Regex-filter Get Location"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="Point Tool Actions">
+
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:key="falcosc.locus.addon.tasker.RunTasker_POINT_TOOLS"
+            app:persistent="false"
+            app:summary="appear in sub-menu of every point"
+            app:title="Run Task from Point" />
+
+        <EditTextPreference
+            app:defaultValue=".*"
+            app:dependency="falcosc.locus.addon.tasker.RunTasker_POINT_TOOLS"
+            app:dialogMessage="@string/pref_task_filter_dialog_message"
+            app:enableCopying="true"
+            app:iconSpaceReserved="false"
+            app:key="RunTasker_POINT_TOOLS_filter"
+            app:title="Task Regex-filter Point"
+            app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:key="falcosc.locus.addon.tasker.RunTasker2_POINT_TOOLS"
+            app:persistent="false"
+            app:summary="appear in sub-menu of every point"
+            app:title="Run other Task from Point" />
+
+        <EditTextPreference
+            app:defaultValue=".*"
+            app:dependency="falcosc.locus.addon.tasker.RunTasker2_POINT_TOOLS"
+            app:dialogMessage="@string/pref_task_filter_dialog_message"
+            app:enableCopying="true"
+            app:iconSpaceReserved="false"
+            app:key="RunTasker2_POINT_TOOLS_filter"
+            app:title="Other Task Regex-filter Point"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="Track Tool Actions">
+
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:key="falcosc.locus.addon.tasker.LocusGeoTagActivity"
+            app:persistent="false"
+            app:summary="appear in sub-menu of every track"
+            app:title="Geotag Photos" />
+
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:key="falcosc.locus.addon.tasker.RunTasker_TRACK_TOOLS"
+            app:persistent="false"
+            app:summary="appear in sub-menu of every track"
+            app:title="Run Task from Track" />
+
+        <EditTextPreference
+            app:defaultValue=".*"
+            app:dependency="falcosc.locus.addon.tasker.RunTasker_TRACK_TOOLS"
+            app:dialogMessage="@string/pref_task_filter_dialog_message"
+            app:enableCopying="true"
+            app:iconSpaceReserved="false"
+            app:key="RunTasker_TRACK_TOOLS_filter"
+            app:title="Task Regex-filter Track"
+            app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:key="falcosc.locus.addon.tasker.RunTasker2_TRACK_TOOLS"
+            app:persistent="false"
+            app:summary="appear in sub-menu of every track"
+            app:title="Run other Task from Track" />
+
+        <EditTextPreference
+            app:defaultValue=".*"
+            app:dependency="falcosc.locus.addon.tasker.RunTasker2_TRACK_TOOLS"
+            app:dialogMessage="@string/pref_task_filter_dialog_message"
+            app:enableCopying="true"
+            app:iconSpaceReserved="false"
+            app:key="RunTasker2_TRACK_TOOLS_filter"
+            app:title="Other Task Regex-filter Track"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="Actions in Main Functions">
+
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:key="falcosc.locus.addon.tasker.RunTasker_MAIN_FUNCTION"
+            app:persistent="false"
+            app:summary="appear in main function list"
+            app:title="Run Task from Functions" />
+
+        <EditTextPreference
+            app:defaultValue=".*"
+            app:dependency="falcosc.locus.addon.tasker.RunTasker_MAIN_FUNCTION"
+            app:dialogMessage="@string/pref_task_filter_dialog_message"
+            app:enableCopying="true"
+            app:iconSpaceReserved="false"
+            app:key="RunTasker_MAIN_FUNCTION_filter"
+            app:title="Task Regex-filter Functions"
+            app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:key="falcosc.locus.addon.tasker.RunTasker2_MAIN_FUNCTION"
+            app:persistent="false"
+            app:summary="appear in main function list"
+            app:title="Run other Task from Functions" />
+
+        <EditTextPreference
+            app:defaultValue=".*"
+            app:dependency="falcosc.locus.addon.tasker.RunTasker2_MAIN_FUNCTION"
+            app:dialogMessage="@string/pref_task_filter_dialog_message"
+            app:enableCopying="true"
+            app:iconSpaceReserved="false"
+            app:key="RunTasker2_MAIN_FUNCTION_filter"
+            app:title="Other Task Regex-filter Functions"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="Search Menu Actions">
+
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:key="falcosc.locus.addon.tasker.RunTasker_SEARCH_LIST"
+            app:persistent="false"
+            app:summary="appear in searching options"
+            app:title="Run Task from Search Menu" />
+
+        <EditTextPreference
+            app:defaultValue=".*"
+            app:dependency="falcosc.locus.addon.tasker.RunTasker_SEARCH_LIST"
+            app:dialogMessage="@string/pref_task_filter_dialog_message"
+            app:enableCopying="true"
+            app:iconSpaceReserved="false"
+            app:key="RunTasker_SEARCH_LIST_filter"
+            app:title="Task Regex-filter Search Menu"
+            app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:key="falcosc.locus.addon.tasker.RunTasker2_SEARCH_LIST"
+            app:persistent="false"
+            app:summary="appear in searching options"
+            app:title="Run other Task from Search Menu" />
+
+        <EditTextPreference
+            app:defaultValue=".*"
+            app:dependency="falcosc.locus.addon.tasker.RunTasker2_SEARCH_LIST"
+            app:dialogMessage="@string/pref_task_filter_dialog_message"
+            app:enableCopying="true"
+            app:iconSpaceReserved="false"
+            app:key="RunTasker2_SEARCH_LIST_filter"
+            app:title="Other Task Regex-filter Search Menu"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="Point Screen Tool Actions">
+
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:key="falcosc.locus.addon.tasker.RunTasker_POINTS_SCREEN_TOOLS"
+            app:persistent="false"
+            app:summary="appear in points screen - tools button"
+            app:title="Run Task from Point Screen Tools" />
+
+        <EditTextPreference
+            app:defaultValue=".*"
+            app:dependency="falcosc.locus.addon.tasker.RunTasker_POINTS_SCREEN_TOOLS"
+            app:dialogMessage="@string/pref_task_filter_dialog_message"
+            app:enableCopying="true"
+            app:iconSpaceReserved="false"
+            app:key="RunTasker_SCREEN_TOOLS_filter"
+            app:title="Task Regex-filter Point Screen Tools"
+            app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreferenceCompat
+            app:iconSpaceReserved="false"
+            app:key="falcosc.locus.addon.tasker.RunTasker2_POINTS_SCREEN_TOOLS"
+            app:persistent="false"
+            app:summary="appear in points screen - tools button"
+            app:title="Run other Task from Point Screen Tools" />
+
+        <EditTextPreference
+            app:defaultValue=".*"
+            app:dependency="falcosc.locus.addon.tasker.RunTasker2_POINTS_SCREEN_TOOLS"
+            app:dialogMessage="@string/pref_task_filter_dialog_message"
+            app:enableCopying="true"
+            app:iconSpaceReserved="false"
+            app:key="RunTasker2_SCREEN_TOOLS_filter"
+            app:title="Other Task Regex-filter Point Screen Tools"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

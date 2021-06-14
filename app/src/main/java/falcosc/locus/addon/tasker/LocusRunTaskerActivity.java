@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.preference.PreferenceManager;
 import falcosc.locus.addon.tasker.thridparty.TaskerIntent;
 import falcosc.locus.addon.tasker.utils.LocusCache;
 import falcosc.locus.addon.tasker.utils.ReportingHelper;
@@ -45,14 +46,15 @@ public class LocusRunTaskerActivity extends ProjectActivity {
 
     private static final String TAG = "LocusRunTaskerActivity"; //NON-NLS
     private static final Pattern NON_WORD_CHAR_PATTERN = Pattern.compile("[^\\w]");  //NON-NLS
+    private static final String KEY_SUFFIX_FILTER = "_filter"; //NON-NLS
+    private TextView mMessage;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.run_task);
-
-        addTaskButtons(findViewById(R.id.linearContent));
+        mMessage = findViewById(R.id.message);
 
         Button closeButton = findViewById(R.id.btnClose);
         closeButton.setOnClickListener(v -> finish());
@@ -64,37 +66,64 @@ public class LocusRunTaskerActivity extends ProjectActivity {
         implementedActions.add(LocusConst.INTENT_ITEM_TRACK_TOOLS);
         implementedActions.add(LocusConst.INTENT_ITEM_POINT_TOOLS);
 
-        if (implementedActions.contains(getIntent().getAction())) {
-            findViewById(R.id.not_implemented).setVisibility(View.GONE);
+        if (!implementedActions.contains(getIntent().getAction())) {
+            mMessage.setText(R.string.run_task_not_implemented);
+        }
+
+        List<String> taskNames = queryTaskNames(getTaskFilter());
+        if (!taskNames.isEmpty()) {
+            if (taskNames.size() == 1) {
+                startTask(taskNames.get(0));
+            } else {
+                addTaskButtons(findViewById(R.id.linearContent), taskNames);
+            }
         }
     }
 
-    private void addTaskButtons(@NonNull ViewGroup viewGroup) {
+    Pattern getTaskFilter() {
+        String key = getIntent().getComponent().getShortClassName() + KEY_SUFFIX_FILTER;
+        key = key.substring(1);
+        return Pattern.compile(PreferenceManager.getDefaultSharedPreferences(this).getString(key, ".*"));
+    }
 
-        LayoutInflater inflater = LayoutInflater.from(this);
-
+    List<String> queryTaskNames(Pattern pattern) {
+        List<String> taskNames = new ArrayList<>();
         try (Cursor cursor = getContentResolver().query(Uri.parse("content://net.dinglisch.android.tasker/tasks"), //NON-NLS
                 null, null, null, null)) {
             if (cursor != null) {
                 int nameCol = cursor.getColumnIndex("name"); //NON-NLS
+                int projNameCol = cursor.getColumnIndex("project_name"); //NON-NLS
 
                 while (cursor.moveToNext()) {
                     String task = cursor.getString(nameCol);
-
-                    View view = inflater.inflate(R.layout.list_btn, viewGroup, false);
-                    Button taskBtn = view.findViewById(R.id.listBtn);
-                    taskBtn.setText(task);
-                    taskBtn.setOnClickListener(v -> startTask(task));
-                    viewGroup.addView(view);
+                    String prjName = cursor.getString(projNameCol);
+                    if (pattern.matcher(prjName + "/" + task).matches()) {
+                        taskNames.add(task);
+                    }
+                }
+                if (taskNames.isEmpty()) {
+                    mMessage.setText(getString(R.string.run_task_no_match, pattern.pattern()));
                 }
             } else {
-                findViewById(R.id.not_implemented).setVisibility(View.GONE);
-                TextView text = findViewById(R.id.execute_tasks);
-                text.setText(R.string.err_tasker_external_access);
+                mMessage.setText(R.string.err_tasker_external_access);
             }
         } catch (Exception e) {
             Log.e(TAG, ReportingHelper.getUserFriendlyName(e), e);
             new ReportingHelper(this).sendErrorNotification(TAG, "Can't create Buttons for Tasks", e); //NON-NLS
+        }
+        return taskNames;
+    }
+
+    private void addTaskButtons(@NonNull ViewGroup viewGroup, List<String> taskNames) {
+
+        LayoutInflater inflater = LayoutInflater.from(this);
+
+        for (String taskName : taskNames) {
+            View view = inflater.inflate(R.layout.list_btn, viewGroup, false);
+            Button taskBtn = view.findViewById(R.id.listBtn);
+            taskBtn.setText(taskName);
+            taskBtn.setOnClickListener(v -> startTask(taskName));
+            viewGroup.addView(view);
         }
     }
 

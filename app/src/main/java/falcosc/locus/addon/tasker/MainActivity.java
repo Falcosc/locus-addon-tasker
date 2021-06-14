@@ -9,15 +9,19 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import java.util.ArrayList;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.preference.PreferenceManager;
 import falcosc.locus.addon.tasker.intent.edit.ActionTaskEdit;
 import falcosc.locus.addon.tasker.intent.edit.LocusInfoEdit;
 import falcosc.locus.addon.tasker.intent.edit.NotImplementedActions;
 import falcosc.locus.addon.tasker.intent.edit.UpdateContainerEdit;
+import falcosc.locus.addon.tasker.settings.SettingsActivity;
 import falcosc.locus.addon.tasker.utils.Const;
 import falcosc.locus.addon.tasker.utils.ReportingHelper;
 
@@ -35,16 +39,45 @@ public class MainActivity extends ProjectActivity {
 
         findViewById(R.id.imageView).setOnLongClickListener((v) -> mockTaskerEditStart());
         findViewById(R.id.import_example).setOnClickListener((v) -> importExample());
+        findViewById(R.id.settings).setOnClickListener((v) -> startActivity(new Intent(this, SettingsActivity.class)));
+
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
         if (examplesAreMissing()) {
             importExample();
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.settings) {
+            startActivity(new Intent(this, SettingsActivity.class));
+            return true;
+        }
+        if (id == R.id.import_example){
+            importExample();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     private void importExample() {
         Intent importIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.TaskerExampleProjectImportLink)));
         try {
-            startActivity(importIntent); //taskershare does allways respond 0 with null data, does not make sense to check it
+            startActivity(importIntent); //taskershare does always respond 0 with null data, does not make sense to check it
             getPreferences(Context.MODE_PRIVATE).edit().putInt(IMPORTED_EXAMPLE_PROJECT_VER, 1).apply();
         } catch (ActivityNotFoundException e) {
             Log.e(TAG, ReportingHelper.getUserFriendlyName(e), e);

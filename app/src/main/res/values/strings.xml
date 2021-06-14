@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">LocusTasker</string>
-    <string name="app_name_long">Locus Addon &amp; Tasker Plugin</string>
     <string name="act_request_stats_sensors">Request sensors and stats</string>
     <string name="act_select_version">Select Version</string>
     <string name="act_request_locus_info">Get Locus Info</string>
@@ -15,7 +14,7 @@
     <string name="calc_remain_elev_notrk">noTRK - No track available for your navigation</string>
     <string name="calc_remain_elev_noele">noELE - No elevation data is assigned to your track</string>
     <string name="run_task_not_implemented">This event is not properly implemented, if you want to use it please ask for a Tasker event implementation by sharing your Tasker project idea to tell which data you need. For now you will just get raw data.</string>
-    <string name="run_task_execute">Execute your tasks and get all event data as \'\%data\' and available fields as \'\%fields\'</string>
+    <string name="run_task_execute">Execute your tasks and get all event data as \'\%data\' and available fields as \'\%fields\'\nAll the entries in the output of the %fields variable are existing variables that get sent to tasker and can by used like \%p_lon for example.</string>
     <string name="action_not_implemented_desc">Following API functions are currently not implemented and would be added if somebody request it:
         \n
         \n\t• Export rendered Map screenshot
@@ -80,8 +79,8 @@
         <item quantity="one">Share Photo</item>
         <item quantity="other">Share %d Photos</item>
     </plurals>
-    <string name="geotag_title">Geotag jpeg\'s</string>
-    <string name="geotag_title_done">Geotag jpeg\'s is done</string>
+    <string name="geotag_title">Geotag Photo\'s</string>
+    <string name="geotag_title_done">Geotag Photo\'s is done</string>
     <string name="start_process">Start Process</string>
     <string name="err_geotag_no_date">has no exif date time</string>
     <string name="err_geotag_write_exif">can\'t read and write exif</string>
@@ -105,4 +104,7 @@
     <string name="geotag_report_non_match">Report files which does not fit track as skipped</string>
     <string name="version_select_reminder">You have installed multiple Locus Maps Versions. Please use Select Version Task when switching between your installed Locus Versions to tell the plugin that you start another Version.</string>
     <string name="find_recent_version">Find recently opened Version</string>
+    <string name="run_task_no_match">Can not find any Tasks matching to Filter %s</string>
+    <string name="pref_task_filter_dialog_message">If your Regex does fit exactly one Task, you Task will called directly without showing a selection screen.\n\nTasks have the following Format:\nProject Name/Task Name</string>
+    <string name="settings">Settings</string>
 </resources>
