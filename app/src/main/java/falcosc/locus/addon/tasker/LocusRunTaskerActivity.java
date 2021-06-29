@@ -19,6 +19,7 @@ import org.json.JSONStringer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -88,6 +89,7 @@ public class LocusRunTaskerActivity extends ProjectActivity {
 
     List<String> queryTaskNames(Pattern pattern) {
         List<String> taskNames = new ArrayList<>();
+        List<String> excludedTasks = new ArrayList<>();
         try (Cursor cursor = getContentResolver().query(Uri.parse("content://net.dinglisch.android.tasker/tasks"), //NON-NLS
                 null, null, null, null)) {
             if (cursor != null) {
@@ -97,12 +99,22 @@ public class LocusRunTaskerActivity extends ProjectActivity {
                 while (cursor.moveToNext()) {
                     String task = cursor.getString(nameCol);
                     String prjName = cursor.getString(projNameCol);
-                    if (pattern.matcher(prjName + "/" + task).matches()) {
+                    String combinedName = prjName + "/" + task;
+                    if (pattern.matcher(combinedName).matches()) {
                         taskNames.add(task);
+                    } else {
+                        excludedTasks.add(combinedName);
                     }
                 }
                 if (taskNames.isEmpty()) {
-                    mMessage.setText(getString(R.string.run_task_no_match, pattern.pattern()));
+                    String message = getString(R.string.run_task_no_match, pattern.pattern());
+                    if (!excludedTasks.isEmpty()) {
+                        Collections.sort(excludedTasks);
+                        message += "\n" + getString(R.string.run_task_excluded_tasks)
+                                + "\n\t• " + StringUtils.join(excludedTasks, "\n\t• ");
+                    }
+                    mMessage.setText(message);
+
                 }
             } else {
                 mMessage.setText(R.string.err_tasker_external_access);
