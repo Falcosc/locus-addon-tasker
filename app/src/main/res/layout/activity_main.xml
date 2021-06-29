@@ -14,14 +14,12 @@
         android:contentDescription="@string/app_icon"
         android:src="@drawable/launcher_large" />
 
-    <TextView
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/settings"
+        style="@style/Button"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:padding="10dp"
-        android:text="@string/app_name_long"
-        android:textAlignment="center"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:text="@string/settings" />
 
     <Button
         android:id="@+id/import_example"
@@ -29,7 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawableStart="@mipmap/ic_tasker"
-        android:drawablePadding="-40dp"
+        android:drawablePadding="-42dp"
         android:text="@string/import_example_project" />
 
     <TextView
