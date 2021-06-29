@@ -52,7 +52,7 @@ public class SelectVersion extends TaskerEditActivity {
             availablePackageNames.add(new Option(lv.getPackageName(), lv.toString()));
         }
         if (availablePackageNames.size() > 1) {
-            //only add autoselection if we have multiple versions
+            //only add auto-selection if we have multiple versions
             availablePackageNames.add(new Option(SelectVersionRequest.LAST_ACTIVE, getString(R.string.find_recent_version)));
         }
 

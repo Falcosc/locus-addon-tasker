@@ -56,7 +56,7 @@
     <string name="geotag_example_photo">Example Photo</string>
     <string name="refresh">refresh</string>
     <string name="err_geotag_required_android_version">Geotagging is only supported for Android Nougat to reduce code complexity.</string>
-    <string name="err_geotag_no_images_found">Can\'t find any supported impages, please select an other folder or abort</string>
+    <string name="err_geotag_no_images_found">Can\'t find any supported images, please select an other folder or abort</string>
     <plurals name="geotag_x_photos">
         <item quantity="one">Geotag ~%1$d of %2$d photo</item>
         <item quantity="other">Geotag ~%1$d of %2$d photos</item>

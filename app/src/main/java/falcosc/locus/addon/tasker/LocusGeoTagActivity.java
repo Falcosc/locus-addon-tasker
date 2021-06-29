@@ -191,7 +191,7 @@ public class LocusGeoTagActivity extends ProjectActivity {
         long endTime = mTrackEndTime - (DateUtils.HOUR_IN_MILLIS * -mTimeOffset);
         int photoCount = (int) photoTimestamps.stream().filter(date -> ((startTime < date) && (date < endTime))).count();
         if (photoCount == 0) {
-            //no matching fotos found, display photos which don't have any time
+            //no matching photos found, display photos which don't have any time
             photoCount = (int) photoTimestamps.stream().filter(date -> (date == 0)).count();
         }
         setTitle(getResources().getQuantityString(R.plurals.geotag_x_photos, photoTimestamps.size(), photoCount, photoTimestamps.size()));
