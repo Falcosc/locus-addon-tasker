@@ -7,8 +7,8 @@ android {
     defaultConfig {
         minSdkVersion Integer.valueOf(PARAM_MIN_SDK_VERSION)
         targetSdkVersion Integer.valueOf(PARAM_TARGET_SDK_VERSION)
-        versionCode 46
-        versionName '1.5.0-SNAPSHOT'
+        versionCode 48
+        versionName '1.6.0-SNAPSHOT'
         buildConfigField 'String', 'CONTACT_EMAIL', '"' + getContactEmail() + '"'
     }
 
