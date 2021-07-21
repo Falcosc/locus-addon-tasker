@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -29,7 +31,9 @@ import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.preference.PreferenceManager;
+import falcosc.locus.addon.tasker.settings.SettingsActivity;
 import falcosc.locus.addon.tasker.thridparty.TaskerIntent;
 import falcosc.locus.addon.tasker.utils.LocusCache;
 import falcosc.locus.addon.tasker.utils.ReportingHelper;
@@ -57,19 +61,19 @@ public class LocusRunTaskerActivity extends ProjectActivity {
         setContentView(R.layout.run_task);
         mMessage = findViewById(R.id.message);
 
-        Button closeButton = findViewById(R.id.btnClose);
-        closeButton.setOnClickListener(v -> finish());
-
-        Button shareButton = findViewById(R.id.btnShare);
-        shareButton.setOnClickListener(v -> openWebPage(getString(R.string.issues_link)));
-
         Set<String> implementedActions = new HashSet<>();
         implementedActions.add(LocusConst.INTENT_ITEM_TRACK_TOOLS);
         implementedActions.add(LocusConst.INTENT_ITEM_POINT_TOOLS);
 
-        if (!implementedActions.contains(getIntent().getAction())) {
-            mMessage.setText(R.string.run_task_not_implemented);
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("RunTasker_showHelp", true)) { //NON-NLS
+            if (!implementedActions.contains(getIntent().getAction())) {
+                mMessage.setText(R.string.run_task_not_implemented);
+            }
+        } else {
+            //hide text before checking for errors because errors my want to make it visible again
+            mMessage.setVisibility(View.GONE);
         }
+
 
         List<String> taskNames = queryTaskNames(getTaskFilter());
         if (!taskNames.isEmpty()) {
@@ -79,6 +83,41 @@ public class LocusRunTaskerActivity extends ProjectActivity {
                 addTaskButtons(findViewById(R.id.linearContent), taskNames);
             }
         }
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_runtask, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        if (id == R.id.settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            return true;
+        }
+        if (id == R.id.share) {
+            openWebPage(getString(R.string.issues_link));
+            return true;
+        }
+        if (id == R.id.close) {
+            finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     Pattern getTaskFilter() {
@@ -114,10 +153,12 @@ public class LocusRunTaskerActivity extends ProjectActivity {
                                 + "\n\t• " + StringUtils.join(excludedTasks, "\n\t• ");
                     }
                     mMessage.setText(message);
+                    mMessage.setVisibility(View.VISIBLE);
 
                 }
             } else {
                 mMessage.setText(R.string.err_tasker_external_access);
+                mMessage.setVisibility(View.VISIBLE);
             }
         } catch (Exception e) {
             Log.e(TAG, ReportingHelper.getUserFriendlyName(e), e);

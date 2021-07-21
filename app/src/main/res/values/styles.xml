@@ -29,6 +29,24 @@
         <item name="android:colorBackground">@android:color/background_light</item>
     </style>
 
+    <style name="AlertDialogThemeNoTitle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="windowNoTitle">true</item>
+
+        <item name="colorAccent">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:textColorLink">@color/linkColor</item>
+
+        <item name="android:spinnerStyle">@style/SpinnerStyle</item>
+        <!--some old api versions don't use android: spinner style -->
+        <item name="spinnerStyle">@style/SpinnerStyle</item>
+        <item name="android:checkboxStyle">@style/CheckboxStyle</item>
+        <item name="android:editTextStyle">@style/EditTextStyle</item>
+        <!--some new api versions don't use android: edit text style -->
+        <item name="editTextStyle">@style/EditTextStyle</item>
+        <item name="android:colorBackground">@android:color/background_light</item>
+    </style>
+
     <style name="SpinnerStyle" parent="@style/Widget.AppCompat.Spinner">
         <item name="android:minHeight">48dp</item>
     </style>

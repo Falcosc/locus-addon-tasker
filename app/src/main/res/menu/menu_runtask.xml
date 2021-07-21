@@ -4,13 +4,20 @@
     tools:context="com.example.myapplication.MainActivity">
     <item
         android:id="@+id/settings"
-        android:orderInCategory="100"
         android:icon="@drawable/ic_settings"
+        android:orderInCategory="100"
         android:title="@string/settings"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/import_example"
+        android:id="@+id/share"
+        android:icon="@drawable/ic_share"
         android:orderInCategory="200"
-        android:title="@string/import_example_project"
-        app:showAsAction="never" />
+        android:title="@string/share"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/close"
+        android:icon="@drawable/ic_close"
+        android:orderInCategory="200"
+        android:title="@string/close"
+        app:showAsAction="ifRoom" />
 </menu>

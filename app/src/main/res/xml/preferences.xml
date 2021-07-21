@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <SwitchPreferenceCompat
+        app:iconSpaceReserved="false"
+        app:key="RunTasker_showHelp"
+        app:summary="text message on RunTask dialog"
+        app:title="Show Run Task introduction"
+        app:defaultValue="true" />
+
     <PreferenceCategory
         app:iconSpaceReserved="false"
         app:title="Get Location Actions">
