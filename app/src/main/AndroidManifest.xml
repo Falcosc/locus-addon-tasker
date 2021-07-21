@@ -61,7 +61,7 @@
             android:name=".LocusRunTaskerActivity"
             android:label="Run task"
             android:icon="@mipmap/ic_tasker"
-            android:theme="@style/AlertDialogTheme"></activity>
+            android:theme="@style/AlertDialogThemeNoTitle"></activity>
 
         <activity-alias
             android:name="RunTasker_GET_LOCATION"
