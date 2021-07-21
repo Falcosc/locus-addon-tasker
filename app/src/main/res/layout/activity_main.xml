@@ -15,26 +15,20 @@
         android:src="@drawable/launcher_large" />
 
     <Button
-        android:id="@+id/settings"
-        style="@style/Button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/settings" />
-
-    <Button
         android:id="@+id/import_example"
         style="@style/Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawableStart="@mipmap/ic_tasker"
+        android:layout_marginTop="10dp"
         android:drawablePadding="-42dp"
         android:text="@string/import_example_project" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingTop="10dp"
         android:gravity="start"
-        android:paddingTop="20dp"
         android:text="@string/app_main_description"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 

@@ -39,7 +39,6 @@ public class MainActivity extends ProjectActivity {
 
         findViewById(R.id.imageView).setOnLongClickListener((v) -> mockTaskerEditStart());
         findViewById(R.id.import_example).setOnClickListener((v) -> importExample());
-        findViewById(R.id.settings).setOnClickListener((v) -> startActivity(new Intent(this, SettingsActivity.class)));
 
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
