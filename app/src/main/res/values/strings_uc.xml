@@ -40,6 +40,7 @@
     <string name="uc_map_top_left_lat">Top-left coordinate of current map screen\n@return max top-left visible location - Latitude in WGS coordinates</string>
     <string name="uc_map_center_lon">Even if map is visible or not, this define current map center.\n@return current map center - Longitude in WGS coordinates</string>
     <string name="uc_map_center_lat">Even if map is visible or not, this define current map center.\n@return current map center - Latitude in WGS coordinates</string>
+    <string name="uc_map_center_altitude">Even if map is visible or not, this define current map center altitue.\n@return Altitude value (in m). If [hasAltitude] is false, 0.0f is returned</string>
     <string name="uc_rec_total_length">Total length of done route (in m).</string>
     <string name="uc_rec_total_length_move">Total track distance with speed sensor value (in m).</string>
     <string name="uc_rec_eleva_neg_length">Negative grade (distance)</string>
