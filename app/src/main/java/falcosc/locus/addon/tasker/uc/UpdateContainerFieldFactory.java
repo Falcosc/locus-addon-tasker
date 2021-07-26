@@ -120,6 +120,7 @@ public class UpdateContainerFieldFactory {
         list.add(cField("map_top_left_lat", "", u -> u.getMapTopLeft().getLatitude()));
         list.add(cField("map_center_lon", "", u -> u.getLocMapCenter().getLongitude()));
         list.add(cField("map_center_lat", "", u -> u.getLocMapCenter().getLatitude()));
+        list.add(cField("map_center_altitude", "", u -> u.getLocMapCenter().getAltitude()));
 
         return list;
     }
