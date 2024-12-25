@@ -218,7 +218,7 @@ public final class NavigationProgress {
             return false;
         }
 
-        if (track1.getPoint(0).getHasAltitude() != track2.getPoint(0).getHasAltitude()) {
+        if (track1.getPoint(0).getAltitude() != track2.getPoint(0).getAltitude()) {
             Log.d(TAG, "is not same track because altitude miss match"); //NON-NLS
             return false;
         }

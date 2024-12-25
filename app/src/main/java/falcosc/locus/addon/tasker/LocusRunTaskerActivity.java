@@ -43,6 +43,7 @@ import locus.api.objects.extra.GeoDataExtra;
 import locus.api.objects.extra.Location;
 import locus.api.objects.extra.TrackStats;
 import locus.api.objects.geoData.GeoData;
+import locus.api.objects.geoData.GeoDataHelperKt;
 import locus.api.objects.geoData.Point;
 import locus.api.objects.geoData.Track;
 import locus.api.utils.Utils;
@@ -253,9 +254,6 @@ public class LocusRunTaskerActivity extends ProjectActivity {
             GeoDataExtra.PAR_AREA_SIZE,
             GeoDataExtra.PAR_DB_POI_EXTRA_DATA,
             GeoDataExtra.PAR_KML_TRIP_ID,
-            GeoDataExtra.PAR_GOOGLE_PLACES_REFERENCE,
-            GeoDataExtra.PAR_GOOGLE_PLACES_RATING,
-            GeoDataExtra.PAR_GOOGLE_PLACES_DETAILS,
             GeoDataExtra.PAR_INTENT_EXTRA_CALLBACK,
             GeoDataExtra.PAR_INTENT_EXTRA_ON_DISPLAY,
             GeoDataExtra.PAR_DESCRIPTION,
@@ -305,12 +303,11 @@ public class LocusRunTaskerActivity extends ProjectActivity {
     @SuppressWarnings("HardCodedStringLiteral")
     private static LinkedHashMap<String, String> mapGeoDataFields(String prefix, GeoData g) {
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
+
         map.put(prefix + "name", g.getName());
-        map.put(prefix + "param_desc", g.getParameterDescription());
-        map.put(prefix + "param_style", g.getParameterStyleName());
+        map.put(prefix + "param_desc", GeoDataHelperKt.getParameterDescription(g));
+        map.put(prefix + "param_style", GeoDataHelperKt.getParameterStyleName(g));
         map.put(prefix + "id", Long.toString(g.getId()));
-        map.put(prefix + "param_rte_action", g.getParameterRteAction().name());
-        map.put(prefix + "param_rte_index", Integer.toString(g.getParamRteIndex()));
         map.put(prefix + "time_created", Long.toString(g.getTimeCreated()));
         map.put(prefix + "is_enabled", Boolean.toString(g.isEnabled()));
         map.put(prefix + "is_visible", Boolean.toString(g.isVisible()));

@@ -27,7 +27,6 @@
     </queries>
 
     <application
-        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
@@ -38,6 +37,7 @@
         <!-- main activity contains an app description to tell why Locus Map sees this app -->
         <activity
             android:name=".MainActivity"
+            android:exported="true"
             android:theme="@style/AppTheme"
             android:excludeFromRecents="true">
             <intent-filter>
@@ -65,6 +65,7 @@
 
         <activity-alias
             android:name="RunTasker_GET_LOCATION"
+            android:exported="true"
             android:label="Run task"
             android:icon="@mipmap/ic_tasker"
             android:theme="@style/AlertDialogTheme"
@@ -77,6 +78,7 @@
 
         <activity-alias
             android:name="RunTasker_POINT_TOOLS"
+            android:exported="true"
             android:label="Run task"
             android:icon="@mipmap/ic_tasker"
             android:theme="@style/AlertDialogTheme"
@@ -89,6 +91,7 @@
 
         <activity-alias
             android:name="RunTasker_TRACK_TOOLS"
+            android:exported="true"
             android:label="Run task"
             android:icon="@mipmap/ic_tasker"
             android:theme="@style/AlertDialogTheme"
@@ -101,6 +104,7 @@
 
         <activity-alias
             android:name="RunTasker_MAIN_FUNCTION"
+            android:exported="true"
             android:label="Run task"
             android:icon="@mipmap/ic_tasker"
             android:theme="@style/AlertDialogTheme"
@@ -113,6 +117,7 @@
 
         <activity-alias
             android:name="RunTasker_SEARCH_LIST"
+            android:exported="true"
             android:label="Run task"
             android:icon="@mipmap/ic_tasker"
             android:theme="@style/AlertDialogTheme"
@@ -125,6 +130,7 @@
 
         <activity-alias
             android:name="RunTasker_POINTS_SCREEN_TOOLS"
+            android:exported="true"
             android:label="Run task"
             android:icon="@mipmap/ic_tasker"
             android:theme="@style/AlertDialogTheme"
@@ -137,6 +143,7 @@
 
         <activity-alias
             android:name="RunTasker2_GET_LOCATION"
+            android:exported="true"
             android:label="Run other task"
             android:enabled="false"
             android:icon="@mipmap/ic_tasker"
@@ -150,6 +157,7 @@
 
         <activity-alias
             android:name="RunTasker2_POINT_TOOLS"
+            android:exported="true"
             android:label="Run other task"
             android:enabled="false"
             android:icon="@mipmap/ic_tasker"
@@ -163,6 +171,7 @@
 
         <activity-alias
             android:name="RunTasker2_TRACK_TOOLS"
+            android:exported="true"
             android:label="Run other task"
             android:enabled="false"
             android:icon="@mipmap/ic_tasker"
@@ -176,6 +185,7 @@
 
         <activity-alias
             android:name="RunTasker2_MAIN_FUNCTION"
+            android:exported="true"
             android:label="Run other task"
             android:enabled="false"
             android:icon="@mipmap/ic_tasker"
@@ -189,6 +199,7 @@
 
         <activity-alias
             android:name="RunTasker2_SEARCH_LIST"
+            android:exported="true"
             android:label="Run other task"
             android:enabled="false"
             android:icon="@mipmap/ic_tasker"
@@ -202,6 +213,7 @@
 
         <activity-alias
             android:name="RunTasker2_POINTS_SCREEN_TOOLS"
+            android:exported="true"
             android:label="Run other task"
             android:enabled="false"
             android:icon="@mipmap/ic_tasker"
@@ -216,6 +228,7 @@
         <!-- run Tasker Task -->
         <activity
             android:name=".LocusGeoTagActivity"
+            android:exported="true"
             android:label="@string/geotag_title"
             android:icon="@mipmap/ic_tasker"
             android:theme="@style/AlertDialogTheme">
@@ -236,6 +249,7 @@
         <!-- listen tasker edit action -->
         <activity
             android:name=".intent.edit.UpdateContainerEdit"
+            android:exported="true"
             android:label="@string/act_request_stats_sensors"
             android:icon="@mipmap/ic_launcher"
             android:theme="@style/AlertDialogTheme">
@@ -246,6 +260,7 @@
 
         <activity
             android:name=".intent.edit.SelectVersion"
+            android:exported="true"
             android:label="@string/act_select_version"
             android:icon="@mipmap/ic_launcher"
             android:theme="@style/AlertDialogTheme">
@@ -256,6 +271,7 @@
 
         <activity
             android:name=".intent.edit.LocusInfoEdit"
+            android:exported="true"
             android:label="@string/act_request_locus_info"
             android:icon="@mipmap/ic_launcher"
             android:theme="@style/AlertDialogTheme">
@@ -266,6 +282,7 @@
 
         <activity
             android:name=".intent.edit.ActionTaskEdit"
+            android:exported="true"
             android:label="@string/act_exec_task"
             android:icon="@mipmap/ic_launcher"
             android:theme="@style/AlertDialogTheme">
@@ -276,6 +293,7 @@
 
         <activity
             android:name=".intent.edit.NotImplementedActions"
+            android:exported="true"
             android:label="@string/act_more"
             android:icon="@mipmap/ic_launcher"
             android:theme="@style/AlertDialogTheme">

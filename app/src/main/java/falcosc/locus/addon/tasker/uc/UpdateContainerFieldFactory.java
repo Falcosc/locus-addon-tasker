@@ -73,7 +73,8 @@ public class UpdateContainerFieldFactory {
         list.add(cField("my_latitude", "latitude", u -> u.getLocMyLocation().getLatitude()));
         list.add(cField("my_longitude", "longitude", u -> u.getLocMyLocation().getLongitude()));
         list.add(cField("my_altitude", "altitude", u -> u.getLocMyLocation().getAltitude()));
-        list.add(cField("my_accuracy", "accuracy", u -> u.getLocMyLocation().getAccuracy()));
+        list.add(cField("my_accuracy_hor", "accuracy_hor", u -> u.getLocMyLocation().getAccuracyHor()));
+        list.add(cField("my_accuracy_ver", "accuracy_ver", u -> u.getLocMyLocation().getAccuracyVer()));
         list.add(cField("my_gps_fix", "gps_fix", u -> u.getLocMyLocation().getTime()));
         list.add(cField("my_speed", "speed", u -> u.getLocMyLocation().getSpeed()));
         list.add(cField("sensor_hrm", "heart_rate", u -> u.getLocMyLocation().getSensorHeartRate()));
