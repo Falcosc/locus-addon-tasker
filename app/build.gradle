@@ -4,6 +4,12 @@ android {
     // setup SDK
     compileSdkVersion Integer.valueOf(PARAM_COMPILE_SDK_VERSION)
 
+    namespace "falcosc.locus.addon.tasker"
+
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         minSdkVersion Integer.valueOf(PARAM_MIN_SDK_VERSION)
         targetSdkVersion Integer.valueOf(PARAM_TARGET_SDK_VERSION)
