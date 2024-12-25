@@ -81,6 +81,7 @@ public class UpdateContainerFieldFactory {
         list.add(cField("my_speed", "speed", u -> u.getLocMyLocation().getSpeed()));
         list.add(cField("sensor_hrm", "heart_rate", u -> u.getLocMyLocation().getSensorHeartRate()));
         list.add(cField("sensor_cadence", "cadence", u -> u.getLocMyLocation().getSensorCadence()));
+        list.add(cField("sensor_power", "power", u -> u.getLocMyLocation().getSensorPower()));
         list.add(cField("sensor_speed", "bicycle_speed", u -> u.getLocMyLocation().getSensorSpeed()));
         list.add(cField("sensor_strides", "strides_label", u -> u.getLocMyLocation().getSensorStrides()));
         list.add(cField("sensor_temperature", "temperature", u -> u.getLocMyLocation().getSensorTemperature()));
@@ -157,6 +158,11 @@ public class UpdateContainerFieldFactory {
         list.add(cField("rec_hrm_avg", "heart_rate_avg", u -> u.getTrackRecStats().getHeartRateAverage()));
         list.add(cField("rec_hrm_max", "heart_rate_max", u -> u.getTrackRecStats().getHeartRateMax()));
         list.add(cField("rec_strides_count", "strides_label", u -> u.getTrackRecStats().getNumOfStrides()));
+        list.add(cField("rec_power_avg", "power_avg", u -> u.getTrackRecStats().getPowerAverage()));
+        list.add(cField("rec_power_max", "power_max", u -> u.getTrackRecStats().getPowerMax()));
+        list.add(cField("rec_temp_min", "temperature_min", u -> u.getTrackRecStats().getTemperatureMin()));
+        list.add(cField("rec_temp_max", "temperature_max", u -> u.getTrackRecStats().getTemperatureMax()));
+        list.add(cField("rec_has_temp", "has_temperature", u -> u.getTrackRecStats().getHasTemperature()));
 
         return list;
     }
