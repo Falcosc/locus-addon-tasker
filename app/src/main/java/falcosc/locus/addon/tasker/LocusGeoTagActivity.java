@@ -34,7 +34,6 @@ import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.core.app.JobIntentService;
 import androidx.core.content.ContextCompat;
 import androidx.exifinterface.media.ExifInterface;
@@ -44,7 +43,6 @@ import locus.api.android.utils.IntentHelper;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
 import locus.api.objects.geoData.Track;
 
-@RequiresApi(api = Build.VERSION_CODES.N)
 public class LocusGeoTagActivity extends ProjectActivity {
 
     //workaround to force displaying "use this folder" button
@@ -69,7 +67,7 @@ public class LocusGeoTagActivity extends ProjectActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
             createMessageView(getString(R.string.err_geotag_required_android_version));
             return;
         }
@@ -102,7 +100,6 @@ public class LocusGeoTagActivity extends ProjectActivity {
         okButton.setOnClickListener(v -> finish());
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private void createGeotagView() {
         setContentView(R.layout.geotag_start);
         Button cancelButton = findViewById(R.id.btnCancel);
@@ -133,7 +130,6 @@ public class LocusGeoTagActivity extends ProjectActivity {
         textEndTime.setText(mLocalDateTimeFormat.format(mTrackEndTime));
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private void setFolder(@Nullable Uri uri) {
         if (isMessageView) {
             //do nothing during message view
@@ -219,9 +215,7 @@ public class LocusGeoTagActivity extends ProjectActivity {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, folderUri);
             }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                intent.putExtra(DocumentsContract.EXTRA_PROMPT, R.string.geotag_select_example);
-            }
+            intent.putExtra(DocumentsContract.EXTRA_PROMPT, R.string.geotag_select_example);
             return intent;
         }
 
@@ -233,7 +227,6 @@ public class LocusGeoTagActivity extends ProjectActivity {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private void setExample(@Nullable Uri uri) {
         if (uri == null) {
             return;
@@ -301,7 +294,6 @@ public class LocusGeoTagActivity extends ProjectActivity {
         mTrackEndTime = lastPointTime;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private void startGeoTag() {
         Intent serviceIntent = new Intent(this,
                 GeotagPhotosService.class);

@@ -236,7 +236,7 @@ public class LocusRunTaskerActivity extends ProjectActivity {
         map.put(prefix + "lon", Double.toString(loc.getLongitude()));
         map.put(prefix + "lat", Double.toString(loc.getLatitude()));
         map.put(prefix + "time", Long.toString(loc.getTime()));
-        map.put(prefix + "altitude", Double.toString(loc.getAltitude()));
+        map.put(prefix + "altitude", String.valueOf(loc.getAltitude()));
         return map;
     }
 
@@ -375,7 +375,7 @@ public class LocusRunTaskerActivity extends ProjectActivity {
         }
 
         map.put(prefix + "break_count", Integer.toString(t.getBreaks().size()));
-        map.put(prefix + "is_use_folder_style", Boolean.toString(t.isUseFolderStyle()));
+        map.put(prefix + "is_use_folder_style", Boolean.toString(t.getUseParentLineStyle()));
         map.put(prefix + "activity_type", Integer.toString(t.getActivityType()));
         map.putAll(mapTrackStatsFields(prefix, t.getStats()));
         return map;
@@ -389,7 +389,7 @@ public class LocusRunTaskerActivity extends ProjectActivity {
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
             for (String key : bundle.keySet()) {
-                Object value = bundle.get(key);
+                Object value = bundle.get(key); //wait until we get an alternative
                 if (value != null) {
                     String taskerKey = key + "_" + value.getClass().getSimpleName();
                     map.put(NON_WORD_CHAR_PATTERN.matcher(taskerKey).replaceAll(""), value.toString());

@@ -33,7 +33,7 @@ public final class LocusCache {
     private static final Object mSyncObj = new Object();
     private static final long UPDATE_CONTAINER_EXPIRATION = 950L;
 
-    private static LocusCache mInstance;
+    private static volatile LocusCache mInstance;
 
     private final Application mApplicationContext;
 

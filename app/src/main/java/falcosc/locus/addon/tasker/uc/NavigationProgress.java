@@ -3,6 +3,7 @@ package falcosc.locus.addon.tasker.uc;
 import android.util.Log;
 
 import java.util.List;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,7 +25,6 @@ public final class NavigationProgress {
 
     private static final String TAG = "CalcElevationToTarget"; //NON-NLS
 
-    @SuppressWarnings("HardCodedStringLiteral")
     public enum ErrorStatus {
         NO_TRK("noTRK"),
         NO_NAV("noNAV"),
@@ -74,21 +74,23 @@ public final class NavigationProgress {
             Point[] remainingElevation = new Point[size + 1];
             double uphillElevation = 0.0;
             double downhillElevation = 0.0;
-            double nextAltitude = points.get(size - 1).getAltitude();
+            Double nextAltitude = points.get(size - 1).getAltitude();
             for (int i = size - 1; i >= 0; i--) {
-                double currentAltitude = points.get(i).getAltitude();
-                if (nextAltitude > currentAltitude) {
-                    uphillElevation += nextAltitude - currentAltitude;
-                } else {
-                    downhillElevation += currentAltitude - nextAltitude;
+                Double currentAltitude = points.get(i).getAltitude();
+                if (currentAltitude != null) {
+                    if (nextAltitude != null) {
+                        if (nextAltitude > currentAltitude) {
+                            uphillElevation += nextAltitude - currentAltitude;
+                        } else {
+                            downhillElevation += currentAltitude - nextAltitude;
+                        }
+                    }
+                    nextAltitude = currentAltitude;
                 }
-
                 Point p = new Point();
                 p.remainingUphill = (int) uphillElevation;
                 p.remainingDownhill = (int) downhillElevation;
                 remainingElevation[i + 1] = p;
-
-                nextAltitude = currentAltitude;
             }
             //assign remaining altitude of point 0 because we have no values at 0 because we read 1 point ahead.
             remainingElevation[0] = remainingElevation[1];
@@ -218,7 +220,7 @@ public final class NavigationProgress {
             return false;
         }
 
-        if (track1.getPoint(0).getAltitude() != track2.getPoint(0).getAltitude()) {
+        if (!Objects.equals(track1.getPoint(0).getAltitude(), track2.getPoint(0).getAltitude())) {
             Log.d(TAG, "is not same track because altitude miss match"); //NON-NLS
             return false;
         }

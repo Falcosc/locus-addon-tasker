@@ -1,5 +1,6 @@
 package falcosc.locus.addon.tasker.uc;
 
+import android.annotation.SuppressLint;
 import android.content.res.Resources;
 
 import org.apache.commons.text.WordUtils;
@@ -31,6 +32,7 @@ public class UpdateContainerFieldFactory {
             return null;
         }
 
+        @SuppressLint("DiscouragedApi")  //relfection is ok because we don't know if the other app has this translation
         int id = mLocusResources.getIdentifier(locusResName, "string", mLocusVersion.getPackageName()); //NON-NLS
         if (id != 0) {
             return mLocusResources.getString(id);

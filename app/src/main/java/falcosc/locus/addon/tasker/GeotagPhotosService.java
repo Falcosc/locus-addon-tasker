@@ -40,7 +40,6 @@ import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.core.app.JobIntentService;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
@@ -124,7 +123,6 @@ public final class GeotagPhotosService extends JobIntentService {
         private final long mLastModified;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private ArrayList<Parcelable> getFileUris(Uri folderUri) {
         ArrayList<Parcelable> fileUris;
 
@@ -169,7 +167,7 @@ public final class GeotagPhotosService extends JobIntentService {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
         mNotificationBuilder = createNotificationBuilder();
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
             stopWithError(getString(R.string.err_geotag_required_android_version));
             return;
         }
@@ -206,7 +204,6 @@ public final class GeotagPhotosService extends JobIntentService {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private void loadTrack(@Nullable Intent locusIntent) throws RequiredDataMissingException {
         try {
             Track t = IntentHelper.INSTANCE.getTrackFromIntent(this, Objects.requireNonNull(locusIntent));
@@ -226,14 +223,9 @@ public final class GeotagPhotosService extends JobIntentService {
         SystemClock.sleep(Const.NOTIFICATION_REPEAT_AFTER); //detach does sometimes not work if notifications fire close to each other
         startForeground(Const.NOTIFICATION_ID_GEOTAG, builder.build());
         //detach notification to keep
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            stopForeground(STOP_FOREGROUND_DETACH);
-        } else {
-            stopForeground(false);
-        }
+        stopForeground(STOP_FOREGROUND_DETACH);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private void processPhotos(@NonNull ArrayList<Parcelable> fileUris) {
         Log.i(TAG, "search matching photos"); //NON-NLS
         mNotificationBuilder.setContentText(getString(R.string.geotag_search_matching_photos));
@@ -262,7 +254,6 @@ public final class GeotagPhotosService extends JobIntentService {
         Log.i(TAG, "done"); //NON-NLS
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private void sendResultNotification(@NonNull ArrayList<Uri> imageUris) {
         NotificationCompat.Builder builder = createNotificationBuilder();
 
@@ -330,7 +321,6 @@ public final class GeotagPhotosService extends JobIntentService {
                 : mPoints.get(index - 1);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Nullable
     private PendingExifChange findAndSetLocation(@NonNull Uri uri) {
         ParcelFileDescriptor pfd = null;
@@ -363,7 +353,6 @@ public final class GeotagPhotosService extends JobIntentService {
         return pendingChange;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @NonNull
     private static Optional<String> getAttribute(@NonNull ExifInterface exif, @NonNull String tag) {
         String value = exif.getAttribute(tag);
@@ -384,13 +373,16 @@ public final class GeotagPhotosService extends JobIntentService {
         android.location.Location result = new android.location.Location(loc.getProvider());
         result.setLatitude(loc.getLatitude());
         result.setLongitude(loc.getLongitude());
-        result.setAltitude(loc.getAltitude());
-        result.setSpeed(loc.getSpeed());
+        if(loc.getAltitude() != null) {
+            result.setAltitude(loc.getAltitude());
+        }
+        if(loc.getSpeed() != null) {
+            result.setSpeed(loc.getSpeed());
+        }
         result.setTime(loc.getTime());
         return result;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Nullable
     public static String getOriginalDateTime(@NonNull ExifInterface exif) {
         return getAttribute(exif, ExifInterface.TAG_DATETIME_ORIGINAL)
@@ -399,7 +391,6 @@ public final class GeotagPhotosService extends JobIntentService {
                                 .orElse(null)));
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private PendingExifChange createPendingExifChange(@NonNull ParcelFileDescriptor pfd, @NonNull Uri uri) throws IOException, ParseException {
         FileDescriptor fd = pfd.getFileDescriptor();
         ExifInterface exif = new ExifInterface(fd);
@@ -443,7 +434,6 @@ public final class GeotagPhotosService extends JobIntentService {
         return new PendingExifChange(exif, pfd, uri, time, androidLoc);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private synchronized void updateMediaStore(Uri uri, android.location.Location loc, long time) {
         if (mNoMediaStoreAccess || (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)) {
             return;
@@ -472,7 +462,6 @@ public final class GeotagPhotosService extends JobIntentService {
         Log.i(TAG, "Updated MediaStore Rows: " + updatedRows + " for " + path);  //NON-NLS
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private void write(@NonNull PendingExifChange pendingChange) {
         Log.i(TAG, "write exif " + pendingChange.getUri()); //NON-NLS
         try {
