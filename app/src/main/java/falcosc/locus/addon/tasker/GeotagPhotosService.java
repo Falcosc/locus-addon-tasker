@@ -167,11 +167,6 @@ public final class GeotagPhotosService extends JobIntentService {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
         mNotificationBuilder = createNotificationBuilder();
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-            stopWithError(getString(R.string.err_geotag_required_android_version));
-            return;
-        }
-
         ArrayList<Parcelable> fileUris = getFileUris(workIntent.getData());
 
         if (fileUris.isEmpty()) {

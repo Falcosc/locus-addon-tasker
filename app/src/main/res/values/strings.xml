@@ -55,7 +55,6 @@
     <string name="geotag_start">Start:</string>
     <string name="geotag_example_photo">Example Photo</string>
     <string name="refresh">refresh</string>
-    <string name="err_geotag_required_android_version">Geotagging is only supported up to Android 9</string>
     <string name="err_geotag_no_images_found">Can\'t find any supported images, please select an other folder or abort</string>
     <plurals name="geotag_x_photos">
         <item quantity="one">Geotag ~%1$d of %2$d photo</item>
