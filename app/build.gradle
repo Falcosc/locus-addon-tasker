@@ -13,8 +13,8 @@ android {
     defaultConfig {
         minSdkVersion Integer.valueOf(PARAM_MIN_SDK_VERSION)
         targetSdkVersion Integer.valueOf(PARAM_TARGET_SDK_VERSION)
-        versionCode 53
-        versionName '1.7.0-SNAPSHOT'
+        versionCode 56
+        versionName '1.7.1-SNAPSHOT'
         buildConfigField 'String', 'CONTACT_EMAIL', '"' + getContactEmail() + '"'
     }
 
@@ -39,11 +39,11 @@ android {
 }
 
 dependencies {
-
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation "androidx.preference:preference:1.2.1"
 
-    implementation 'com.asamm:locus-api-android:0.9.62'
+    implementation 'com.asamm:locus-api-android:0.9.39'
 
     implementation 'com.twofortyfouram:android-plugin-api-for-locale:1.0.4'
     implementation 'org.apache.commons:commons-lang3:3.12.0'

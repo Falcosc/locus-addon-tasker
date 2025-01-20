@@ -75,8 +75,8 @@ public class UpdateContainerFieldFactory {
         list.add(cField("my_latitude", "latitude", u -> u.getLocMyLocation().getLatitude()));
         list.add(cField("my_longitude", "longitude", u -> u.getLocMyLocation().getLongitude()));
         list.add(cField("my_altitude", "altitude", u -> u.getLocMyLocation().getAltitude()));
-        list.add(cField("my_accuracy_hor", "accuracy_hor", u -> u.getLocMyLocation().getAccuracyHor()));
-        list.add(cField("my_accuracy_ver", "accuracy_ver", u -> u.getLocMyLocation().getAccuracyVer()));
+        //list.add(cField("my_accuracy_hor", "accuracy_hor", u -> u.getLocMyLocation().getAccuracyHor()));
+        //list.add(cField("my_accuracy_ver", "accuracy_ver", u -> u.getLocMyLocation().getAccuracyVer()));
         list.add(cField("my_gps_fix", "gps_fix", u -> u.getLocMyLocation().getTime()));
         list.add(cField("my_speed", "speed", u -> u.getLocMyLocation().getSpeed()));
         list.add(cField("sensor_hrm", "heart_rate", u -> u.getLocMyLocation().getSensorHeartRate()));
@@ -158,11 +158,11 @@ public class UpdateContainerFieldFactory {
         list.add(cField("rec_hrm_avg", "heart_rate_avg", u -> u.getTrackRecStats().getHeartRateAverage()));
         list.add(cField("rec_hrm_max", "heart_rate_max", u -> u.getTrackRecStats().getHeartRateMax()));
         list.add(cField("rec_strides_count", "strides_label", u -> u.getTrackRecStats().getNumOfStrides()));
-        list.add(cField("rec_power_avg", "power_avg", u -> u.getTrackRecStats().getPowerAverage()));
-        list.add(cField("rec_power_max", "power_max", u -> u.getTrackRecStats().getPowerMax()));
-        list.add(cField("rec_temp_min", "temperature_min", u -> u.getTrackRecStats().getTemperatureMin()));
-        list.add(cField("rec_temp_max", "temperature_max", u -> u.getTrackRecStats().getTemperatureMax()));
-        list.add(cField("rec_has_temp", "has_temperature", u -> u.getTrackRecStats().getHasTemperature()));
+        //list.add(cField("rec_power_avg", "power_avg", u -> u.getTrackRecStats().getPowerAverage()));
+        //list.add(cField("rec_power_max", "power_max", u -> u.getTrackRecStats().getPowerMax()));
+        //list.add(cField("rec_temp_min", "temperature_min", u -> u.getTrackRecStats().getTemperatureMin()));
+        //list.add(cField("rec_temp_max", "temperature_max", u -> u.getTrackRecStats().getTemperatureMax()));
+        //list.add(cField("rec_has_temp", "has_temperature", u -> u.getTrackRecStats().getHasTemperature()));
 
         return list;
     }

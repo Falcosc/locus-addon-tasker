@@ -43,7 +43,7 @@ import locus.api.objects.extra.GeoDataExtra;
 import locus.api.objects.extra.Location;
 import locus.api.objects.extra.TrackStats;
 import locus.api.objects.geoData.GeoData;
-import locus.api.objects.geoData.GeoDataHelperKt;
+//import locus.api.objects.geoData.GeoDataHelperKt;
 import locus.api.objects.geoData.Point;
 import locus.api.objects.geoData.Track;
 import locus.api.utils.Utils;
@@ -305,8 +305,8 @@ public class LocusRunTaskerActivity extends ProjectActivity {
         LinkedHashMap<String, String> map = new LinkedHashMap<>();
 
         map.put(prefix + "name", g.getName());
-        map.put(prefix + "param_desc", GeoDataHelperKt.getParameterDescription(g));
-        map.put(prefix + "param_style", GeoDataHelperKt.getParameterStyleName(g));
+        //map.put(prefix + "param_desc", GeoDataHelperKt.getParameterDescription(g));
+        //map.put(prefix + "param_style", GeoDataHelperKt.getParameterStyleName(g));
         map.put(prefix + "id", Long.toString(g.getId()));
         map.put(prefix + "time_created", Long.toString(g.getTimeCreated()));
         map.put(prefix + "is_enabled", Boolean.toString(g.isEnabled()));
@@ -375,7 +375,7 @@ public class LocusRunTaskerActivity extends ProjectActivity {
         }
 
         map.put(prefix + "break_count", Integer.toString(t.getBreaks().size()));
-        map.put(prefix + "is_use_folder_style", Boolean.toString(t.getUseParentLineStyle()));
+        //map.put(prefix + "is_use_folder_style", Boolean.toString(t.getUseParentLineStyle()));
         map.put(prefix + "activity_type", Integer.toString(t.getActivityType()));
         map.putAll(mapTrackStatsFields(prefix, t.getStats()));
         return map;

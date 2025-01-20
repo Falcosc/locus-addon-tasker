@@ -368,12 +368,12 @@ public final class GeotagPhotosService extends JobIntentService {
         android.location.Location result = new android.location.Location(loc.getProvider());
         result.setLatitude(loc.getLatitude());
         result.setLongitude(loc.getLongitude());
-        if(loc.getAltitude() != null) {
+        //if(loc.getAltitude() != null) {
             result.setAltitude(loc.getAltitude());
-        }
-        if(loc.getSpeed() != null) {
+        //}
+        //if(loc.getSpeed() != null) {
             result.setSpeed(loc.getSpeed());
-        }
+        //}
         result.setTime(loc.getTime());
         return result;
     }
