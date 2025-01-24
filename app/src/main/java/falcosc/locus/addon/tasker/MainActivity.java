@@ -11,8 +11,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -22,8 +27,16 @@ import falcosc.locus.addon.tasker.intent.edit.LocusInfoEdit;
 import falcosc.locus.addon.tasker.intent.edit.NotImplementedActions;
 import falcosc.locus.addon.tasker.intent.edit.UpdateContainerEdit;
 import falcosc.locus.addon.tasker.settings.SettingsActivity;
+import falcosc.locus.addon.tasker.uc.ExtUpdateContainer;
+import falcosc.locus.addon.tasker.uc.ExtUpdateContainerGetter;
 import falcosc.locus.addon.tasker.utils.Const;
+import falcosc.locus.addon.tasker.utils.LocusCache;
 import falcosc.locus.addon.tasker.utils.ReportingHelper;
+import locus.api.android.ActionBasics;
+import locus.api.android.features.periodicUpdates.UpdateContainer;
+import locus.api.android.objects.VersionCode;
+import locus.api.android.utils.LocusUtils;
+import locus.api.objects.extra.Location;
 
 @SuppressWarnings("ClassWithTooManyTransitiveDependencies") //because of mock tasker start
 public class MainActivity extends ProjectActivity {
@@ -37,7 +50,8 @@ public class MainActivity extends ProjectActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        findViewById(R.id.imageView).setOnLongClickListener((v) -> mockTaskerEditStart());
+        findViewById(R.id.imageView).setOnLongClickListener((v) -> exampleRequest());
+        findViewById(R.id.imageView).setOnClickListener((v) -> exampleRequest());
         findViewById(R.id.import_example).setOnClickListener((v) -> importExample());
 
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
@@ -102,6 +116,41 @@ public class MainActivity extends ProjectActivity {
         int importedVersion = sharedPref.getInt(IMPORTED_EXAMPLE_PROJECT_VER, 0);
         Log.i(TAG, IMPORTED_EXAMPLE_PROJECT_VER + ": " + importedVersion);
         return importedVersion < 1;
+    }
+
+    private boolean exampleRequest() {
+        try {
+            Context appContext = getApplicationContext();
+            LocusCache locusCache = LocusCache.getInstanceUnsafe(appContext);
+            UpdateContainer container = ActionBasics.INSTANCE.getUpdateContainer(appContext,
+                    Objects.requireNonNull(LocusUtils.INSTANCE.getActiveVersion(appContext, VersionCode.UPDATE_01)));
+            if (container == null) {
+                Toast.makeText(this, "API can not get update container", Toast.LENGTH_LONG).show();
+            } else {
+                Location loc = container.getLocMyLocation();
+                Toast.makeText(this, loc.getTime() + " API Location: " + loc.getLatitude() + ", " + loc.getLongitude() + ' ' +
+                        loc.getLatitudeOriginal() + ", " + loc.getLongitudeOriginal(), Toast.LENGTH_LONG).show();
+                ExtUpdateContainer extUpdate = locusCache.getUpdateContainer();
+                ExtUpdateContainerGetter lf = locusCache.mExtUpdateContainerFieldMap.get("my_longitude");
+                if (lf != null) {
+                    String taskerLon = String.valueOf(lf.apply(extUpdate));
+                    Toast.makeText(this, "Tasker Location: " + taskerLon, Toast.LENGTH_LONG).show();
+                }
+            }
+        } catch (Exception e) {
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            String exceptionAsString = e.getMessage();
+            if(e.getCause() != null) {
+                exceptionAsString += " " +e.getCause().getMessage();
+            }
+            exceptionAsString += "\n" + sw;
+            Log.e(TAG, "Error: " + exceptionAsString, e);
+            Toast.makeText(this, "Error: " + exceptionAsString, Toast.LENGTH_LONG).show();
+            ((TextView) findViewById(R.id.middletxt)).setText("Error: " + exceptionAsString);
+        }
+
+        return true;
     }
 
     @SuppressWarnings({"HardCodedStringLiteral", "MagicNumber"}) //because it is just a mock

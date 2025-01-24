@@ -33,12 +33,14 @@
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
+        android:id="@+id/middletxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:autoLink="web"
         android:gravity="start"
         android:paddingTop="12dp"
-        android:text="@string/app_main_notice" />
+        android:text="@string/app_main_notice"
+        android:textIsSelectable="true" />
 
     <TextView
         android:layout_width="wrap_content"
