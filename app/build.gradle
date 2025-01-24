@@ -13,7 +13,7 @@ android {
     defaultConfig {
         minSdkVersion Integer.valueOf(PARAM_MIN_SDK_VERSION)
         targetSdkVersion Integer.valueOf(PARAM_TARGET_SDK_VERSION)
-        versionCode 72
+        versionCode 73
         versionName '1.7.1-API53-SNAPSHOT'
         buildConfigField 'String', 'CONTACT_EMAIL', '"' + getContactEmail() + '"'
     }
@@ -40,6 +40,8 @@ android {
 
 dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22'
+    implementation("com.github.asamm:logger-asamm:[latest]")
+
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation "androidx.preference:preference:1.2.1"
 

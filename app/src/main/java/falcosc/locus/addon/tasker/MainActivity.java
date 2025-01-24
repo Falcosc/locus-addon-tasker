@@ -14,11 +14,14 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.asamm.logger.Logger;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
@@ -59,6 +62,47 @@ public class MainActivity extends ProjectActivity {
         if (examplesAreMissing()) {
             importExample();
         }
+
+        TextView logView = findViewById(R.id.middletxt);
+        Logger.INSTANCE.registerLogger(new Logger.ILogger() {
+            @Override
+            public void logV(@NonNull String s, @NonNull String s1, @NonNull Object... objects) {
+                Log.v(TAG, "API V: " + s + " " + s1);
+                logView.append("API V: " + s + " " + s1);
+            }
+
+            @Override
+            public void logI(@NonNull String s, @NonNull String s1, @NonNull Object... objects) {
+                Log.i(TAG, "API I: " + s + " " + s1);
+                logView.append("API I: " + s + " " + s1);
+            }
+
+            @Override
+            public void logD(@Nullable Throwable throwable, @NonNull String s, @NonNull String s1, @NonNull Object... objects) {
+                Log.d(TAG, "API D: " + s + " " + s1, throwable);
+                logView.append("API D: " + s + " " + s1);
+            }
+
+            @Override
+            public void logW(@Nullable Throwable throwable, @NonNull String s, @NonNull String s1, @NonNull Object... objects) {
+                logE(throwable, s, s1, objects);
+            }
+
+            @Override
+            public void logE(@Nullable Throwable throwable, @NonNull String s, @NonNull String s1, @NonNull Object... objects) {
+                StringWriter sw = new StringWriter();
+                String exceptionAsString = s + " " + s1 + "\n";
+                if(throwable != null) {
+                    throwable.printStackTrace(new PrintWriter(sw));
+                    exceptionAsString += throwable.getMessage();
+                    if (throwable.getCause() != null) {
+                        exceptionAsString += " " + throwable.getCause().getMessage();
+                    }
+                    exceptionAsString += "\n" + sw;
+                }
+                logView.setText("API: " + exceptionAsString);
+            }
+        });
     }
 
     @Override
@@ -119,7 +163,9 @@ public class MainActivity extends ProjectActivity {
     }
 
     private boolean exampleRequest() {
+        ((TextView) findViewById(R.id.middletxt)).setText("");
         try {
+            Logger.i("my debug message");
             Context appContext = getApplicationContext();
             LocusCache locusCache = LocusCache.getInstanceUnsafe(appContext);
             UpdateContainer container = ActionBasics.INSTANCE.getUpdateContainer(appContext,
@@ -138,16 +184,7 @@ public class MainActivity extends ProjectActivity {
                 }
             }
         } catch (Exception e) {
-            StringWriter sw = new StringWriter();
-            e.printStackTrace(new PrintWriter(sw));
-            String exceptionAsString = e.getMessage();
-            if(e.getCause() != null) {
-                exceptionAsString += " " +e.getCause().getMessage();
-            }
-            exceptionAsString += "\n" + sw;
-            Log.e(TAG, "Error: " + exceptionAsString, e);
-            Toast.makeText(this, "Error: " + exceptionAsString, Toast.LENGTH_LONG).show();
-            ((TextView) findViewById(R.id.middletxt)).setText("Error: " + exceptionAsString);
+            Logger.e(e, "error in example request");
         }
 
         return true;
