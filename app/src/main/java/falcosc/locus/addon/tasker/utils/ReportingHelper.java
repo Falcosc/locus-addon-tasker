@@ -1,12 +1,15 @@
 package falcosc.locus.addon.tasker.utils;
 
+import android.Manifest;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.asamm.logger.Logger;
 
@@ -14,7 +17,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import falcosc.locus.addon.tasker.BuildConfig;
 import falcosc.locus.addon.tasker.R;
 
@@ -42,9 +48,10 @@ public class ReportingHelper {
             emailIntent.putExtra(Intent.EXTRA_TEXT, getUserFriendlyName(throwable)
                     + "\n" + Log.getStackTraceString(throwable));
             emailIntent.setSelector(selectorIntent);
+            emailIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
             PendingIntent pendingGetText = PendingIntent.getActivity(mContext, 0,
-                    Intent.createChooser(emailIntent, mContext.getText(R.string.send_to_developer)), PendingIntent.FLAG_UPDATE_CURRENT);
+                    emailIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
             builder.addAction(android.R.drawable.ic_dialog_email, mContext.getText(R.string.send_to_developer), pendingGetText);
 
             builder.setSmallIcon(R.drawable.ic_warning)
@@ -55,8 +62,14 @@ public class ReportingHelper {
                             .setSummaryText(mContext.getString(R.string.err_unexpected_problem))
                     );
 
-            NotificationManager mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-            mNotificationManager.notify(Const.NOTIFICATION_ID_COMMON_ERROR, builder.build());
+            if (ContextCompat.checkSelfPermission(mContext, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                String msg = mContext.getString(R.string.err_notification_permission);
+                Logger.i(tag, msg);
+                Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
+                return;
+            }
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(mContext);
+            notificationManager.notify(Const.NOTIFICATION_ID_COMMON_ERROR, builder.build());
         } catch (Exception e) {
             Logger.e(e, tag, "Can't create error notification"); //NON-NLS
         }

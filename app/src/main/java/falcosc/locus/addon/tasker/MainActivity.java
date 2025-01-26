@@ -1,21 +1,25 @@
 package falcosc.locus.addon.tasker;
 
+import android.Manifest;
 import android.app.Service;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.asamm.logger.Logger;
 
 import java.util.ArrayList;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.preference.PreferenceManager;
 import falcosc.locus.addon.tasker.intent.edit.ActionTaskEdit;
@@ -45,6 +49,11 @@ public class MainActivity extends ProjectActivity {
 
         if (examplesAreMissing()) {
             importExample();
+        }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, getString(R.string.err_notification_permission), Toast.LENGTH_LONG).show();
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 0);
         }
     }
 

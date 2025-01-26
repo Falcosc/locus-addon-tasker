@@ -35,6 +35,7 @@
     </string>
     <string name="issues_url">https://github.com/Falcosc/locus-addon-tasker/issues</string>
     <string name="issues_link">https://github.com/Falcosc/locus-addon-tasker/issues</string>
+    <string name="err_notification_permission">No permission to display error notifications</string>
     <string name="err_no_support_relevant_variables">Your app setup does not support variables</string>
     <string name="err_no_support_sync_exec">Your app setup does not Synchronous execution to handle variables</string>
     <string name="err_no_support_return_variables">Your app setup does not support return variables</string>
