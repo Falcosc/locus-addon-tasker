@@ -26,6 +26,9 @@
         </value>
       </option>
     </JavaCodeStyleSettings>
+    <codeStyleSettings language="JAVA">
+      <option name="SOFT_MARGINS" value="140" />
+    </codeStyleSettings>
     <codeStyleSettings language="XML">
       <option name="FORCE_REARRANGE_MODE" value="1" />
       <indentOptions>

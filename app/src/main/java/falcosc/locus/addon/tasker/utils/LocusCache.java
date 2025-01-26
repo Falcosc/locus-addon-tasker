@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.util.Log;
 
+import com.asamm.logger.Logger;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -64,6 +66,7 @@ public final class LocusCache {
 
     @SuppressWarnings("HardCodedStringLiteral")
     private LocusCache(Application context) {
+        Logger.INSTANCE.registerLogger(new CacheFileLogger(context));
         Log.d(TAG, "init Locus cache");
         Log.d(TAG, BuildConfig.VERSION_NAME);
 
