@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.asamm.logger.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
@@ -162,7 +163,7 @@ public class LocusRunTaskerActivity extends ProjectActivity {
                 mMessage.setVisibility(View.VISIBLE);
             }
         } catch (Exception e) {
-            Log.e(TAG, ReportingHelper.getUserFriendlyName(e), e);
+            Logger.e(e, TAG, ReportingHelper.getUserFriendlyName(e));
             new ReportingHelper(this).sendErrorNotification(TAG, "Can't create Buttons for Tasks", e); //NON-NLS
         }
         return taskNames;
@@ -212,7 +213,7 @@ public class LocusRunTaskerActivity extends ProjectActivity {
                         allIntentFields.putAll(mapTrackFields(t));
                     }
                     allIntentFields.values().removeAll(Arrays.asList(null, ""));
-                    Log.d(TAG, "Map: " + allIntentFields); //NON-NLS
+                    Logger.d(TAG, "Map: " + allIntentFields); //NON-NLS
                 } catch (Exception e) {
                     new ReportingHelper(this).sendErrorNotification(TAG, "Can't get intent details", e); //NON-NLS
                 }
@@ -294,7 +295,7 @@ public class LocusRunTaskerActivity extends ProjectActivity {
             }
             stringer.endObject();
         } catch (JSONException e) {
-            Log.e(TAG, "can not create extra data json", e); //NON-NLS
+            Logger.e(e, TAG, "can not create extra data json"); //NON-NLS
         }
 
         return stringer.toString();

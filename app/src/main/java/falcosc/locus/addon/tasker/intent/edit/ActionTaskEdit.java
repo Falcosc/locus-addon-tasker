@@ -3,13 +3,14 @@ package falcosc.locus.addon.tasker.intent.edit;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.asamm.logger.Logger;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -409,7 +410,7 @@ public class ActionTaskEdit extends TaskerEditActivity {
             }
         }
         String jsonString = locusJSON.toString();
-        Log.d(TAG, jsonString);
+        Logger.d(TAG, jsonString);
 
         extraBundle.putString(Const.INTENT_EXTRA_FIELD_JSON, jsonString);
         String blurb = Const.INTENT_ACTION_TASK_EXTRA_KEY + ": " + jsonString;

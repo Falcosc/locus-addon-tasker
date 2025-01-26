@@ -7,7 +7,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 
-import android.util.Log;
+import com.asamm.logger.Logger;
 
 import falcosc.locus.addon.tasker.intent.LocusActionType;
 import falcosc.locus.addon.tasker.intent.handler.TaskerAction;
@@ -23,20 +23,20 @@ public class TaskerActionFireReceiver extends BroadcastReceiver {
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         Bundle apiExtraBundle = intent.getBundleExtra(com.twofortyfouram.locale.api.Intent.EXTRA_BUNDLE);
         if (apiExtraBundle == null) {
-            Log.i(TAG, "onReceive EXTRA_BUNDLE missing"); //NON-NLS
+            Logger.i(TAG, "onReceive EXTRA_BUNDLE missing"); //NON-NLS
             return;
         }
 
         String actionType = apiExtraBundle.getString(Const.INTEND_EXTRA_ADDON_ACTION_TYPE);
         if (actionType == null) {
-            Log.i(TAG, "onReceive INTEND_EXTRA_ADDON_ACTION_TYPE missing"); //NON-NLS
+            Logger.i(TAG, "onReceive INTEND_EXTRA_ADDON_ACTION_TYPE missing"); //NON-NLS
             return;
         }
 
         try {
             TaskerAction action = LocusActionType.valueOf(actionType).createHandler();
             action.setContext(context, this);
-            Log.i(TAG, "onReceive: " + apiExtraBundle); //NON-NLS
+            Logger.i(TAG, "onReceive: " + apiExtraBundle); //NON-NLS
             action.handle(intent, apiExtraBundle);
         } catch (Exception e) {
             new ReportingHelper(context).sendErrorNotification(TAG, "Can't execute action " + actionType, e); //NON-NLS

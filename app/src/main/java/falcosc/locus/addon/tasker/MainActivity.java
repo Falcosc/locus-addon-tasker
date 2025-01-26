@@ -8,9 +8,10 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.asamm.logger.Logger;
 
 import java.util.ArrayList;
 
@@ -79,7 +80,7 @@ public class MainActivity extends ProjectActivity {
             startActivity(importIntent); //taskershare does always respond 0 with null data, does not make sense to check it
             getPreferences(Context.MODE_PRIVATE).edit().putInt(IMPORTED_EXAMPLE_PROJECT_VER, 1).apply();
         } catch (ActivityNotFoundException e) {
-            Log.e(TAG, ReportingHelper.getUserFriendlyName(e), e);
+            Logger.e(e, TAG, ReportingHelper.getUserFriendlyName(e));
         }
     }
 
@@ -95,12 +96,12 @@ public class MainActivity extends ProjectActivity {
                 }
             }
         } catch (Exception e) {
-            Log.e(TAG, ReportingHelper.getUserFriendlyName(e), e);
+            Logger.e(e, TAG, ReportingHelper.getUserFriendlyName(e));
         }
 
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         int importedVersion = sharedPref.getInt(IMPORTED_EXAMPLE_PROJECT_VER, 0);
-        Log.i(TAG, IMPORTED_EXAMPLE_PROJECT_VER + ": " + importedVersion);
+        Logger.i(TAG, IMPORTED_EXAMPLE_PROJECT_VER + ": " + importedVersion);
         return importedVersion < 1;
     }
 

@@ -1,6 +1,6 @@
 package falcosc.locus.addon.tasker.uc;
 
-import android.util.Log;
+import com.asamm.logger.Logger;
 
 import java.util.List;
 import java.util.Objects;
@@ -66,7 +66,7 @@ public final class NavigationProgress {
                 return new Point[0];
             }
 
-            Log.i(TAG, "recalculate track elevation of: " + track.getName()); //NON-NLS
+            Logger.i(TAG, "recalculate track elevation of: " + track.getName()); //NON-NLS
 
             List<Location> points = track.getPoints();
             int size = points.size();
@@ -95,7 +95,7 @@ public final class NavigationProgress {
             //assign remaining altitude of point 0 because we have no values at 0 because we read 1 point ahead.
             remainingElevation[0] = remainingElevation[1];
 
-            Log.i(TAG, "Points calculated: " + size); //NON-NLS
+            Logger.i(TAG, "Points calculated: " + size); //NON-NLS
 
             return remainingElevation;
         }
@@ -120,7 +120,7 @@ public final class NavigationProgress {
         LocusCache locusCache = LocusCache.getInstanceNullable();
 
         if (locusCache == null) {
-            Log.e(TAG, "locus cache missing"); //NON-NLS
+            Logger.e(TAG, "locus cache missing"); //NON-NLS
             return;
         }
 
@@ -204,24 +204,24 @@ public final class NavigationProgress {
 
     private static boolean isSameTrack(Track track1, Track track2) {
         if ((track1 == null) || (track2 == null)) {
-            Log.d(TAG, "is not same track because one is null"); //NON-NLS
+            Logger.d(TAG, "is not same track because one is null"); //NON-NLS
             //is same if both null or can't be same if track2 is not null
             return track2 == null;
         }
 
         if (track1.getId() != track2.getId()) {
-            Log.d(TAG, "is not same track because id miss match"); //NON-NLS
+            Logger.d(TAG, "is not same track because id miss match"); //NON-NLS
             return false;
         }
 
         if (track1.getPointsCount() != track2.getPointsCount()) {
-            Log.d(TAG, "is not same track because point count miss match, " //NON-NLS
+            Logger.d(TAG, "is not same track because point count miss match, " //NON-NLS
                     + track1.getPointsCount() + " != " + track2.getPointsCount());
             return false;
         }
 
         if (!Objects.equals(track1.getPoint(0).getAltitude(), track2.getPoint(0).getAltitude())) {
-            Log.d(TAG, "is not same track because altitude miss match"); //NON-NLS
+            Logger.d(TAG, "is not same track because altitude miss match"); //NON-NLS
             return false;
         }
         return true;

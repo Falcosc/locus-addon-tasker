@@ -15,12 +15,13 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.Checkable;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.asamm.logger.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -79,7 +80,7 @@ public class LocusGeoTagActivity extends ProjectActivity {
             createGeotagView();
         } catch (Exception e) {
             createMessageView(ReportingHelper.getUserFriendlyName(e));
-            Log.e(TAG, ReportingHelper.getUserFriendlyName(e), e);
+            Logger.e(e, TAG, ReportingHelper.getUserFriendlyName(e));
         }
 
     }
@@ -140,7 +141,7 @@ public class LocusGeoTagActivity extends ProjectActivity {
         findViewById(R.id.viewExamplePhoto).setOnClickListener(v -> pickExampleFile.launch(mFolderUri));
 
         Uri treeUrl = DocumentsContract.buildChildDocumentsUriUsingTree(mFolderUri, DocumentsContract.getTreeDocumentId(mFolderUri));
-        Log.i(TAG, "mFolderUri: " + mFolderUri + " \ntreeUrl: " + treeUrl); //NON-NLS
+        Logger.i(TAG, "mFolderUri: " + mFolderUri + " \ntreeUrl: " + treeUrl); //NON-NLS
 
         long timeToTrackStart = mTrackStartTime;
         String exampleUri = null;
@@ -166,7 +167,7 @@ public class LocusGeoTagActivity extends ProjectActivity {
                 }
             }
         } catch (Exception e) {
-            Log.e(TAG, "Can't read folder", e); //NON-NLS
+            Logger.e(e, TAG, "Can't read folder"); //NON-NLS
         }
 
         if (photoTimestamps.isEmpty()) {
@@ -242,7 +243,7 @@ public class LocusGeoTagActivity extends ProjectActivity {
                 pickExampleFile.launch(mFolderUri);
             }
         } catch (Exception e) {
-            Log.e(TAG, "can't set example", e); //NON-NLS
+            Logger.e(e, TAG, "can't set example"); //NON-NLS
             Toast.makeText(this, R.string.err_geotag_example_load_exif, Toast.LENGTH_LONG).show();
             pickExampleFile.launch(mFolderUri);
         }

@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 
+import com.asamm.logger.Logger;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,7 +28,7 @@ public class ReportingHelper {
     }
 
     public void sendErrorNotification(@NonNull String tag, @NonNull String message, @NonNull Throwable throwable) {
-        Log.e(tag, message, throwable);
+        Logger.e(throwable, tag, message);
 
         try {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext, createDefaultNotificationChannel(mContext));
@@ -52,7 +54,7 @@ public class ReportingHelper {
             NotificationManager mNotificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
             mNotificationManager.notify(Const.NOTIFICATION_ID_COMMON_ERROR, builder.build());
         } catch (Exception e) {
-            Log.e(tag, "Can't create error notification", e); //NON-NLS
+            Logger.e(e, tag, "Can't create error notification"); //NON-NLS
         }
 
     }

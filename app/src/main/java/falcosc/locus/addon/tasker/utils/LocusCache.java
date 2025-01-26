@@ -3,7 +3,6 @@ package falcosc.locus.addon.tasker.utils;
 import android.app.Application;
 import android.content.Context;
 import android.content.res.Resources;
-import android.util.Log;
 
 import com.asamm.logger.Logger;
 
@@ -67,20 +66,20 @@ public final class LocusCache {
     @SuppressWarnings("HardCodedStringLiteral")
     private LocusCache(Application context) {
         Logger.INSTANCE.registerLogger(new CacheFileLogger(context));
-        Log.d(TAG, "init Locus cache");
-        Log.d(TAG, BuildConfig.VERSION_NAME);
+        Logger.d(TAG, "init Locus cache");
+        Logger.d(TAG, BuildConfig.VERSION_NAME);
 
         mApplicationContext = context;
 
         mLocusVersion = LocusUtils.INSTANCE.getActiveVersion(context, VersionCode.UPDATE_01);
-        Log.d(TAG, "Locus version: " + mLocusVersion);
+        Logger.d(TAG, "Locus version: " + mLocusVersion);
 
         Resources locusRes = null;
         try {
             locusRes = context.getPackageManager().getResourcesForApplication(mLocusVersion.getPackageName());
-            Log.d(TAG, "Found Locus resources");
+            Logger.d(TAG, "Found Locus resources");
         } catch (Exception e) {
-            Log.d(TAG, "Missing Locus resources", e);
+            Logger.d(e, TAG, "Missing Locus resources");
         }
         Resources locusResources = locusRes;
 
@@ -103,9 +102,9 @@ public final class LocusCache {
 
         mExtUpdateContainerFieldMap = createExtUpdateContainerFieldMap();
 
-        Log.d(TAG, "Locus fields created: " + mUpdateContainerFields.size());
-        Log.d(TAG, "Locus Field keys mapped - recording keys: " + mTrackRecordingKeys.size());
-        Log.d(TAG, "Locus Field keys mapped - guiding keys: " + mTrackGuideKeys.size());
+        Logger.d(TAG, "Locus fields created: " + mUpdateContainerFields.size());
+        Logger.d(TAG, "Locus Field keys mapped - recording keys: " + mTrackRecordingKeys.size());
+        Logger.d(TAG, "Locus Field keys mapped - guiding keys: " + mTrackGuideKeys.size());
 
         versionSelectReminder = new VersionSelectReminder(mApplicationContext);
     }
@@ -194,7 +193,7 @@ public final class LocusCache {
                 mUpdateContainerExpiration = requestTime + UPDATE_CONTAINER_EXPIRATION; //don't care about 1 second offset for manual update requests
             }
         } else {
-            Log.d(TAG, "getUpdateContainer cache hit, time to expiration: " //NON-NLS
+            Logger.d(TAG, "getUpdateContainer cache hit, time to expiration: " //NON-NLS
                     + (mUpdateContainerExpiration - requestTime));
         }
 

@@ -17,7 +17,8 @@ import android.provider.MediaStore;
 import android.system.Os;
 import android.system.OsConstants;
 import android.text.format.DateUtils;
-import android.util.Log;
+
+import com.asamm.logger.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -127,7 +128,7 @@ public final class GeotagPhotosService extends JobIntentService {
         ArrayList<Parcelable> fileUris;
 
         Uri treeUrl = DocumentsContract.buildChildDocumentsUriUsingTree(folderUri, DocumentsContract.getTreeDocumentId(folderUri));
-        Log.i(TAG, "folderUri: " + folderUri + " \ntreeUrl: " + treeUrl); //NON-NLS
+        Logger.i(TAG, "folderUri: " + folderUri + " \ntreeUrl: " + treeUrl); //NON-NLS
         //selection and order is ignored by content resolver, use null and do it in ui thread
         try (Cursor cursor = getContentResolver().query(treeUrl, new String[]{DocumentsContract.Document.COLUMN_DOCUMENT_ID, DocumentsContract.Document.COLUMN_MIME_TYPE, DocumentsContract.Document.COLUMN_LAST_MODIFIED},
                 null, null, null, null)) { //NON-NLS
@@ -144,7 +145,7 @@ public final class GeotagPhotosService extends JobIntentService {
                     .map(documentInfo -> DocumentsContract.buildDocumentUriUsingTree(folderUri, documentInfo.getDocumentId()))
                     .collect(Collectors.toCollection(ArrayList::new));
         } catch (Exception e) {
-            Log.e(TAG, "Can't read folder", e); //NON-NLS
+            Logger.e(e, TAG, "Can't read folder"); //NON-NLS
             fileUris = new ArrayList<>();
         }
 
@@ -205,15 +206,15 @@ public final class GeotagPhotosService extends JobIntentService {
             mPoints = Objects.requireNonNull(t).getPoints();
             mPoints.sort(Comparator.comparing(Location::getTime));
             mPointTimestamps = mPoints.stream().mapToLong(Location::getTime).toArray();
-            Log.i(TAG, "points: " + t.getPoints().size()); //NON-NLS
+            Logger.i(TAG, "points: " + t.getPoints().size()); //NON-NLS
         } catch (Exception e) {
-            Log.e(TAG, "Can't load track details", e); //NON-NLS
+            Logger.e(e, TAG, "Can't load track details"); //NON-NLS
             throw new RequiredDataMissingException("Can't load track details", e);
         }
     }
 
     private void stopWithError(@NonNull String errMsg) {
-        Log.e(TAG, errMsg);
+        Logger.e(TAG, errMsg);
         NotificationCompat.Builder builder = createNotificationBuilder().setContentText(errMsg);
         SystemClock.sleep(Const.NOTIFICATION_REPEAT_AFTER); //detach does sometimes not work if notifications fire close to each other
         startForeground(Const.NOTIFICATION_ID_GEOTAG, builder.build());
@@ -222,7 +223,7 @@ public final class GeotagPhotosService extends JobIntentService {
     }
 
     private void processPhotos(@NonNull ArrayList<Parcelable> fileUris) {
-        Log.i(TAG, "search matching photos"); //NON-NLS
+        Logger.i(TAG, "search matching photos"); //NON-NLS
         mNotificationBuilder.setContentText(getString(R.string.geotag_search_matching_photos));
         startForeground(Const.NOTIFICATION_ID_GEOTAG, mNotificationBuilder.build());
 
@@ -232,7 +233,7 @@ public final class GeotagPhotosService extends JobIntentService {
                 .sorted(Comparator.nullsLast(Comparator.comparing(PendingExifChange::getTime)))
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        Log.i(TAG, "write exif"); //NON-NLS
+        Logger.i(TAG, "write exif"); //NON-NLS
         //reset progress to 33% because 2 of 3 IO ops are missing
         fileProgress = pendingExifChanges.size() / 2; //66% / 2
         progressEnd = fileProgress + pendingExifChanges.size(); //33% + 66%
@@ -246,7 +247,7 @@ public final class GeotagPhotosService extends JobIntentService {
         sendResultNotification(pendingExifChanges.stream()
                 .map(PendingExifChange::getUri)
                 .collect(Collectors.toCollection(ArrayList::new)));
-        Log.i(TAG, "done"); //NON-NLS
+        Logger.i(TAG, "done"); //NON-NLS
     }
 
     private void sendResultNotification(@NonNull ArrayList<Uri> imageUris) {
@@ -333,7 +334,7 @@ public final class GeotagPhotosService extends JobIntentService {
         } catch (IOException e) {
             incrementProgressWithError(uri, getString(R.string.err_geotag_read_file)
                     + " " + ReportingHelper.getUserFriendlyName(e), 0);
-            Log.e(TAG, "exif IOException", e); //NON-NLS
+            Logger.e(e, TAG, "exif IOException"); //NON-NLS
         } catch (ParseException e) {
             incrementProgressWithError(uri, getString(R.string.err_geotag_date_invalid), 0);
         } catch (Exception e) {
@@ -440,7 +441,7 @@ public final class GeotagPhotosService extends JobIntentService {
         if (Const.AUTHORITY_EXTERNAL_STORAGE.equals(uri.getAuthority())) {
             mediaStore = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
         } else {
-            Log.w(TAG, "skip update media store");  //NON-NLS
+            Logger.w(TAG, "skip update media store");  //NON-NLS
             return;
         }
 
@@ -454,11 +455,11 @@ public final class GeotagPhotosService extends JobIntentService {
         values.put(MediaStore.Images.ImageColumns.LONGITUDE, loc.getLongitude());
         int updatedRows = getContentResolver().update(mediaStore, values,
                 MediaStore.MediaColumns.DATA + " LIKE ?", new String[]{"%" + path}); //NON-NLS
-        Log.i(TAG, "Updated MediaStore Rows: " + updatedRows + " for " + path);  //NON-NLS
+        Logger.i(TAG, "Updated MediaStore Rows: " + updatedRows + " for " + path);  //NON-NLS
     }
 
     private void write(@NonNull PendingExifChange pendingChange) {
-        Log.i(TAG, "write exif " + pendingChange.getUri()); //NON-NLS
+        Logger.i(TAG, "write exif " + pendingChange.getUri()); //NON-NLS
         try {
             pendingChange.mExif.saveAttributes();
             //manually updating media store to get result in realtime
@@ -467,7 +468,7 @@ public final class GeotagPhotosService extends JobIntentService {
         } catch (IOException e) {
             incrementProgressWithError(pendingChange.getUri(), getString(R.string.err_geotag_write_exif)
                     + " " + ReportingHelper.getUserFriendlyName(e), 0);
-            Log.e(TAG, "exif IOException", e); //NON-NLS
+            Logger.e(e, TAG, "exif IOException"); //NON-NLS
         } finally {
             closeQuietly(pendingChange.mPfd);
         }
@@ -479,7 +480,7 @@ public final class GeotagPhotosService extends JobIntentService {
                 closable.close();
             }
         } catch (Exception e) {
-            Log.e(TAG, "close Exception", e); //NON-NLS
+            Logger.e(e, TAG, "close Exception"); //NON-NLS
         }
     }
 
@@ -491,7 +492,7 @@ public final class GeotagPhotosService extends JobIntentService {
 
         ErrorLine errLine = new ErrorLine(new File(uriPath).getName(), error, order);
         fileErrors.add(errLine);
-        Log.e(TAG, errLine.toString());
+        Logger.e(TAG, errLine.toString());
 
         int errorCount = fileErrors.size();
         mNotificationBuilder.setContentTitle(getResources().getQuantityString(R.plurals.err_geotag_x_skipped, errorCount, errorCount));

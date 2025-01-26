@@ -12,13 +12,14 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.asamm.logger.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -108,7 +109,7 @@ public abstract class TaskerEditActivity extends AppCompatActivity {
                 }
             }
         } catch (Exception e) {
-            Log.w(TAG, "Can't create var select dialog", e); //NON-NLS
+            Logger.w(TAG, "Can't create var select dialog", e); //NON-NLS
         }
 
         return null;

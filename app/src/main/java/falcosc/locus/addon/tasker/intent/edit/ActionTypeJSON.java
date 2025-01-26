@@ -1,13 +1,14 @@
 package falcosc.locus.addon.tasker.intent.edit;
 
 import android.app.Dialog;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+
+import com.asamm.logger.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
@@ -103,7 +104,7 @@ class ActionTypeJSON {
                         bind.mSetter.set(value);
                     }
                 } catch (Exception e) {
-                    Log.w(TAG, ReportingHelper.getUserFriendlyName(e), e);
+                    Logger.w(e, TAG, ReportingHelper.getUserFriendlyName(e));
                 }
             }
         }
@@ -124,7 +125,7 @@ class ActionTypeJSON {
                 //null get removed by put
                 json.put(entry.getKey(), value);
             } catch (Exception e) {
-                Log.w(TAG, ReportingHelper.getUserFriendlyName(e), e);
+                Logger.w(e, TAG, ReportingHelper.getUserFriendlyName(e));
             }
 
         }

@@ -47,7 +47,8 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.ResultReceiver;
-import android.util.Log;
+
+import com.asamm.logger.Logger;
 
 import androidx.core.content.pm.PackageInfoCompat;
 
@@ -202,7 +203,7 @@ public class TaskerPlugin {
         boolean validFlag = false;
 
         if ( varName == null )
-            Log.d( TAG, "variableNameValid: null name" );
+            Logger.d( TAG, "variableNameValid: null name" );
         else {
             if ( VARIABLE_NAME_MATCH_PATTERN == null )
                 VARIABLE_NAME_MATCH_PATTERN = Pattern.compile( VARIABLE_NAME_MATCH_EXPRESSION, 0 );
@@ -212,10 +213,10 @@ public class TaskerPlugin {
                 if ( variableNameIsLocal( varName ) )
                     validFlag = true;
                 else
-                    Log.d( TAG, "variableNameValid: name not local: " + varName );
+                    Logger.d( TAG, "variableNameValid: name not local: " + varName );
             }
             else
-                Log.d( TAG, "variableNameValid: invalid name: " + varName );
+                Logger.d( TAG, "variableNameValid: invalid name: " + varName );
         }
 
         return validFlag;
@@ -279,7 +280,7 @@ public class TaskerPlugin {
                     keys, resultBundleToHost, BUNDLE_KEY_ENCODING_JSON_KEYS, "setValueEncoding"
             );
         else
-            Log.e( TAG, "unknown encoding: " + encoding );
+            Logger.e( TAG, "unknown encoding: " + encoding );
     }
 
     // ----------------------------- SETTING PLUGIN ONLY --------------------------------- //
@@ -403,7 +404,7 @@ public class TaskerPlugin {
                 ComponentName callingActivity = editActivity.getCallingActivity();
 
                 if ( callingActivity == null )
-                    Log.w( TAG, "hostSupportsOnFireVariableReplacement: null callingActivity, defaulting to false" );
+                    Logger.w( TAG, "hostSupportsOnFireVariableReplacement: null callingActivity, defaulting to false" );
                 else {
                     String callerPackage = callingActivity.getPackageName();
 
@@ -438,13 +439,13 @@ public class TaskerPlugin {
          */
         public static void requestTimeoutMS( Intent intentToHost, int timeoutMS ) {
             if ( timeoutMS < 0 )
-                Log.w( TAG, "requestTimeoutMS: ignoring negative timeout (" + timeoutMS + ")" );
+                Logger.w( TAG, "requestTimeoutMS: ignoring negative timeout (" + timeoutMS + ")" );
             else {
                 if (
                         ( timeoutMS > REQUESTED_TIMEOUT_MS_MAX ) &&
                                 ( timeoutMS != REQUESTED_TIMEOUT_MS_NEVER )
                         ) {
-                    Log.w( TAG, "requestTimeoutMS: requested timeout " + timeoutMS + " exceeds maximum, setting to max (" + REQUESTED_TIMEOUT_MS_MAX + ")" );
+                    Logger.w( TAG, "requestTimeoutMS: requested timeout " + timeoutMS + " exceeds maximum, setting to max (" + REQUESTED_TIMEOUT_MS_MAX + ")" );
                     timeoutMS = REQUESTED_TIMEOUT_MS_MAX;
                 }
                 intentToHost.putExtra( EXTRA_REQUESTED_TIMEOUT, timeoutMS );
@@ -508,7 +509,7 @@ public class TaskerPlugin {
                 }
                 // 	should only throw NullPointer but don't particularly trust it
                 catch ( Exception e ) {
-                    Log.w( TAG, errorPrefix + "couldn't parse " + completionIntentString );
+                    Logger.w( TAG, errorPrefix + "couldn't parse " + completionIntentString );
                 }
 
                 if ( completionIntentUri != null ) {
@@ -537,7 +538,7 @@ public class TaskerPlugin {
                         okFlag = true;
                     }
                     catch ( URISyntaxException e ) {
-                        Log.w( TAG, errorPrefix + "bad URI: " + completionIntentUri );
+                        Logger.w( TAG, errorPrefix + "bad URI: " + completionIntentUri );
                     }
                 }
             }
@@ -863,7 +864,7 @@ public class TaskerPlugin {
                         "getKeyEncoding:JSON"
                 );
             else
-                Log.w( TAG, "Host.getKeyEncoding: unknown encoding " + encoding );
+                Logger.w( TAG, "Host.getKeyEncoding: unknown encoding " + encoding );
 
             return toReturn;
         }
@@ -898,9 +899,9 @@ public class TaskerPlugin {
             if ( b.containsKey( key ) ) {
                 Object obj = b.get( key );
                 if ( obj == null )
-                    Log.w( TAG, funcName + ": " + key + ": null value" );
+                    Logger.w( TAG, funcName + ": " + key + ": null value" );
                 else if ( obj.getClass() != expectedClass )
-                    Log.w( TAG, funcName + ": " + key + ": expected " + expectedClass.getClass().getName() + ", got " + obj.getClass().getName() );
+                    Logger.w( TAG, funcName + ": " + key + ": expected " + expectedClass.getClass().getName() + ", got " + obj.getClass().getName() );
                 else
                     value = obj;
             }
@@ -933,7 +934,7 @@ public class TaskerPlugin {
                     code = PackageInfoCompat.getLongVersionCode(pi);
             }
             catch ( Exception e ) {
-                Log.e( TAG, "getPackageVersionCode: exception getting package info" );
+                Logger.e( TAG, "getPackageVersionCode: exception getting package info" );
             }
         }
 
@@ -981,7 +982,7 @@ public class TaskerPlugin {
             for ( String keyName : toAdd ) {
 
                 if ( keyName.contains( " " ) )
-                    Log.w( TAG, callerName + ": ignoring bad keyName containing space: " + keyName );
+                    Logger.w( TAG, callerName + ": ignoring bad keyName containing space: " + keyName );
                 else {
                     if ( builder.length() > 0 )
                         builder.append( ' ' );
