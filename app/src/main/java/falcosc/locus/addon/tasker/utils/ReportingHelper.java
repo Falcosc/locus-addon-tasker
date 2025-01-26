@@ -33,11 +33,15 @@ public class ReportingHelper {
         try {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext, createDefaultNotificationChannel(mContext));
 
-            Intent emailIntent = new Intent(Intent.ACTION_SENDTO)
-                    .setData(Uri.fromParts(Const.SCHEMA_MAIL, BuildConfig.CONTACT_EMAIL, null))
-                    .putExtra(Intent.EXTRA_SUBJECT, mContext.getText(R.string.app_name) + " " + throwable.getClass().getSimpleName())
-                    .putExtra(Intent.EXTRA_TEXT, getUserFriendlyName(throwable)
-                            + "\n" + Log.getStackTraceString(throwable));
+            Intent selectorIntent = new Intent(Intent.ACTION_SENDTO);
+            selectorIntent.setData(Uri.fromParts(Const.SCHEMA_MAIL, BuildConfig.CONTACT_EMAIL, null));
+
+            Intent emailIntent = new Intent(Intent.ACTION_SEND);
+            emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{BuildConfig.CONTACT_EMAIL});
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, mContext.getText(R.string.app_name) + " " + throwable.getClass().getSimpleName());
+            emailIntent.putExtra(Intent.EXTRA_TEXT, getUserFriendlyName(throwable)
+                    + "\n" + Log.getStackTraceString(throwable));
+            emailIntent.setSelector(selectorIntent);
 
             PendingIntent pendingGetText = PendingIntent.getActivity(mContext, 0,
                     Intent.createChooser(emailIntent, mContext.getText(R.string.send_to_developer)), PendingIntent.FLAG_UPDATE_CURRENT);
