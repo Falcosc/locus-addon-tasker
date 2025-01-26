@@ -3,6 +3,8 @@ package falcosc.locus.addon.tasker.uc;
 import android.annotation.SuppressLint;
 import android.content.res.Resources;
 
+import com.asamm.logger.Logger;
+
 import org.apache.commons.text.WordUtils;
 
 import java.util.ArrayList;
@@ -10,6 +12,7 @@ import java.util.ArrayList;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.arch.core.util.Function;
+import falcosc.locus.addon.tasker.RequiredDataMissingException;
 import falcosc.locus.addon.tasker.utils.TaskerField;
 import locus.api.android.features.periodicUpdates.UpdateContainer;
 import locus.api.android.objects.LocusVersion;
@@ -106,6 +109,13 @@ public class UpdateContainerFieldFactory {
         list.add(cField("is_map_visible", new String[]{"map", "visible"}, UpdateContainer::isMapVisible));
         list.add(cField("active_live_track_id", "", UpdateContainer::getActiveLiveTrackId));
         list.add(cField("active_dashboard_id", "", UpdateContainer::getActiveDashboardId));
+        list.add(cField("simulate_error_hidden", "", u -> {
+            Logger.e(new RequiredDataMissingException("Simulate Hidden Error"), "Simulation", "Simulate Hidden Error");
+            return "";
+        }));
+        list.add(cField("simulate_error_visible", "", u -> {
+            throw new RuntimeException("Simulated Error");
+        }));
 
         return list;
     }
