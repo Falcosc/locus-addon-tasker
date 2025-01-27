@@ -28,7 +28,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.PatternMatcher;
 import android.os.Process;
-import android.util.Log;
+
+import com.asamm.logger.Logger;
 
 @SuppressWarnings("All")
 public class TaskerIntent extends Intent {
@@ -271,7 +272,7 @@ public class TaskerIntent extends Intent {
 		if ( validatePriority( priority ) )
 			putExtra( EXTRA_TASK_PRIORITY, priority );
 		else
-			Log.e( TAG, "priority out of range: " + MIN_PRIORITY + ":" + MAX_PRIORITY );
+			Logger.e( TAG, "priority out of range: " + MIN_PRIORITY + ":" + MAX_PRIORITY );
 		
 		return this;
 	}
@@ -284,7 +285,7 @@ public class TaskerIntent extends Intent {
 		if ( getExtras().containsKey( EXTRA_VAR_NAMES_LIST ) ) 
 			index = getExtras().getStringArrayList( EXTRA_VAR_NAMES_LIST ).size() + 1;
 			
-		Log.d(TAG, "index: " + index );
+		Logger.d(TAG, "index: " + index );
 		
 		addLocalVariable( "%" + PARAM_VAR_NAME_PREFIX + index, value );
 		
@@ -407,14 +408,14 @@ public class TaskerIntent extends Intent {
 		Bundle toReturn = null;
 		
 		if ( argCount > MAX_NO_ARGS )			
-			Log.e( TAG, "maximum number of arguments exceeded (" + MAX_NO_ARGS + ")" );
+			Logger.e( TAG, "maximum number of arguments exceeded (" + MAX_NO_ARGS + ")" );
 		else {
 			String key = EXTRA_ACTION_INDEX_PREFIX + Integer.toString( actionCount );
 
 			if ( this.hasExtra( key ) ) 
 				toReturn = getBundleExtra( key );
 			else
-				Log.e( TAG, "no actions added yet" );
+				Logger.e( TAG, "no actions added yet" );
 		}
 		
 		return toReturn;
@@ -436,7 +437,7 @@ public class TaskerIntent extends Intent {
 		boolean acceptingFlag = false;
 		
 		if ( c == null )
-			Log.w( TAG, "no cursor for " + TASKER_PREFS_URI );
+			Logger.w( TAG, "no cursor for " + TASKER_PREFS_URI );
 		else {
 			c.moveToFirst();
 			
