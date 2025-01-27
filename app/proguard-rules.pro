@@ -11,7 +11,7 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
-
+-dontoptimize
 -dontobfuscate
 
 # Uncomment this to preserve the line number information for
@@ -19,6 +19,7 @@
 -keepattributes SourceFile,LineNumberTable
 
 -keep class falcosc.**
+-keep class locus.api.objects.** { *; }
 
 # If you keep the line number information, uncomment this to
 # hide the original source file name.

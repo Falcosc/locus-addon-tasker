@@ -13,7 +13,7 @@ android {
     defaultConfig {
         minSdkVersion Integer.valueOf(PARAM_MIN_SDK_VERSION)
         targetSdkVersion Integer.valueOf(PARAM_TARGET_SDK_VERSION)
-        versionCode 76
+        versionCode 77
         versionName '1.7.1-SNAPSHOT'
         buildConfigField 'String', 'CONTACT_EMAIL', '"' + getContactEmail() + '"'
     }
@@ -30,8 +30,8 @@ android {
 
     buildTypes {
         release {
-            //minifyEnabled true
-            //shrinkResources true
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
