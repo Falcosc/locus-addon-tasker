@@ -54,11 +54,14 @@ public class ReportingHelper {
                     emailIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
             builder.addAction(android.R.drawable.ic_dialog_email, mContext.getText(R.string.send_to_developer), pendingGetText);
 
+            String detailMsg = getUserFriendlyName(throwable)
+                    + "\n" + mContext.getString(R.string.error_in_cache, CacheFileLogger.getFolderPath(mContext).getAbsolutePath())
+                    + "\n" + Log.getStackTraceString(throwable);
             builder.setSmallIcon(R.drawable.ic_warning)
                     .setContentTitle(message)
-                    .setContentText(getUserFriendlyName(throwable))
+                    .setContentText(detailMsg)
                     .setStyle(new NotificationCompat.BigTextStyle()
-                            .bigText(Log.getStackTraceString(throwable))
+                            .bigText(detailMsg)
                             .setSummaryText(mContext.getString(R.string.err_unexpected_problem))
                     );
 

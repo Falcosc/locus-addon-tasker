@@ -25,8 +25,12 @@ public class CacheFileLogger implements Logger.ILogger {
     private final SimpleDateFormat logTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS ", Locale.ENGLISH);
     private final File outputFile;
 
+    public static File getFolderPath(Context context) {
+        return context.getExternalCacheDir();
+    }
+
     public CacheFileLogger(Context context){
-        File cacheDir = context.getExternalCacheDir();
+        File cacheDir = getFolderPath(context);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HHmmss", Locale.ENGLISH); //NON-NLS
         outputFile = new File(cacheDir, dateFormat.format(Calendar.getInstance().getTime()) + ".log");
     }
