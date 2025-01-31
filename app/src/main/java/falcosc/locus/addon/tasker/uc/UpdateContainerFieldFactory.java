@@ -78,10 +78,15 @@ public class UpdateContainerFieldFactory {
         list.add(cField("my_latitude", "latitude", u -> u.getLocMyLocation().getLatitude()));
         list.add(cField("my_longitude", "longitude", u -> u.getLocMyLocation().getLongitude()));
         list.add(cField("my_altitude", "altitude", u -> u.getLocMyLocation().getAltitude()));
+        list.add(cField("my_latitude_original", "", u -> u.getLocMyLocation().getLatitudeOriginal()));
+        list.add(cField("my_longitude_original", "", u -> u.getLocMyLocation().getLongitudeOriginal()));
+        list.add(cField("my_altitude_original", "", u -> u.getLocMyLocation().getAltitudeOriginal()));
         list.add(cField("my_accuracy_hor", "accuracy_hor", u -> u.getLocMyLocation().getAccuracyHor()));
         list.add(cField("my_accuracy_ver", "accuracy_ver", u -> u.getLocMyLocation().getAccuracyVer()));
         list.add(cField("my_gps_fix", "gps_fix", u -> u.getLocMyLocation().getTime()));
         list.add(cField("my_speed", "speed", u -> u.getLocMyLocation().getSpeed()));
+        list.add(cField("my_bearing", "", u -> u.getLocMyLocation().getBearing()));
+        list.add(cField("my_loc_provider", "", u -> u.getLocMyLocation().getProvider()));
         list.add(cField("sensor_hrm", "heart_rate", u -> u.getLocMyLocation().getSensorHeartRate()));
         list.add(cField("sensor_cadence", "cadence", u -> u.getLocMyLocation().getSensorCadence()));
         list.add(cField("sensor_power", "power", u -> u.getLocMyLocation().getSensorPower()));
@@ -109,6 +114,20 @@ public class UpdateContainerFieldFactory {
         list.add(cField("is_map_visible", new String[]{"map", "visible"}, UpdateContainer::isMapVisible));
         list.add(cField("active_live_track_id", "", UpdateContainer::getActiveLiveTrackId));
         list.add(cField("active_dashboard_id", "", UpdateContainer::getActiveDashboardId));
+        list.add(cField("gnss_hdop", "", u -> u.getLocMyLocation().getGnssHdop()));
+        list.add(cField("gnss_pdop", "", u -> u.getLocMyLocation().getGnssPdop()));
+        list.add(cField("gnss_vdop", "", u -> u.getLocMyLocation().getGnssVdop()));
+        list.add(cField("gnss_quality", "", u -> u.getLocMyLocation().getGnssQuality()));
+        list.add(cField("gnss_sats_used", "", u -> u.getLocMyLocation().getGnssSatsUsed()));
+        list.add(cField("gnss_sats_visible", "", u -> u.getLocMyLocation().getGnssSatsVisible()));
+        list.add(cField("gnss_diff_msg_age", "", u -> u.getLocMyLocation().getGnssDiffMessageAge()));
+        list.add(cField("gnss_ntrip_mount_point", "", u -> u.getLocMyLocation().getGnssNtripMountPoint()));
+        list.add(cField("gnss_observ_time_start", "", u -> u.getLocMyLocation().getGnssObservationTimeStart()));
+        list.add(cField("gnss_observ_time_end", "", u -> u.getLocMyLocation().getGnssObservationTimeEnd()));
+        list.add(cField("extra_gssn_signal_strength", "", u -> u.getLocMyLocation().getExtraGsmSignalStrength()));
+        list.add(cField("extra_ant_phase_center_offset", "", u -> u.getLocMyLocation().getExtraAntennaPhaseCenterOffset()));
+        list.add(cField("extra_pole_height", "", u -> u.getLocMyLocation().getExtraPoleHeight()));
+
         list.add(cField("simulate_error_hidden", "", u -> {
             Logger.e(new RequiredDataMissingException("Simulate Hidden Error"), "Simulation", "Simulate Hidden Error");
             return "";
