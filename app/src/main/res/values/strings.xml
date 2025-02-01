@@ -5,6 +5,7 @@
     <string name="act_request_locus_info">Get Locus Info</string>
     <string name="act_exec_task">Execute Action Task</string>
     <string name="act_more">More Actions</string>
+    <string name="act_documentation">Documentation</string>
     <string name="app_icon">App Icon</string>
     <string name="app_main_description">You could trigger Locus Map actions in your Tasker task or Tasker can listen for Locus Map events</string>
     <string name="app_main_notice">Currently only some parts of the Locus API are implemented in this plugin. Please share your Tasker project idea if you miss any API implementations to make me able to create a proper translation to Tasker variables: \nhttps://github.com/Falcosc/locus-addon-tasker/issues</string>

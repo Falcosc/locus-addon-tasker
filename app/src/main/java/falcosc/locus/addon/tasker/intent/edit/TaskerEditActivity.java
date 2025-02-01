@@ -68,6 +68,13 @@ public abstract class TaskerEditActivity extends AppCompatActivity {
         findViewById(android.R.id.button3).setVisibility(View.GONE);
     }
 
+    public void setOptionalButton(@StringRes int textId, View.OnClickListener listener) {
+        Button btn = findViewById(android.R.id.button3);
+        btn.setVisibility(View.VISIBLE);
+        btn.setText(textId);
+        btn.setOnClickListener(listener);
+    }
+
     private void setButton(@IdRes int btnId, @StringRes int textId, View.OnClickListener listener) {
         Button btn = findViewById(btnId);
         btn.setText(textId);

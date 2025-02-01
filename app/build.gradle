@@ -13,9 +13,10 @@ android {
     defaultConfig {
         minSdkVersion Integer.valueOf(PARAM_MIN_SDK_VERSION)
         targetSdkVersion Integer.valueOf(PARAM_TARGET_SDK_VERSION)
-        versionCode 77
+        versionCode 78
         versionName '1.7.1-SNAPSHOT'
         buildConfigField 'String', 'CONTACT_EMAIL', '"' + getContactEmail() + '"'
+        buildConfigField 'String', 'ACTION_TASK_DOC_URL', '"' + PARAM_ACTION_TASK_DOC_URL + '"'
     }
 
     packagingOptions {
@@ -63,7 +64,7 @@ tasks.register('checkActionTaskDoc') {
 
         if (currentRevision != PARAM_IMPL_ACTION_TASK_REV) {
             throw new GradleException("New ActionTasks got documented. Compare here:\n" +
-                    "https://github.com/asamm/locus-api/wiki/Action-tasks-%28Broadcasts%29/_compare/${PARAM_IMPL_ACTION_TASK_REV}...${currentRevision}\n" +
+                    "${PARAM_ACTION_TASK_DOC_URL}/_compare/${PARAM_IMPL_ACTION_TASK_REV}...${currentRevision}\n" +
                     "Implement docu changes in ActionTaskEdit and update PARAM_IMPL_ACTION_TASK_REV in gradle.properties")
         } else {
             println "ActionTaskEdit is up to date"

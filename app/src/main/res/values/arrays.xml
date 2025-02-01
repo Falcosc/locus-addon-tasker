@@ -37,6 +37,7 @@
         <item>value</item>
     </string-array>
     <string-array name="navigation_action">
+        <item>nearest_point</item>
         <item>recalculate</item>
         <item>stop</item>
     </string-array>
@@ -56,5 +57,8 @@
         <item>photo</item>
         <item>video</item>
         <item>audio</item>
+    </string-array>
+    <string-array name="map_layer_action">
+        <item>toggle_last</item>
     </string-array>
 </resources>

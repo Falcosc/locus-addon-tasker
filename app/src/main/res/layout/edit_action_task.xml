@@ -165,6 +165,20 @@
             </RelativeLayout>
 
             <CheckBox
+                android:id="@+id/gps_on_off"
+                style="@style/listCheckbox"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="GPS" />
+
+            <Spinner
+                android:id="@+id/gps_on_off_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/on_off_toggle"
+                android:visibility="gone" />
+
+            <CheckBox
                 android:id="@+id/map_center"
                 style="@style/listCheckbox"
                 android:layout_width="match_parent"
@@ -528,6 +542,48 @@
                     android:imeOptions="actionDone"
                     android:inputType="text" />
             </RelativeLayout>
+            <CheckBox
+                android:id="@+id/map_layer_base"
+                style="@style/listCheckbox"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Map Layer" />
+
+            <Spinner
+                android:id="@+id/map_layer_base_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/map_layer_action"
+                android:visibility="gone" />
+
+            <CheckBox
+                android:id="@+id/map_overlay"
+                style="@style/listCheckbox"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Map Overlay" />
+
+            <Spinner
+                android:id="@+id/map_overlay_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/on_off_toggle"
+                android:visibility="gone" />
+
+            <CheckBox
+                android:id="@+id/map_reload_theme"
+                style="@style/listCheckbox"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Map Reload Theme Definition" />
+
+            <TextView
+                android:id="@+id/map_reload_theme_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="No parameters"
+                android:visibility="gone" />
 
             <CheckBox
                 android:id="@+id/guide_to"
@@ -798,7 +854,7 @@
                 android:id="@+id/screen_lock_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:entries="@array/on_off"
+                android:entries="@array/on_off_toggle"
                 android:visibility="gone" />
 
             <CheckBox
@@ -857,11 +913,33 @@
                     android:imeOptions="actionDone"
                     android:inputType="text" />
 
+                <ImageButton
+                    android:id="@+id/track_record_desc_var"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_below="@id/track_record_text"
+                    android:layout_alignParentEnd="true"
+                    android:contentDescription="Variable Selection"
+                    android:src="@drawable/var_select"
+                    android:visibility="gone" />
+
+                <EditText
+                    android:id="@+id/track_record_desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignWithParentIfMissing="true"
+                    android:layout_below="@id/track_record_text"
+                    android:layout_alignParentStart="true"
+                    android:layout_toStartOf="@id/track_record_desc_var"
+                    android:hint="Point description (Optional)"
+                    android:imeOptions="actionDone"
+                    android:inputType="text" />
+
                 <CheckBox
                     android:id="@+id/track_record_save_checkbox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/track_record_text"
+                    android:layout_below="@id/track_record_desc"
                     android:text="auto save" />
 
                 <CheckBox
@@ -929,6 +1007,84 @@
                     android:layout_alignParentStart="true"
                     android:layout_toStartOf="@id/quick_bookmark_var"
                     android:hint="Name of the bookmark"
+                    android:imeOptions="actionDone"
+                    android:inputType="text" />
+            </RelativeLayout>
+
+            <CheckBox
+                android:id="@+id/weather"
+                style="@style/listCheckbox"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Weather" />
+
+            <RelativeLayout
+                android:id="@+id/weather_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ImageButton
+                    android:id="@+id/weather_lon_var"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentEnd="true"
+                    android:contentDescription="Variable Selection"
+                    android:src="@drawable/var_select"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/weather_lon_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:gravity="center"
+                    android:minHeight="48dp"
+                    android:padding="5dp"
+                    android:text="lon:" />
+
+                <EditText
+                    android:id="@+id/weather_lon_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignWithParentIfMissing="true"
+                    android:layout_toStartOf="@id/weather_lon_var"
+                    android:layout_toEndOf="@id/weather_lon_label"
+                    android:hint="-180.00000 to 180.00000"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:nextFocusForward="@id/weather_lat_text" />
+
+                <ImageButton
+                    android:id="@+id/weather_lat_var"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_below="@id/weather_lon_label"
+                    android:layout_alignParentEnd="true"
+                    android:contentDescription="Variable Selection"
+                    android:src="@drawable/var_select"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/weather_lon_label"
+                    android:layout_alignParentStart="true"
+                    android:gravity="center"
+                    android:minHeight="48dp"
+                    android:padding="5dp"
+                    android:text="lat:" />
+
+                <EditText
+                    android:id="@+id/weather_lat_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignWithParentIfMissing="true"
+                    android:layout_below="@id/weather_lon_label"
+                    android:layout_toStartOf="@id/weather_lat_var"
+                    android:layout_toEndOf="@id/weather_lon_label"
+                    android:hint="-90.00000 to 90.00000"
                     android:imeOptions="actionDone"
                     android:inputType="text" />
             </RelativeLayout>

@@ -2,6 +2,7 @@ package falcosc.locus.addon.tasker.intent.edit;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
@@ -24,6 +25,7 @@ import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import falcosc.locus.addon.tasker.BuildConfig;
 import falcosc.locus.addon.tasker.R;
 import falcosc.locus.addon.tasker.intent.LocusActionType;
 import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
@@ -41,6 +43,7 @@ public class ActionTaskEdit extends TaskerEditActivity {
     private static final String ALLOW_START = "allow_start"; //NON-NLS
     private static final String CONFIRM = "confirm"; //NON-NLS
     private static final String NAME = "name"; //NON-NLS
+    private static final String DESCRIPTION = "description"; //NON-NLS
     private static final String START = "start"; //NON-NLS
     private static final String VALUE = "value"; //NON-NLS
     private static final String UNIT = "unit"; //NON-NLS
@@ -94,6 +97,15 @@ public class ActionTaskEdit extends TaskerEditActivity {
 
             bindKey(ACTION, (v) -> setSpinnerValue(spinner, v), spinner::getSelectedItem);
             bindKey(NAME, (v) -> text.setText((CharSequence) v), text::getText);
+        }
+    }
+
+    static class GPSOnOff extends ActionTypeJSON {
+        GPSOnOff(@NonNull View view) {
+            super(view.findViewById(R.id.gps_on_off), view.findViewById(R.id.gps_on_off_content));
+            Spinner spinner = (Spinner) mContent;
+            spinner.setOnItemSelectedListener(onItemSelected);
+            bindKey(ACTION, (v) -> setSpinnerValue(spinner, v), spinner::getSelectedItem);
         }
     }
 
@@ -178,6 +190,30 @@ public class ActionTaskEdit extends TaskerEditActivity {
             EditText text = view.findViewById(R.id.map_zoom_value_text);
             setVarSelectDialog(varSelectDialog, text, view.findViewById(R.id.map_zoom_value_var));
             bindKey(VALUE, (v) -> text.setText((CharSequence) v), text::getText);
+        }
+    }
+
+    static class MapLayerBase extends ActionTypeJSON {
+        MapLayerBase(@NonNull View view) {
+            super(view.findViewById(R.id.map_layer_base), view.findViewById(R.id.map_layer_base_content));
+            Spinner spinner = (Spinner) mContent;
+            spinner.setOnItemSelectedListener(onItemSelected);
+            bindKey(ACTION, (v) -> setSpinnerValue(spinner, v), spinner::getSelectedItem);
+        }
+    }
+
+    static class MapOverlay extends ActionTypeJSON {
+        MapOverlay(@NonNull View view) {
+            super(view.findViewById(R.id.map_overlay), view.findViewById(R.id.map_overlay_content));
+            Spinner spinner = (Spinner) mContent;
+            spinner.setOnItemSelectedListener(onItemSelected);
+            bindKey(ACTION, (v) -> setSpinnerValue(spinner, v), spinner::getSelectedItem);
+        }
+    }
+
+    static class MapReloadTheme extends ActionTypeJSON {
+        MapReloadTheme(@NonNull View view) {
+            super(view.findViewById(R.id.map_reload_theme), view.findViewById(R.id.map_reload_theme_content));
         }
     }
 
@@ -271,21 +307,24 @@ public class ActionTaskEdit extends TaskerEditActivity {
             super(view.findViewById(R.id.track_record), view.findViewById(R.id.track_record_content));
             Spinner spinner = view.findViewById(R.id.track_record_spinner);
             EditText name = view.findViewById(R.id.track_record_text);
+            setVarSelectDialog(varSelectDialog, name, view.findViewById(R.id.track_record_var));
+            EditText description = view.findViewById(R.id.track_record_desc);
+            setVarSelectDialog(varSelectDialog, description, view.findViewById(R.id.track_record_desc_var));
             CheckBox saveCheckbox = view.findViewById(R.id.track_record_save_checkbox);
             CheckBox allowStartCheckbox = view.findViewById(R.id.track_record_allow_start_checkbox);
             CheckBox confirmCheckbox = view.findViewById(R.id.track_record_confirm_checkbox);
             TextView wptSpinnerLabel = view.findViewById(R.id.track_record_wpt_spinner_label);
             Spinner wptSpinner = view.findViewById(R.id.track_record_wpt_spinner);
-            setVarSelectDialog(varSelectDialog, name, view.findViewById(R.id.track_record_var));
 
-            List<View> optionalViews = Arrays.asList(name, saveCheckbox, allowStartCheckbox, confirmCheckbox, wptSpinnerLabel, wptSpinner);
+            List<View> optionalViews = Arrays.asList(name, description, saveCheckbox, allowStartCheckbox, confirmCheckbox, wptSpinnerLabel,
+                    wptSpinner);
             Map<String, List<View>> neededViewsByAction = new HashMap<>();
             neededViewsByAction.put("start", Collections.singletonList(name));
             neededViewsByAction.put("stop", Arrays.asList(name, saveCheckbox));
             neededViewsByAction.put("pause", Collections.singletonList(name));
             neededViewsByAction.put("discard", Arrays.asList(name, confirmCheckbox));
             neededViewsByAction.put("toggle", Collections.singletonList(allowStartCheckbox));
-            neededViewsByAction.put("add_wpt", Arrays.asList(name, saveCheckbox, wptSpinnerLabel, wptSpinner));
+            neededViewsByAction.put("add_wpt", Arrays.asList(name, description, saveCheckbox, wptSpinnerLabel, wptSpinner));
 
             setVisibility(optionalViews, View.GONE);
 
@@ -296,6 +335,7 @@ public class ActionTaskEdit extends TaskerEditActivity {
 
             bindKey(ACTION, (v) -> setSpinnerValue(spinner, v), spinner::getSelectedItem);
             bindKey(NAME, (v) -> name.setText((CharSequence) v), name::getText);
+            bindKey(DESCRIPTION, (v) -> description.setText((CharSequence) v), description::getText);
             bindKey(AUTO_SAVE, (v) -> saveCheckbox.setChecked((boolean) v), saveCheckbox::isChecked);
             bindKey(ALLOW_START, (v) -> allowStartCheckbox.setChecked((boolean) v), allowStartCheckbox::isChecked);
             bindKey(CONFIRM, (v) -> confirmCheckbox.setChecked((boolean) v), confirmCheckbox::isChecked);
@@ -314,6 +354,18 @@ public class ActionTaskEdit extends TaskerEditActivity {
         }
     }
 
+    static class Weather extends ActionTypeJSON {
+        Weather(@NonNull View view, @Nullable Dialog varSelectDialog) {
+            super(view.findViewById(R.id.weather), view.findViewById(R.id.weather_content));
+            EditText lon = view.findViewById(R.id.weather_lon_text);
+            setVarSelectDialog(varSelectDialog, lon, view.findViewById(R.id.weather_lon_var));
+            bindKey(LON, (v) -> lon.setText((CharSequence) v), lon::getText);
+            EditText lat = view.findViewById(R.id.weather_lat_text);
+            setVarSelectDialog(varSelectDialog, lat, view.findViewById(R.id.weather_lat_var));
+            bindKey(LAT, (v) -> lat.setText((CharSequence) v), lat::getText);
+        }
+    }
+
     private Map<String, ActionTypeJSON> actionMap;
 
     @SuppressWarnings("HardCodedStringLiteral")
@@ -324,12 +376,16 @@ public class ActionTaskEdit extends TaskerEditActivity {
         actionMap.put("function", new OpenFunction(view));
         actionMap.put("live_tracking_asamm", new LiveTrackingAsamm(view, varSelectDialog));
         actionMap.put("live_tracking_custom", new LiveTrackingCustom(view, varSelectDialog));
+        actionMap.put("gps_on_off", new GPSOnOff(view));
         actionMap.put("map_center", new MapCenter(view));
         actionMap.put("map_move_x", new MapMoveX(view));
         actionMap.put("map_move_y", new MapMoveY(view));
         actionMap.put("map_move_zoom", new MapMoveZoom(view, varSelectDialog));
         actionMap.put("map_rotate", new MapRotate(view));
         actionMap.put("map_zoom", new MapZoom(view, varSelectDialog));
+        actionMap.put("map_layer_base", new MapLayerBase(view));
+        actionMap.put("map_overlay", new MapOverlay(view));
+        actionMap.put("map_reload_theme", new MapReloadTheme(view));
         actionMap.put("guide_to", new GuideTo(view, varSelectDialog));
         actionMap.put("navigate_to", new NavigateTo(view, varSelectDialog));
         actionMap.put("navigation", new Navigation(view));
@@ -340,6 +396,7 @@ public class ActionTaskEdit extends TaskerEditActivity {
         actionMap.put("screen_on_off", new ScreenOnOff(view));
         actionMap.put("track_record", new TrackRecord(view, varSelectDialog));
         actionMap.put("quick_bookmark", new QuickBookmark(view, varSelectDialog));
+        actionMap.put("weather", new Weather(view, varSelectDialog));
     }
 
     private void applyJSONToView(@Nullable String json) {
@@ -366,6 +423,7 @@ public class ActionTaskEdit extends TaskerEditActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_action_task);
+        setOptionalButton(R.string.act_documentation, (v) -> openActionTaskDoc());
         initActionMapping(createVarSelectDialog());
 
         if (savedInstanceState == null) {
@@ -373,6 +431,13 @@ public class ActionTaskEdit extends TaskerEditActivity {
             if (taskerBundle != null) {
                 applyJSONToView(taskerBundle.getString(Const.INTENT_EXTRA_FIELD_JSON));
             }
+        }
+    }
+
+    private void openActionTaskDoc(){
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(BuildConfig.ACTION_TASK_DOC_URL + "#Tasks")); //NON-NLS
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
         }
     }
 
