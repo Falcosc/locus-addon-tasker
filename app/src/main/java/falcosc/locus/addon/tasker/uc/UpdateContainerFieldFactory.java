@@ -93,6 +93,7 @@ public class UpdateContainerFieldFactory {
         list.add(cField("sensor_speed", "bicycle_speed", u -> u.getLocMyLocation().getSensorSpeed()));
         list.add(cField("sensor_strides", "strides_label", u -> u.getLocMyLocation().getSensorStrides()));
         list.add(cField("sensor_temperature", "temperature", u -> u.getLocMyLocation().getSensorTemperature()));
+        list.add(cField("sensor_battery_temperature", "battery_temp", UpdateContainer::getDeviceBatteryTemperature));
         list.add(cField("pace", "pace", UpdateContainer::getPace));
         list.add(cField("speed_vertical", new String[]{"speed", "vertical"}, UpdateContainer::getSpeedVertical));
         list.add(cField("slope", "slope", UpdateContainer::getSlope));

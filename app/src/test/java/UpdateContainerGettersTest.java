@@ -52,8 +52,7 @@ public class UpdateContainerGettersTest {
         //No support for these API Getters
         unusedGetters.remove("locus.api.android.features.periodicUpdates.UpdateContainer.getContentGuideTrack");
         unusedGetters.remove("locus.api.android.features.periodicUpdates.UpdateContainer.getContentGuidePoint");
-        unusedGetters.remove("locus.api.android.features.periodicUpdates.UpdateContainer.getDeviceBatteryValue");
-        unusedGetters.remove("locus.api.android.features.periodicUpdates.UpdateContainer.getDeviceBatteryTemperature");
+        unusedGetters.remove("locus.api.android.features.periodicUpdates.UpdateContainer.getDeviceBatteryValue"); //already existing in tasker
         unusedGetters.remove("locus.api.android.features.periodicUpdates.UpdateContainer.getOrientHeadingOpposit"); //already have heading
         unusedGetters.remove("locus.api.objects.extra.Location.getDataFloat");
         unusedGetters.remove("locus.api.objects.extra.Location.getSpeedOptimal"); //deprecated
