@@ -13,18 +13,71 @@ import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import androidx.annotation.NonNull;
 import falcosc.locus.addon.tasker.uc.UpdateContainerFieldFactory;
+import falcosc.locus.addon.tasker.utils.TaskerField;
 import locus.api.android.features.periodicUpdates.UpdateContainer;
 import locus.api.objects.extra.Location;
 import locus.api.objects.extra.TrackStats;
 
 public class UpdateContainerGettersTest {
+
+    @Test
+    @SuppressLint("HardcodedText")
+    public void testReadmeDocumentation() throws IOException {
+        UpdateContainerFieldFactory factory = new UpdateContainerFieldFactory(null, null);
+        List<TaskerField> taskerFields = factory.createUpdateContainerFields();
+        taskerFields.addAll(UpdateContainerFieldFactory.createNavigationProgressFields());
+        taskerFields.addAll(factory.createMapFields());
+        taskerFields.addAll(factory.createTrackRecStatsFields());
+        taskerFields.addAll(factory.createGuideFields());
+        List<String> missingFields = taskerFields.stream().map(taskerField -> taskerField.mTaskerName).collect(Collectors.toList());
+
+        try (Stream<String> linesStream = Files.lines(Paths.get("../README.md").toAbsolutePath())) {
+            // Collect all lines starting with "-" after "### Data Access"
+            linesStream.dropWhile(line -> !line.contains("# Data Access")) // drop content before data access
+                    .filter(line -> line.trim().startsWith("- "))
+                    .forEach(field -> missingFields.remove(field.substring(2).trim()));
+        }
+
+        // Assert that all getters are used (for example purposes; modify as needed)
+        Assert.assertTrue( missingFields.isEmpty(),
+                "Following Fields need to be documented in README.md:\n" + String.join( "\n", missingFields));
+    }
+
+    @Test
+    @SuppressLint("HardcodedText")
+    public void testUCStrings() throws IOException {
+        UpdateContainerFieldFactory factory = new UpdateContainerFieldFactory(null, null);
+        List<TaskerField> taskerFields = factory.createUpdateContainerFields();
+        taskerFields.addAll(UpdateContainerFieldFactory.createNavigationProgressFields());
+        taskerFields.addAll(factory.createMapFields());
+        taskerFields.addAll(factory.createTrackRecStatsFields());
+        taskerFields.addAll(factory.createGuideFields());
+
+        List<String> missingUCStrings = taskerFields.stream().map(taskerField -> "uc_" + taskerField.mTaskerName).collect(Collectors.toList());
+
+        try (Stream<String> linesStream = Files.lines(Paths.get("src/main/res/values/strings_uc.xml"))) {
+            linesStream.filter(line -> line.contains("<string name="))
+                    .map(line -> line.substring(line.indexOf("name=\"") + 6, line.indexOf("\">")))
+                    .forEach(missingUCStrings::remove);
+        }
+
+        // Assert that all getters are used (for example purposes; modify as needed)
+        Assert.assertTrue( missingUCStrings.isEmpty(),
+                "Following Fields need to be documented in strings_uc.md:\n" + String.join( "\n", missingUCStrings));
+    }
+
+
 
     @Test
     @SuppressLint("HardcodedText")
@@ -81,7 +134,7 @@ public class UpdateContainerGettersTest {
         classReader.accept(classNode, 0);
 
         Set<String> calledMethods = new HashSet<>();
-        for (MethodNode method : (List<MethodNode>) classNode.methods) {
+        for (MethodNode method : classNode.methods) {
             for (AbstractInsnNode insn : method.instructions) {
                 if (insn.getOpcode() == Opcodes.INVOKEDYNAMIC) {
                     InvokeDynamicInsnNode dynamicInsn = (InvokeDynamicInsnNode) insn;
