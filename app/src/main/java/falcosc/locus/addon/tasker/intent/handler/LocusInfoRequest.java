@@ -31,7 +31,17 @@ public class LocusInfoRequest extends AbstractTaskerAction {
             new LocusInfoField("dir_srtm", "SRTM Folder", LocusInfo::getRootDirSrtm),
             new LocusInfoField("locus_package", "Locus Package Name", LocusInfo::getPackageName),
             new LocusInfoField("locus_isrunning", "Is Locus Running?", LocusInfo::isRunning),
-            new LocusInfoField("last_active", "Last Active Timestamp", LocusInfo::getLastActive)
+            new LocusInfoField("last_active", "Last Active Timestamp", LocusInfo::getLastActive),
+            new LocusInfoField("unit_weight", "Unit Format Weight", LocusInfo::getUnitsFormatWeight),
+            new LocusInfoField("unit_altitude", "Unit Format Altitude", LocusInfo::getUnitsFormatAltitude),
+            new LocusInfoField("unit_temperature", "Unit Format Temperature", LocusInfo::getUnitsFormatTemperature),
+            new LocusInfoField("unit_angle", "Unit Format Angle", LocusInfo::getUnitsFormatAngle),
+            new LocusInfoField("unit_speed", "Unit Format Weight", LocusInfo::getUnitsFormatSpeed),
+            new LocusInfoField("unit_length", "Unit Format Weight", LocusInfo::getUnitsFormatLength),
+            new LocusInfoField("unit_area", "Unit Format Weight", LocusInfo::getUnitsFormatArea),
+            new LocusInfoField("unit_energy", "Unit Format Energy", LocusInfo::getUnitsFormatEnergy),
+            new LocusInfoField("unit_slope", "Unit Format Slope", LocusInfo::getUnitsFormatSlope),
+            new LocusInfoField("gc_owner_name", "GeoCache Owner Name", LocusInfo::getGcOwnerName)
     ));
 
     public static List<TaskerField> getFieldNames() {
