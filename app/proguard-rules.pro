@@ -11,7 +11,7 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
--dontoptimize
+-dontoptimize # don't bother, only saves 75kb of 2000kb
 -dontobfuscate
 
 # Uncomment this to preserve the line number information for

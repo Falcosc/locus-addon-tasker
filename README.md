@@ -1,5 +1,5 @@
 <a href='https://play.google.com/store/apps/details?id=falcosc.locus.addon.tasker&utm_source=GitHub' >
-  <img alt='Locus Maps Tasker Plugin' src='app/src/main/res/mipmap-xxhdpi/ic_launcher.png' align="right"/>
+  <img alt='Locus Maps Tasker Plugin' src='app/src/main/res/mipmap-xxhdpi/ic_launcher.webp' align="right"/>
 </a>
 
 # Locus Map Tasker Plugin
