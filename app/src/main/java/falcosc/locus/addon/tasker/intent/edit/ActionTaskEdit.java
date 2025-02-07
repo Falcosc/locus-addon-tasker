@@ -357,6 +357,7 @@ public class ActionTaskEdit extends TaskerEditActivity {
     static class Weather extends ActionTypeJSON {
         Weather(@NonNull View view, @Nullable Dialog varSelectDialog) {
             super(view.findViewById(R.id.weather), view.findViewById(R.id.weather_content));
+            bindKey(ACTION, null, () -> START);
             EditText lon = view.findViewById(R.id.weather_lon_text);
             setVarSelectDialog(varSelectDialog, lon, view.findViewById(R.id.weather_lon_var));
             bindKey(LON, (v) -> lon.setText((CharSequence) v), lon::getText);
