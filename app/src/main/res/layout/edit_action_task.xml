@@ -1051,7 +1051,7 @@
                     android:layout_alignWithParentIfMissing="true"
                     android:layout_toStartOf="@id/weather_lon_var"
                     android:layout_toEndOf="@id/weather_lon_label"
-                    android:hint="-180.00000 to 180.00000"
+                    android:hint="-180.00000 to 180.00000 (optional)"
                     android:imeOptions="actionNext"
                     android:inputType="text"
                     android:nextFocusForward="@id/weather_lat_text" />
@@ -1084,7 +1084,7 @@
                     android:layout_below="@id/weather_lon_label"
                     android:layout_toStartOf="@id/weather_lat_var"
                     android:layout_toEndOf="@id/weather_lon_label"
-                    android:hint="-90.00000 to 90.00000"
+                    android:hint="-90.00000 to 90.00000 (optional)"
                     android:imeOptions="actionDone"
                     android:inputType="text" />
             </RelativeLayout>
