@@ -1,5 +1,3 @@
-import android.annotation.SuppressLint;
-
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.Opcodes;
@@ -26,10 +24,10 @@ import falcosc.locus.addon.tasker.intent.handler.LocusInfoRequest;
 import falcosc.locus.addon.tasker.utils.TaskerField;
 import locus.api.android.objects.LocusInfo;
 
+/** @noinspection HardCodedStringLiteral*/
 public class LocusInfoGettersTest {
 
     @Test
-    @SuppressLint("HardcodedText")
     public void testReadmeDocumentation() throws IOException {
         List<TaskerField> taskerFields = LocusInfoRequest.getFieldNames();
         List<String> missingFields = taskerFields.stream().map(taskerField -> taskerField.mTaskerName).collect(Collectors.toList());
@@ -47,7 +45,6 @@ public class LocusInfoGettersTest {
     }
 
     @Test
-    @SuppressLint("HardcodedText")
     public void testUnusedGetters() throws Exception {
         Set<String> unusedGetters = new HashSet<>();
         Class<?> apiClass = LocusInfo.class;

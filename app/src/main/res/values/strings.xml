@@ -24,13 +24,20 @@
         \n\t• Display new geocaches
         \n\t• Get geocaching field notes
         \n\t• Search point by name
+        \n\t• Update Points
         \n\t• Display point detail screen
         \n\t• Display new tracks
         \n\t• Import GPX with dialog
-        \n\t• Pick location from Locus
+        \n\t• Pick location from Tasker
+        \n\t• Pick location with Locus UI
         \n\t• Add WMS map
         \n\t• Display circles
         \n\t• Log field notes online
+        \n\t• Export Track as FIT/GPX/KML/TCX File
+        \n\t• Point Changed Event
+        \n\t• Navigate to Address String
+        \n\t• Check Locus Store purchase state
+        \n\t• Get Track Recording Profiles
         \n
         \nPlease share your Tasker project idea at Github to tell me how I should implement one of these to be useful at Tasker.
     </string>

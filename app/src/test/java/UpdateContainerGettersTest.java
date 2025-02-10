@@ -1,5 +1,3 @@
-import android.annotation.SuppressLint;
-
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.Opcodes;
@@ -29,10 +27,10 @@ import locus.api.android.features.periodicUpdates.UpdateContainer;
 import locus.api.objects.extra.Location;
 import locus.api.objects.extra.TrackStats;
 
+/** @noinspection HardCodedStringLiteral*/
 public class UpdateContainerGettersTest {
 
     @Test
-    @SuppressLint("HardcodedText")
     public void testReadmeDocumentation() throws IOException {
         UpdateContainerFieldFactory factory = new UpdateContainerFieldFactory(null, null);
         List<TaskerField> taskerFields = factory.createUpdateContainerFields();
@@ -55,7 +53,6 @@ public class UpdateContainerGettersTest {
     }
 
     @Test
-    @SuppressLint("HardcodedText")
     public void testUCStrings() throws IOException {
         UpdateContainerFieldFactory factory = new UpdateContainerFieldFactory(null, null);
         List<TaskerField> taskerFields = factory.createUpdateContainerFields();
@@ -80,7 +77,6 @@ public class UpdateContainerGettersTest {
 
 
     @Test
-    @SuppressLint("HardcodedText")
     public void testUnusedGetters() throws Exception {
         // Collect all getters in UpdateContainer
         List<Class<?>> updateContainerClasses = new ArrayList<>();
