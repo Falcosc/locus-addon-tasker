@@ -3,13 +3,17 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import locus.api.android.utils.LocusConst;
+import locus.api.android.utils.LocusUtils;
 
 /** @noinspection HardCodedStringLiteral*/
 public class LocusConstTest {
@@ -120,5 +124,27 @@ public class LocusConstTest {
                 .toList();
 
         Assert.assertTrue(featureStrings.isEmpty(), "Following Features are not implemented: " + StringUtils.join(featureStrings, '\n'));
+    }
+
+    @Test
+    public void testQueryPackages() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+        Method packageNamesGetter = LocusUtils.class.getDeclaredMethod("getPackageNames");
+        packageNamesGetter.setAccessible(true);
+
+        String[] packageNames = (String[]) packageNamesGetter.invoke(LocusUtils.INSTANCE);
+        String[] configuredPackages = {
+            "menion.android.locus",
+            "menion.android.locus.free.amazon",
+            "menion.android.locus.free.samsung",
+            "menion.android.locus.pro",
+            "menion.android.locus.pro.amazon",
+            "menion.android.locus.pro.asamm",
+            "menion.android.locus.pro.computerBild"
+        };
+        Assert.assertNotNull(packageNames);
+        Assert.assertEquals(packageNames, configuredPackages,
+                "Make sure following Packages are added in Manifest.xml as Query.Package: \n" +
+                Arrays.stream(packageNames).map(name -> "<package android:name=\"" + name + "\" />")
+                        .collect(Collectors.joining("\n")));
     }
 }
