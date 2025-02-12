@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.asamm.logger.Logger;
 
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
@@ -23,6 +24,7 @@ import org.json.JSONStringer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -190,6 +192,98 @@ public class LocusRunTaskerActivity extends ProjectActivity {
         }
     }
 
+    private static final Map<String, Integer> taskerPointFieldToParId = Map.ofEntries(
+        Map.entry("Description", GeoDataExtra.PAR_DESCRIPTION),
+        Map.entry("Comment", GeoDataExtra.PAR_COMMENT),
+        Map.entry("RelativeWorkingDir", GeoDataExtra.PAR_RELATIVE_WORKING_DIR),
+        Map.entry("Type", GeoDataExtra.PAR_TYPE),
+        Map.entry("GeocacheCode", GeoDataExtra.PAR_GEOCACHE_CODE),
+        Map.entry("PoiAlertInclude", GeoDataExtra.PAR_POI_ALERT_INCLUDE),
+        Map.entry("Language", GeoDataExtra.PAR_LANGUAGE),
+        Map.entry("AddressStreet", GeoDataExtra.PAR_ADDRESS_STREET),
+        Map.entry("AddressCity", GeoDataExtra.PAR_ADDRESS_CITY),
+        Map.entry("AddressRegion", GeoDataExtra.PAR_ADDRESS_REGION),
+        Map.entry("AddressPostCode", GeoDataExtra.PAR_ADDRESS_POST_CODE),
+        Map.entry("AddressCountry", GeoDataExtra.PAR_ADDRESS_COUNTRY),
+        Map.entry("RIndex", GeoDataExtra.PAR_RTE_INDEX),
+        Map.entry("RDistanceF", GeoDataExtra.PAR_RTE_DISTANCE_F),
+        Map.entry("RTimeI", GeoDataExtra.PAR_RTE_TIME_I),
+        Map.entry("RSpeedF", GeoDataExtra.PAR_RTE_SPEED_F),
+        Map.entry("RTurnCost", GeoDataExtra.PAR_RTE_TURN_COST),
+        Map.entry("RStreet", GeoDataExtra.PAR_RTE_STREET),
+        Map.entry("RPointAction", GeoDataExtra.PAR_RTE_POINT_ACTION),
+        Map.entry("RPointPassPlaceNotify", GeoDataExtra.PAR_RTE_POINT_PASS_PLACE_NOTIFY),
+        Map.entry("RComputeType", GeoDataExtra.PAR_RTE_COMPUTE_TYPE),
+        Map.entry("RSimpleRoundabouts", GeoDataExtra.PAR_RTE_SIMPLE_ROUNDABOUTS),
+        Map.entry("RPlanDefinition", GeoDataExtra.PAR_RTE_PLAN_DEFINITION),
+        Map.entry("RMaxSpeeds", GeoDataExtra.PAR_RTE_MAX_SPEEDS),
+        Map.entry("RWayTypes", GeoDataExtra.PAR_RTE_WAY_TYPES),
+        Map.entry("RSurfaces", GeoDataExtra.PAR_RTE_SURFACES),
+        Map.entry("RWarnings", GeoDataExtra.PAR_RTE_WARNINGS),
+        Map.entry("OsmNotesId", GeoDataExtra.PAR_OSM_NOTES_ID),
+        Map.entry("OsmNotesClosed", GeoDataExtra.PAR_OSM_NOTES_CLOSED),
+        Map.entry("LopointsId", GeoDataExtra.PAR_LOPOINTS_ID),
+        Map.entry("LopointsLabels", GeoDataExtra.PAR_LOPOINTS_LABELS),
+        Map.entry("LopointsOpeningHours", GeoDataExtra.PAR_LOPOINTS_OPENING_HOURS),
+        Map.entry("LopointsTimezone", GeoDataExtra.PAR_LOPOINTS_TIMEZONE),
+        Map.entry("LopointsGeometry", GeoDataExtra.PAR_LOPOINTS_GEOMETRY),
+        Map.entry("Lomedia", GeoDataExtra.PAR_LOMEDIA),
+        Map.entry("LopointReviews", GeoDataExtra.PAR_LOPOINT_REVIEWS)
+    );
+
+    private static JSONArray serializeWayPoints(List<Point> points, int sizeLimit) throws JSONException {
+        int estimatedSize = 0;
+        JSONArray jsonArray = new JSONArray();
+        for(Point p : points) {
+            JSONObject jsonPoint = serializeTrackLocation(p.getLocation());
+            GeoDataExtra extra = p.getExtraData();
+            if (extra != null) {
+                for (Map.Entry<String, Integer> entry : taskerPointFieldToParId.entrySet()) {
+                    Object value = extra.getParameter(entry.getValue());
+                    if (value != null) {
+                        jsonPoint.put(entry.getKey(), value);
+                    }
+                }
+            }
+            jsonPoint.put("Name", p.getName());
+            estimatedSize += (jsonPoint.toString().length() + 2) * 2; //2 chars overhead for comma space
+            if(estimatedSize > sizeLimit) {
+                return jsonArray;
+            }
+            jsonArray.put(jsonPoint);
+        }
+        return jsonArray;
+    }
+
+    private static JSONObject serializeTrackLocation(Location loc) throws JSONException {
+        JSONObject jsonPoint = new JSONObject();
+        jsonPoint.put("Lat", loc.getLatitude());
+        jsonPoint.put("Lot", loc.getLongitude());
+        Double altitude = loc.getAltitude();
+        if(altitude != null) {
+            jsonPoint.put("Altitude", altitude);
+        }
+        long time = loc.getTime();
+        if(time != 0L) {
+            jsonPoint.put("Time", time);
+        }
+        return jsonPoint;
+    }
+
+    private static JSONArray serializePoints(List<Location> points, int sizeLimit) throws JSONException {
+        int estimatedSize = 0;
+        JSONArray jsonArray = new JSONArray();
+        for(Location loc : points) {
+            JSONObject jsonPoint = serializeTrackLocation(loc);
+            estimatedSize += (jsonPoint.toString().length() + 2) * 2; //2 chars overhead for comma space
+            if(estimatedSize > sizeLimit) {
+                return jsonArray;
+            }
+            jsonArray.put(jsonPoint);
+        }
+        return jsonArray;
+    }
+
     private void startTask(@NonNull String taskName) {
         TaskerIntent.Status taskerStatus = TaskerIntent.testStatus(this);
         if (taskerStatus == TaskerIntent.Status.OK) {
@@ -200,17 +294,20 @@ public class LocusRunTaskerActivity extends ProjectActivity {
 
             String action = locusIntent.getAction();
             allIntentFields.put("action", action); //NON-NLS
-
             LocusCache locusCache = LocusCache.getInstanceNullable();
             if (locusCache != null) {
-
+                Track t;
                 try {
                     if (IntentHelper.INSTANCE.isIntentPointTools(locusIntent)) {
                         Point p = IntentHelper.INSTANCE.getPointFromIntent(locusCache.getApplicationContext(), locusIntent);
                         allIntentFields.putAll(mapPointFields(p, "p_")); //NON-NLS
                     } else if (IntentHelper.INSTANCE.isIntentTrackTools(locusIntent)) {
-                        Track t = IntentHelper.INSTANCE.getTrackFromIntent(locusCache.getApplicationContext(), locusIntent);
-                        allIntentFields.putAll(mapTrackFields(t));
+                        t = IntentHelper.INSTANCE.getTrackFromIntent(locusCache.getApplicationContext(), locusIntent);
+                        if (t != null) {
+                            allIntentFields.putAll(mapTrackFields(t));
+                            taskerIntent.addLocalVariable("%waypoints", serializeWayPoints(t.getWaypoints(), 200 * 1024).toString()); //NON-NLS
+                            taskerIntent.addLocalVariable("%points", serializePoints(t.getPoints(), 200 * 1024).toString()); //NON-NLS
+                        }
                     }
                     allIntentFields.values().removeAll(Arrays.asList(null, ""));
                     Logger.d(TAG, "Map: " + allIntentFields); //NON-NLS
