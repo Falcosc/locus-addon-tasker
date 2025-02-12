@@ -75,6 +75,8 @@
             android:name=".LocusRunTaskerActivity"
             android:label="Run task"
             android:icon="@mipmap/ic_tasker"
+            android:launchMode="singleInstance"
+            android:excludeFromRecents="true"
             android:theme="@style/AlertDialogThemeNoTitle"></activity>
 
         <activity-alias
