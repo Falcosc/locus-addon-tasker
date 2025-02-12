@@ -1,12 +1,8 @@
 package falcosc.locus.addon.tasker.intent.edit;
 
-import android.app.Dialog;
 import android.view.View;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.Spinner;
 
 import com.asamm.logger.Logger;
 
@@ -19,7 +15,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import falcosc.locus.addon.tasker.utils.ReportingHelper;
 import falcosc.locus.addon.tasker.utils.listener.ItemSelectListener;
 
@@ -80,14 +75,6 @@ class ActionTypeJSON {
         }
     }
 
-    //TODO move to abstract TaskerEditActivity and remove varSelectDialog member
-    static void setVarSelectDialog(@Nullable Dialog varSelectDialog, EditText text, View varSelectBtn) {
-        if (varSelectDialog != null) {
-            text.setOnFocusChangeListener((v, hasFocus) -> varSelectBtn.setVisibility(hasFocus ? View.VISIBLE : View.GONE));
-            varSelectBtn.setOnClickListener(v -> varSelectDialog.show());
-        }
-    }
-
     void bindKey(String key, Setter<Object> setter, Getter<Object> getter) {
         mKeyBindMap.put(key, new Bind(setter, getter));
     }
@@ -130,14 +117,5 @@ class ActionTypeJSON {
 
         }
         return json;
-    }
-
-    static void setSpinnerValue(Spinner spinner, Object value) {
-        if (value != null) {
-            if (spinner.getAdapter() instanceof ArrayAdapter) {
-                //noinspection unchecked because it is a generic Object Array
-                spinner.setSelection(((ArrayAdapter<Object>) spinner.getAdapter()).getPosition(value));
-            }
-        }
     }
 }

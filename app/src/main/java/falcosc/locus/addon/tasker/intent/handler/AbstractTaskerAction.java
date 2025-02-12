@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -45,7 +46,7 @@ abstract class AbstractTaskerAction implements TaskerAction {
         } catch (LocusCache.MissingAppContextException | RequiredVersionMissingException | RequiredDataMissingException e) {
             if (mReceiver.isOrderedBroadcast()) {
                 Bundle varsBundle = new Bundle();
-                varsBundle.putString(TaskerPlugin.Setting.VARNAME_ERROR_MESSAGE, ReportingHelper.getUserFriendlyName(e));
+                varsBundle.putString(Const.ERROR_MSG_VAR.getVar(), ReportingHelper.getUserFriendlyName(e));
                 TaskerPlugin.addVariableBundle(mReceiver.getResultExtras(true), varsBundle);
                 mReceiver.setResultCode(TaskerPlugin.Setting.RESULT_CODE_FAILED);
             } else {
@@ -75,6 +76,15 @@ abstract class AbstractTaskerAction implements TaskerAction {
         }
 
         return new HashSet<>(Arrays.asList(selectedFieldsArray));
+    }
+
+    @NonNull
+    String requireField(@NonNull Bundle apiExtraBundle, String key) throws RequiredDataMissingException {
+        String value = apiExtraBundle.getString(key);
+        if (TextUtils.isEmpty(value)) {
+            throw new RequiredDataMissingException(mContext.getResources().getString(R.string.err_missing_field, key));
+        }
+        return value;
     }
 
     private String getString(int field) {

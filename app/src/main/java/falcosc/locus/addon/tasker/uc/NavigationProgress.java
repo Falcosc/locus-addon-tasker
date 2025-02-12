@@ -202,7 +202,7 @@ public final class NavigationProgress {
         }
     }
 
-    private static boolean isSameTrack(Track track1, Track track2) {
+    public static boolean isSameTrack(Track track1, Track track2) {
         if ((track1 == null) || (track2 == null)) {
             Logger.d(TAG, "is not same track because one is null"); //NON-NLS
             //is same if both null or can't be same if track2 is not null

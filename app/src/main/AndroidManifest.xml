@@ -309,6 +309,17 @@
         </activity>
 
         <activity
+            android:name=".intent.edit.TrackPointsEdit"
+            android:exported="true"
+            android:label="@string/act_get_track_points"
+            android:icon="@mipmap/ic_launcher"
+            android:theme="@style/AlertDialogTheme">
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name=".intent.edit.NotImplementedActions"
             android:exported="true"
             android:label="@string/act_more"

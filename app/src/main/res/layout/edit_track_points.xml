@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/fab_margin"
+            android:paddingRight="@dimen/fab_margin"
+            tools:ignore="HardcodedText">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/track_select_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:gravity="center"
+                    android:labelFor="@+id/track_select"
+                    android:minHeight="48dp"
+                    android:text="Track:" />
+
+                <Spinner
+                    android:id="@+id/track_select"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_toEndOf="@id/track_select_label" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/track_select_help"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textIsSelectable="true" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/type_select_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:gravity="center"
+                    android:labelFor="@+id/type_select"
+                    android:minHeight="48dp"
+                    android:text="Type:" />
+
+                <Spinner
+                    android:id="@+id/type_select"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_toEndOf="@id/type_select_label" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/location_fields_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:labelFor="@+id/location_fields_edit"
+                android:text="Location Fields:" />
+
+            <EditText
+                android:id="@+id/location_fields_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:imeOptions="actionNext"
+                android:inputType="textMultiLine" />
+
+            <LinearLayout
+                android:id="@+id/waypoint_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Waypoints will always return Name field" />
+
+                <TextView
+                    android:id="@+id/waypoint_extras_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:labelFor="@+id/waypoint_extras_edit"
+                    android:text="Waypoint Extras:" />
+
+                <EditText
+                    android:id="@+id/waypoint_extras_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints=""
+                    android:imeOptions="actionNext"
+                    android:inputType="textMultiLine" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/count_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:gravity="center"
+                    android:labelFor="@+id/count_edit"
+                    android:minHeight="48dp"
+                    android:text="Point Count:" />
+
+                <EditText
+                    android:id="@+id/count_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_toEndOf="@id/count_label"
+                    android:autofillHints=""
+                    android:hint="limits data amount"
+                    android:imeOptions="actionNext"
+                    android:inputType="number"
+                    android:text="200" />
+
+                <TextView
+                    android:id="@+id/offset_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/count_label"
+                    android:layout_alignParentStart="true"
+                    android:gravity="center"
+                    android:labelFor="@+id/offset_edit"
+                    android:minHeight="48dp"
+                    android:text="Point Offset:" />
+
+                <ImageButton
+                    android:id="@+id/offset_var"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_below="@id/count_label"
+                    android:layout_alignParentEnd="true"
+                    android:contentDescription="Variable Selection"
+                    android:src="@drawable/var_select"
+                    android:visibility="gone" />
+
+                <EditText
+                    android:id="@+id/offset_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignWithParentIfMissing="true"
+                    android:layout_below="@id/count_label"
+                    android:layout_toStartOf="@id/offset_var"
+                    android:layout_toEndOf="@id/count_label"
+                    android:autofillHints=""
+                    android:hint="amount of points to skip"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:text="0" />
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <include
+        layout="@layout/abc_alert_dialog_button_bar_material"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="PrivateResource" />
+</LinearLayout>

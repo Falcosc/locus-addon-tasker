@@ -268,6 +268,7 @@ public class LocusGeoTagActivity extends ProjectActivity {
         }
     }
 
+    /** @noinspection HardCodedStringLiteral*/
     private void getAndValidateTrackDetails() throws RequiredDataMissingException, RequiredVersionMissingException {
         Track track = IntentHelper.INSTANCE.getTrackFromIntent(this, getIntent());
 

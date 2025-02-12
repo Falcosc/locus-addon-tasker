@@ -13,8 +13,8 @@ android {
     defaultConfig {
         minSdkVersion Integer.valueOf(PARAM_MIN_SDK_VERSION)
         targetSdkVersion Integer.valueOf(PARAM_TARGET_SDK_VERSION)
-        versionCode 84
-        versionName '1.7.2-SNAPSHOT'
+        versionCode 89
+        versionName '1.8.0-SNAPSHOT'
         buildConfigField 'String', 'CONTACT_EMAIL', '"' + getContactEmail() + '"'
         buildConfigField 'String', 'ACTION_TASK_DOC_URL', '"' + PARAM_ACTION_TASK_DOC_URL + '"'
     }

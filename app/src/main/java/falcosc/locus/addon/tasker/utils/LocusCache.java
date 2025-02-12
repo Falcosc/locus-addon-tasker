@@ -28,6 +28,7 @@ import locus.api.android.objects.LocusVersion;
 import locus.api.android.objects.VersionCode;
 import locus.api.android.utils.LocusUtils;
 import locus.api.android.utils.exceptions.RequiredVersionMissingException;
+import locus.api.objects.geoData.Track;
 
 public final class LocusCache {
     private static final String TAG = "LocusCache"; //NON-NLS
@@ -54,6 +55,11 @@ public final class LocusCache {
     //selected track fields
     @Nullable
     public NavigationProgress.TrackData mLastSelectedTrack;
+
+    @Nullable
+    public Track mLastSharedTrack;
+    @Nullable
+    public TrackPointCache mTrackPointCache;
 
     //empty update container to avoid null checks because result is normally never null
     @SuppressWarnings("InstanceVariableOfConcreteClass")

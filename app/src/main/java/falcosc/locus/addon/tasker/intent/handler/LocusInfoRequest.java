@@ -68,7 +68,7 @@ public class LocusInfoRequest extends AbstractTaskerAction {
 
         for (LocusInfoField locusInfoField : FIELDS) {
             if (selectedFields.contains(locusInfoField.mTaskerName)) {
-                varsBundle.putString("%" + locusInfoField.mTaskerName, String.valueOf(locusInfoField.apply(info)));
+                varsBundle.putString(locusInfoField.getVar(), String.valueOf(locusInfoField.apply(info)));
             }
         }
 

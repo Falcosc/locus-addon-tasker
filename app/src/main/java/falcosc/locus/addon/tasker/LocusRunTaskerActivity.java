@@ -18,7 +18,6 @@ import com.asamm.logger.Logger;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONStringer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +35,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.preference.PreferenceManager;
 import falcosc.locus.addon.tasker.settings.SettingsActivity;
 import falcosc.locus.addon.tasker.thridparty.TaskerIntent;
+import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
 import falcosc.locus.addon.tasker.utils.LocusCache;
 import falcosc.locus.addon.tasker.utils.ReportingHelper;
 import locus.api.android.utils.IntentHelper;
@@ -70,6 +70,9 @@ public class LocusRunTaskerActivity extends ProjectActivity {
         if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("RunTasker_showHelp", true)) { //NON-NLS
             if (!implementedActions.contains(getIntent().getAction())) {
                 mMessage.setText(R.string.run_task_not_implemented);
+            }
+            if (LocusConst.INTENT_ITEM_TRACK_TOOLS.equals(getIntent().getAction())) {
+                mMessage.append("\n" + getString(R.string.run_task_track_hint));
             }
         } else {
             //hide text before checking for errors because errors my want to make it visible again
@@ -200,17 +203,17 @@ public class LocusRunTaskerActivity extends ProjectActivity {
 
             String action = locusIntent.getAction();
             allIntentFields.put("action", action); //NON-NLS
-
             LocusCache locusCache = LocusCache.getInstanceNullable();
             if (locusCache != null) {
-
                 try {
                     if (IntentHelper.INSTANCE.isIntentPointTools(locusIntent)) {
                         Point p = IntentHelper.INSTANCE.getPointFromIntent(locusCache.getApplicationContext(), locusIntent);
                         allIntentFields.putAll(mapPointFields(p, "p_")); //NON-NLS
                     } else if (IntentHelper.INSTANCE.isIntentTrackTools(locusIntent)) {
-                        Track t = IntentHelper.INSTANCE.getTrackFromIntent(locusCache.getApplicationContext(), locusIntent);
-                        allIntentFields.putAll(mapTrackFields(t));
+                        locusCache.mLastSharedTrack = IntentHelper.INSTANCE.getTrackFromIntent(locusCache.getApplicationContext(), locusIntent);
+                        if (locusCache.mLastSharedTrack != null) {
+                            allIntentFields.putAll(mapTrackFields(locusCache.mLastSharedTrack));
+                        }
                     }
                     allIntentFields.values().removeAll(Arrays.asList(null, ""));
                     Logger.d(TAG, "Map: " + allIntentFields); //NON-NLS
@@ -221,7 +224,7 @@ public class LocusRunTaskerActivity extends ProjectActivity {
                 taskerIntent.addLocalVariable("%data", new JSONObject(allIntentFields).toString()); //NON-NLS
                 taskerIntent.addLocalVariable("%fields", StringUtils.join(allIntentFields.keySet(), ',')); //NON-NLS
                 for (Map.Entry<String, Object> e : allIntentFields.entrySet()) {
-                    taskerIntent.addLocalVariable("%" + e.getKey(), e.getValue().toString());
+                    taskerIntent.addLocalVariable(TaskerPlugin.VARIABLE_PREFIX + e.getKey(), e.getValue().toString());
                 }
                 sendBroadcast(taskerIntent);
             }

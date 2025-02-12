@@ -42,7 +42,7 @@ public class UpdateContainerRequest extends AbstractTaskerAction {
             //Don't need to check updateContainerMethodMap, illegal intents creates exceptions
             ExtUpdateContainerGetter lf = locusCache.mExtUpdateContainerFieldMap.get(field);
             if (lf != null) {
-                varsBundle.putString("%" + field, String.valueOf(lf.apply(extUpdate)));
+                varsBundle.putString(TaskerPlugin.VARIABLE_PREFIX + field, String.valueOf(lf.apply(extUpdate)));
             }
             TaskerPlugin.addVariableBundle(mReceiver.getResultExtras(true), varsBundle);
         }

@@ -25,6 +25,7 @@ import androidx.preference.PreferenceManager;
 import falcosc.locus.addon.tasker.intent.edit.ActionTaskEdit;
 import falcosc.locus.addon.tasker.intent.edit.LocusInfoEdit;
 import falcosc.locus.addon.tasker.intent.edit.NotImplementedActions;
+import falcosc.locus.addon.tasker.intent.edit.TrackPointsEdit;
 import falcosc.locus.addon.tasker.intent.edit.UpdateContainerEdit;
 import falcosc.locus.addon.tasker.settings.SettingsActivity;
 import falcosc.locus.addon.tasker.utils.Const;
@@ -119,6 +120,7 @@ public class MainActivity extends ProjectActivity {
         Class<?>[] editClasses = {
                 UpdateContainerEdit.class,
                 LocusInfoEdit.class,
+                TrackPointsEdit.class,
                 ActionTaskEdit.class,
                 LocusGeoTagActivity.class,
                 GeotagPhotosService.class,

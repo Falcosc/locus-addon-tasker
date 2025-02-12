@@ -3,6 +3,7 @@
     <string name="act_request_stats_sensors">Request sensors and stats</string>
     <string name="act_select_version">Select Version</string>
     <string name="act_request_locus_info">Get Locus Info</string>
+    <string name="act_get_track_points">Get Track Points</string>
     <string name="act_exec_task">Execute Action Task</string>
     <string name="act_more">More Actions</string>
     <string name="act_documentation">Documentation</string>
@@ -16,6 +17,7 @@
     <string name="calc_remain_elev_noele">noELE - No elevation data is assigned to your track</string>
     <string name="run_task_not_implemented">This event is not properly implemented, if you want to use it please ask for a Tasker event implementation by sharing your Tasker project idea to tell which data you need. For now you will just get raw data.</string>
     <string name="run_task_execute">Execute your tasks and get all event data as \'\%data\' and available fields as \'\%fields\'\nAll the entries in the output of the %fields variable are existing variables that get sent to tasker and can by used like \%p_lon for example.</string>
+    <string name="run_task_track_hint">Use Plugin Task \'Get Track Points - Track: load last shared\' to work with track points.</string>
     <string name="action_not_implemented_desc">Following API functions are currently not implemented and would be added if somebody request it:
         \n
         \n\t• Export rendered Map screenshot
@@ -122,4 +124,14 @@
     <string name="possible_configuration_errors">Possible configuration errors:</string>
     <string name="err_locus_maps_not_installed">Locus Maps need to be installed</string>
     <string name="err_select_version_no_package">Could not find Locus version for package: %s</string>
+    <string name="err_no_valid_loc_fields">Did not find any valid Fields in Location Field List %s</string>
+    <string name="exec_duration_html_desc">10 last execution runtimes, values get cleared on retrieve</string>
+    <string name="err_trk_points_no_loaded_track">There is no loaded track, use load last shared or load guide track first</string>
+    <string name="err_trk_points_no_track_selected">There was no track selected since last plugin initialization, run any task from track share menu</string>
+    <string name="err_trk_points_no_guide">There is no active Navigation or Guide</string>
+    <string name="err_trk_points_no_guide_by_id">Could not get Guiding Track with Id: %l</string>
+    <string name="err_trk_points_invalid_fields">%s do not match to available fields</string>
+    <string name="count_ignoring_offset">entire track, ignoring offset and count</string>
+    <string name="offset_desc">0 if configured offset was negative</string>
+    <string name="returns_json_structure">Returns following JSON Structure:</string>
 </resources>

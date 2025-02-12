@@ -330,7 +330,7 @@ public class ActionTaskEdit extends TaskerEditActivity {
 
             spinner.setOnItemSelectedListener(new SimpleItemSelectListener(mCheckbox.getText(), (selectedValue) -> {
                 setVisibility(optionalViews, View.GONE);
-                setVisibility(neededViewsByAction.get(selectedValue), View.VISIBLE);
+                setVisibility(neededViewsByAction.get((String) selectedValue), View.VISIBLE);
             }));
 
             bindKey(ACTION, (v) -> setSpinnerValue(spinner, v), spinner::getSelectedItem);
@@ -445,7 +445,7 @@ public class ActionTaskEdit extends TaskerEditActivity {
     private void handleVariableReplacements(@NonNull Bundle extraBundle, @NonNull String jsonString) {
 
         //it is ok to waste some cpu time on false positive actions like "map move x 20%"
-        if (jsonString.contains("%")) {
+        if (jsonString.contains(TaskerPlugin.VARIABLE_PREFIX)) {
             Bundle hostExtras = getIntent().getExtras();
             if (TaskerPlugin.Setting.hostSupportsOnFireVariableReplacement(hostExtras)) {
                 TaskerPlugin.Setting.setVariableReplaceKeys(extraBundle, new String[]{Const.INTENT_EXTRA_FIELD_JSON});

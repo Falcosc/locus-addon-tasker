@@ -145,7 +145,7 @@ public class UpdateContainerEdit extends TaskerEditActivity {
                 return mHelpText;
             }
             mHelpText = new SpannableStringBuilder();
-            mHelpText.append("%" + mTaskerName + " ", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            mHelpText.append(getVar() + " ", new StyleSpan(Typeface.BOLD), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
             try {
                 Field idField = R.string.class.getDeclaredField("uc_" + mTaskerName); //NON-NLS

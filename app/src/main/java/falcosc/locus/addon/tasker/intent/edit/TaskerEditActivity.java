@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.asamm.logger.Logger;
@@ -122,6 +123,13 @@ public abstract class TaskerEditActivity extends AppCompatActivity {
         return null;
     }
 
+    static void setVarSelectDialog(@Nullable Dialog varSelectDialog, EditText text, View varSelectBtn) {
+        if (varSelectDialog != null) {
+            text.setOnFocusChangeListener((v, hasFocus) -> varSelectBtn.setVisibility(hasFocus ? View.VISIBLE : View.GONE));
+            varSelectBtn.setOnClickListener(v -> varSelectDialog.show());
+        }
+    }
+
     @Nullable
     Intent createResultIntent(LocusActionType actionType, ArrayList<TaskerField> locusFields) {
 
@@ -187,5 +195,14 @@ public abstract class TaskerEditActivity extends AppCompatActivity {
             errMsgHtml.append(" • ").append(errorMsg).append("<br/>");
         }
         return errMsgHtml.toString();
+    }
+
+    static void setSpinnerValue(Spinner spinner, Object value) {
+        if (value != null) {
+            if (spinner.getAdapter() instanceof ArrayAdapter) {
+                //noinspection unchecked because it is a generic Object Array
+                spinner.setSelection(((ArrayAdapter<Object>) spinner.getAdapter()).getPosition(value));
+            }
+        }
     }
 }

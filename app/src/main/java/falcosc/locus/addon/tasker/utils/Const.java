@@ -4,7 +4,7 @@ import org.apache.commons.lang3.time.FastDateFormat;
 
 import java.util.Locale;
 
-@SuppressWarnings({"HardCodedStringLiteral", "WeakerAccess", "NonNls"})
+@SuppressWarnings({"WeakerAccess"})
 public final class Const {
     /**
      * field list key for get update container
@@ -22,6 +22,13 @@ public final class Const {
     public static final String INTENT_EXTRA_GEOTAG_OFFSET = "offset";
 
     public static final String INTENT_EXTRA_GEOTAG_REPORT_NON_MATCH = "REPORT_NON_MATCH";
+
+    public static final String INTENT_EXTRA_TRK_POINTS_TYPE = "INTENT_EXTRA_TRK_POINTS_TYPE";
+    public static final String INTENT_EXTRA_TRK_SOURCE = "INTENT_EXTRA_TRK_SOURCE";
+    public static final String INTENT_EXTRA_LOCATION_FIELDS = "INTENT_EXTRA_LOCATION_FIELDS";
+    public static final String INTENT_EXTRA_WAYPOINT_FIELDS = "INTENT_EXTRA_WAYPOINT_FIELDS";
+    public static final String INTENT_EXTRA_OFFSET = "INTENT_EXTRA_OFFSET";
+    public static final String INTENT_EXTRA_COUNT = "INTENT_EXTRA_COUNT";
 
     public static final int NOTIFICATION_ID_GEOTAG = 1;
     public static final int NOTIFICATION_ID_COMMON_ERROR = 2;
