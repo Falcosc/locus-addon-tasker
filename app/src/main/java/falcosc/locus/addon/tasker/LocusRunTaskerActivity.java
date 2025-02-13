@@ -196,7 +196,7 @@ public class LocusRunTaskerActivity extends ProjectActivity {
             TaskerIntent taskerIntent = new TaskerIntent(taskName);
             Intent locusIntent = getIntent();
 
-            LinkedHashMap<String, String> allIntentFields = getAllIntentFields(locusIntent);
+            LinkedHashMap<String, Object> allIntentFields = getAllIntentFields(locusIntent);
 
             String action = locusIntent.getAction();
             allIntentFields.put("action", action); //NON-NLS
@@ -220,8 +220,8 @@ public class LocusRunTaskerActivity extends ProjectActivity {
 
                 taskerIntent.addLocalVariable("%data", new JSONObject(allIntentFields).toString()); //NON-NLS
                 taskerIntent.addLocalVariable("%fields", StringUtils.join(allIntentFields.keySet(), ',')); //NON-NLS
-                for (Map.Entry<String, String> e : allIntentFields.entrySet()) {
-                    taskerIntent.addLocalVariable("%" + e.getKey(), e.getValue());
+                for (Map.Entry<String, Object> e : allIntentFields.entrySet()) {
+                    taskerIntent.addLocalVariable("%" + e.getKey(), e.getValue().toString());
                 }
                 sendBroadcast(taskerIntent);
             }
@@ -282,28 +282,25 @@ public class LocusRunTaskerActivity extends ProjectActivity {
             GeoDataExtra.PAR_OSM_NOTES_CLOSED
     };
 
-    private static String getExtraDataAsJSON(GeoDataExtra extraData) {
-        JSONStringer stringer = new JSONStringer();
+    private static JSONObject getExtraDataAsJSON(GeoDataExtra extraData) {
+        JSONObject jsonObject = new JSONObject();
         try {
-            stringer.object();
             for (int key : EXTRA_DATA_PAR_KEYS) {
                 byte[] data = extraData.getParameterRaw(key);
                 if (data != null) {
-                    stringer.key(String.valueOf(key));
-                    stringer.value(Utils.INSTANCE.doBytesToString(data));
+                    jsonObject.put(String.valueOf(key), Utils.INSTANCE.doBytesToString(data));
                 }
             }
-            stringer.endObject();
         } catch (JSONException e) {
             Logger.e(e, TAG, "can not create extra data json"); //NON-NLS
         }
 
-        return stringer.toString();
+        return jsonObject;
     }
 
     @SuppressWarnings("HardCodedStringLiteral")
-    private static LinkedHashMap<String, String> mapGeoDataFields(String prefix, GeoData g) {
-        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+    private static LinkedHashMap<String, Object> mapGeoDataFields(String prefix, GeoData g) {
+        LinkedHashMap<String, Object> map = new LinkedHashMap<>();
 
         map.put(prefix + "name", g.getName());
         map.put(prefix + "param_desc", GeoDataHelperKt.getParameterDescription(g));
@@ -358,16 +355,16 @@ public class LocusRunTaskerActivity extends ProjectActivity {
         return map;
     }
 
-    public static LinkedHashMap<String, String> mapPointFields(Point p, String prefix) {
-        LinkedHashMap<String, String> map = new LinkedHashMap<>(mapGeoDataFields(prefix, p));
+    public static LinkedHashMap<String, Object> mapPointFields(Point p, String prefix) {
+        LinkedHashMap<String, Object> map = new LinkedHashMap<>(mapGeoDataFields(prefix, p));
         map.putAll(mapLocationFields(prefix, p.getLocation()));
         return map;
     }
 
     @SuppressWarnings("HardCodedStringLiteral")
-    private static LinkedHashMap<String, String> mapTrackFields(Track t) {
+    private static LinkedHashMap<String, Object> mapTrackFields(Track t) {
         String prefix = "t_";
-        LinkedHashMap<String, String> map = new LinkedHashMap<>(mapGeoDataFields(prefix, t));
+        LinkedHashMap<String, Object> map = new LinkedHashMap<>(mapGeoDataFields(prefix, t));
         int pointCount = t.getPointsCount();
         map.put(prefix + "point_count", Integer.toString(pointCount));
         if (pointCount > 0) {
@@ -384,8 +381,8 @@ public class LocusRunTaskerActivity extends ProjectActivity {
 
 
     @NonNull
-    private static LinkedHashMap<String, String> getAllIntentFields(@NonNull Intent intent) {
-        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+    private static LinkedHashMap<String, Object> getAllIntentFields(@NonNull Intent intent) {
+        LinkedHashMap<String, Object> map = new LinkedHashMap<>();
 
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
