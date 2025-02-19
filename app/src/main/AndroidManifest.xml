@@ -22,13 +22,13 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <queries>
-        <package android:name="menion.android.locus" />
+        <!--<package android:name="menion.android.locus" />
         <package android:name="menion.android.locus.free.amazon" />
         <package android:name="menion.android.locus.free.samsung" />
         <package android:name="menion.android.locus.pro" />
         <package android:name="menion.android.locus.pro.amazon" />
         <package android:name="menion.android.locus.pro.asamm" />
-        <package android:name="menion.android.locus.pro.computerBild" />
+        <package android:name="menion.android.locus.pro.computerBild" />-->
         <package android:name="net.dinglisch.android.taskerm" />
         <intent>
             <action android:name="android.intent.action.VIEW" />
@@ -279,6 +279,17 @@
             android:name=".intent.edit.SelectVersion"
             android:exported="true"
             android:label="@string/act_select_version"
+            android:icon="@mipmap/ic_launcher"
+            android:theme="@style/AlertDialogTheme">
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".intent.edit.SelectVersionFix"
+            android:exported="true"
+            android:label="Picklist Fix"
             android:icon="@mipmap/ic_launcher"
             android:theme="@style/AlertDialogTheme">
             <intent-filter>
