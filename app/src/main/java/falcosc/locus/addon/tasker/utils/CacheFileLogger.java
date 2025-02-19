@@ -29,7 +29,7 @@ public class CacheFileLogger implements Logger.ILogger {
         return context.getExternalCacheDir();
     }
 
-    public CacheFileLogger(Context context){
+    public CacheFileLogger(Context context) {
         File cacheDir = getFolderPath(context);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HHmmss", Locale.ENGLISH); //NON-NLS
         outputFile = new File(cacheDir, dateFormat.format(Calendar.getInstance().getTime()) + ".log");
@@ -37,14 +37,14 @@ public class CacheFileLogger implements Logger.ILogger {
 
     private void writeToFile(@Nullable Throwable throwable, @NonNull String msg, @NonNull Object... args) {
         //noinspection ImplicitDefaultCharsetUsage before API 33 constructor does not support it and it's ok to have broken logs
-        try(FileWriter fw = new FileWriter(outputFile, true);
-            BufferedWriter bw = new BufferedWriter(fw);
-            PrintWriter printWriter = new PrintWriter(bw)) {
+        try (FileWriter fw = new FileWriter(outputFile, true);
+             BufferedWriter bw = new BufferedWriter(fw);
+             PrintWriter printWriter = new PrintWriter(bw)) {
 
             printWriter.print(logTime.format(Calendar.getInstance().getTime()));
             printWriter.printf(msg, args);
             printWriter.println();
-            if(throwable != null) {
+            if (throwable != null) {
                 printWriter.println(throwable.getMessage());
                 if (throwable.getCause() != null) {
                     printWriter.println(throwable.getCause().getMessage());
@@ -56,30 +56,47 @@ public class CacheFileLogger implements Logger.ILogger {
         }
     }
 
+    public static String getMessageWithArgs(@NonNull String msg, @NonNull Object... args) {
+        StringBuilder sb = new StringBuilder(msg);
+        for (int i = 0; i < args.length; i++) {
+            if (!(args[i] instanceof Object[])) {
+                sb.append(args[i]);
+                if (i < (args.length - 1)) {
+                    sb.append(", ");
+                }
+            }
+        }
+        if (sb.length() > msg.length()) {
+            sb.insert(msg.length(), " (");
+            sb.append(")");
+        }
+        return sb.toString();
+    }
+
     @Override
     public void logD(@Nullable Throwable throwable, @NonNull String tag, @NonNull String msg, @NonNull Object... args) {
-        Log.d(tag, String.format(msg, args), throwable);
+        Log.d(tag, getMessageWithArgs(msg, args), throwable);
     }
 
     @Override
     public void logV(@NonNull String tag, @NonNull String msg, @NonNull Object... args) {
-        Log.v(tag, String.format(msg, args));
+        Log.v(tag, getMessageWithArgs(msg, args));
     }
 
     @Override
     public void logI(@NonNull String tag, @NonNull String msg, @NonNull Object... args) {
-        Log.i(tag, String.format(msg, args));
+        Log.i(tag, getMessageWithArgs(msg, args));
     }
 
     @Override
     public void logW(@Nullable Throwable throwable, @NonNull String tag, @NonNull String msg, @NonNull Object... args) {
-        Log.w(tag, String.format(msg, args), throwable);
+        Log.w(tag, getMessageWithArgs(msg, args), throwable);
         writeToFile(throwable, "WARN " + tag + ": " + msg, args);
     }
 
     @Override
     public void logE(@Nullable Throwable throwable, @NonNull String tag, @NonNull String msg, @NonNull Object... args) {
-        Log.e(tag, String.format(msg, args), throwable);
+        Log.e(tag, getMessageWithArgs(msg, args), throwable);
         writeToFile(throwable, "ERROR " + tag + ": " + msg, args);
     }
 }
