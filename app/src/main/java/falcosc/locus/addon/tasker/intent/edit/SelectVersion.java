@@ -97,6 +97,12 @@ public class SelectVersion extends TaskerEditActivity {
             return null;
         }
 
+        TaskerPlugin.addRelevantVariableList(resultIntent, new String[]{
+                Const.ERROR_MSG_VAR.getVarDesc(getErrMsgHtmlDesc(getString(R.string.feature_messages), new String[]{
+                        getString(R.string.err_select_version_no_package)
+                }))
+        });
+
         //force synchronous execution by set a timeout to handle variables
         TaskerPlugin.Setting.requestTimeoutMS(resultIntent, DEFAULT_REQUEST_TIMEOUT_MS);
 

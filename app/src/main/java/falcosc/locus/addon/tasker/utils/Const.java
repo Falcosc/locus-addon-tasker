@@ -37,6 +37,7 @@ public final class Const {
 
     public static final String NOTIFICATION_CHANNEL_ID = "LOCUS_TASKER";
     public static final long NOTIFICATION_REPEAT_AFTER = 300L;
+    public static final TaskerField ERROR_MSG_VAR = new TaskerField("errmsg", "Error Message"); // NON-NLS
 
     private Const() {
     }

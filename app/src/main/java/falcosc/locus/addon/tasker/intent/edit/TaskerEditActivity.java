@@ -138,13 +138,22 @@ public abstract class TaskerEditActivity extends AppCompatActivity {
         }
 
         String[] fieldKeys = new String[locusFields.size()];
-        String[] fieldDesc = new String[locusFields.size()];
+        String[] fieldDesc = new String[locusFields.size() + 1];
         for (int i = 0; i < locusFields.size(); i++) {
             TaskerField field = locusFields.get(i);
-            fieldDesc[i] = "%" + field.mTaskerName + "\n" + field.mLabel + "\n";
+            fieldDesc[i] = field.getVarDesc();
             fieldKeys[i] = field.mTaskerName;
         }
         Arrays.sort(fieldKeys);
+
+        String[] errorMessages = {
+                getString(R.string.err_missing_field, "CONFIG_FIELD"), //NON-NLS
+                getString(R.string.err_field_selection_missing),
+                getString(R.string.err_not_set_sync_exec),
+                getString(R.string.err_no_support_return_variables)
+        };
+        String errMsgHtml = getErrMsgHtmlDesc(getString(R.string.possible_configuration_errors), errorMessages);
+        fieldDesc[locusFields.size()] = Const.ERROR_MSG_VAR.getVarDesc(errMsgHtml);
 
         Bundle extraBundle = new Bundle();
         extraBundle.putString(Const.INTEND_EXTRA_ADDON_ACTION_TYPE, actionType.name());
@@ -169,5 +178,14 @@ public abstract class TaskerEditActivity extends AppCompatActivity {
             EditText editText = (EditText) v;
             editText.getText().insert(Math.max(editText.getSelectionStart(), 0), text);
         }
+    }
+
+    @NonNull
+    static String getErrMsgHtmlDesc(String headLine, String[] errorMessages) {
+        StringBuilder errMsgHtml = new StringBuilder(headLine + "<br/>");
+        for(String errorMsg : errorMessages){
+            errMsgHtml.append(" • ").append(errorMsg).append("<br/>");
+        }
+        return errMsgHtml.toString();
     }
 }

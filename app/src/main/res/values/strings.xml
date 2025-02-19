@@ -44,10 +44,10 @@
     <string name="issues_url">https://github.com/Falcosc/locus-addon-tasker/issues</string>
     <string name="issues_link">https://github.com/Falcosc/locus-addon-tasker/issues</string>
     <string name="err_notification_permission">No permission to display error notifications</string>
-    <string name="err_no_support_relevant_variables">Your app setup does not support variables</string>
-    <string name="err_no_support_sync_exec">Your app setup does not Synchronous execution to handle variables</string>
-    <string name="err_no_support_return_variables">Your app setup does not support return variables</string>
-    <string name="err_not_set_sync_exec">Your app setup did not set Synchronous execution to handle variables</string>
+    <string name="err_no_support_relevant_variables">Your app configuration does not support variables</string>
+    <string name="err_no_support_sync_exec">Your configuration does not support synchronous execution to handle variables.</string>
+    <string name="err_no_support_return_variables">Your app configuration does not support return variables</string>
+    <string name="err_not_set_sync_exec">Received request needs to be an ordered broadcast to wait for return variables, on tasker you need to set an timeout value</string>
     <string name="err_field_selection_missing">Field selection is missing</string>
     <string name="err_cant_start_task">Can\'t start Task:</string>
     <string name="close">Close</string>
@@ -117,4 +117,9 @@
     <string name="settings">Settings</string>
     <string name="run_task_excluded_tasks">Following Tasks did not match with your regex:</string>
     <string name="error_in_cache">Error stored in folder %s</string>
+    <string name="err_missing_field">Configuration %s is missing</string>
+    <string name="feature_messages">Feature related messages:</string>
+    <string name="possible_configuration_errors">Possible configuration errors:</string>
+    <string name="err_locus_maps_not_installed">Locus Maps need to be installed</string>
+    <string name="err_select_version_no_package">Could not find Locus version for package: %s</string>
 </resources>

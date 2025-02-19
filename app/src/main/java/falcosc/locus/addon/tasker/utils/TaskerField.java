@@ -27,4 +27,16 @@ public class TaskerField {
         mTaskerName = field.mTaskerName;
         mLabel = field.mLabel;
     }
+
+    public String getVar() {
+        return TaskerPlugin.VARIABLE_PREFIX + mTaskerName;
+    }
+
+    public String getVarDesc() {
+        return getVar() + "\n" + mLabel + "\n";
+    }
+
+    public String getVarDesc(String htmlDescription) {
+        return getVar() + "\n" + mLabel + "\n" + htmlDescription;
+    }
 }

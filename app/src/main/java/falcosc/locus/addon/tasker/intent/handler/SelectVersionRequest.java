@@ -3,6 +3,7 @@ package falcosc.locus.addon.tasker.intent.handler;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import falcosc.locus.addon.tasker.R;
 import falcosc.locus.addon.tasker.RequiredDataMissingException;
 import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
 import falcosc.locus.addon.tasker.utils.LocusCache;
@@ -39,7 +40,7 @@ public class SelectVersionRequest extends AbstractTaskerAction {
             lv = LocusUtils.INSTANCE.createLocusVersion(mContext, packageName);
         }
         if (lv == null) {
-            throw new RequiredDataMissingException("Could not found version for package: " + packageName);
+            throw new RequiredDataMissingException(mContext.getString(R.string.err_select_version_no_package, packageName));
         }
         locusCache.mLocusVersion = lv;
 
