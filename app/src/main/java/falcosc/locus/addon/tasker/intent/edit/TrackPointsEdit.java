@@ -32,6 +32,8 @@ import falcosc.locus.addon.tasker.utils.listener.SimpleItemSelectListener;
 public class TrackPointsEdit extends TaskerEditActivity {
 
     public static final TaskerField TRACK_SEGMENT_VAR = new TaskerField("trkseg", "JSON Keys:");
+    public static final TaskerField TRACK_POINT_COUNT = new TaskerField("trk_pt_count", "Total Track Points");
+    public static final TaskerField TRACK_WAYPOINT_COUNT = new TaskerField("trk_wpt_count", "Total Track Waypoints");
     public static final String WAYPOINTS_KEY = "Waypoints";
     public static final String POINTS_KEY = "Points";
     public static final String OFFSET_KEY = "Offset";

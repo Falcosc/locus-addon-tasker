@@ -47,7 +47,7 @@ public class TaskerField {
 
     public String getVarDesc(Map<String, Object> jsonDesc, String jsonDescPrefix) throws JSONException {
         String jsonString = new JSONObject(jsonDesc).toString(2);
-        //noinspection DynamicRegexReplaceableByCompiledPattern
+        //noinspection DynamicRegexReplaceableByCompiledPattern this replace method does not use regex
         jsonString = jsonString.replace("\n", "<br/>").replace("  ", "&nbsp;&nbsp;"); //NON-NLS
         return getVar() + "\n"
                 + mLabel + " " + String.join(", ", jsonDesc.keySet()) + "\n"

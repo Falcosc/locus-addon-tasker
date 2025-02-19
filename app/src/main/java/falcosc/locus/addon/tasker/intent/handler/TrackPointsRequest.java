@@ -51,6 +51,8 @@ public class TrackPointsRequest extends AbstractTaskerAction {
 
         Bundle vars = new Bundle();
         vars.putString(TrackPointsEdit.TRACK_SEGMENT_VAR.getVar(), track.getSelectedSegment(pointType).toString());
+        vars.putString(TrackPointsEdit.TRACK_POINT_COUNT.getVar(), String.valueOf(track.mTrack.getPoints().size()));
+        vars.putString(TrackPointsEdit.TRACK_WAYPOINT_COUNT.getVar(), String.valueOf(track.mTrack.getWaypoints().size()));
         TaskerPlugin.addVariableBundle(mReceiver.getResultExtras(true), vars);
 
         mReceiver.setResultCode(TaskerPlugin.Setting.RESULT_CODE_OK);
