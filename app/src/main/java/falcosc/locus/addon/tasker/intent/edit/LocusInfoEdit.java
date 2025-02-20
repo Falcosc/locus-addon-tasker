@@ -74,6 +74,9 @@ public class LocusInfoEdit extends TaskerEditActivity {
             int position = mCheckState.keyAt(i);
             if (mCheckState.valueAt(i)) {
                 TaskerField field = fields.get(position);
+                if(field.mTaskerName.endsWith(LocusInfoRequest.DURATION_FIELD_SUFFIX)) {
+                    field.mHTMLDesc = getString(R.string.exec_duration_html_desc);
+                }
                 selectedFields.add(field);
                 mStoredFieldSelection.add(field.mTaskerName);
             }

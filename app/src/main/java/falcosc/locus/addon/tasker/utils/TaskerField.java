@@ -15,6 +15,7 @@ import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
 public class TaskerField {
     public final String mTaskerName;
     public final String mLabel;
+    public String mHTMLDesc = "";
 
     public TaskerField(@NonNls @NonNull String taskerName, @Nullable String label) {
         if (!TaskerPlugin.variableNameValid(TaskerPlugin.VARIABLE_PREFIX + taskerName)) {
@@ -31,6 +32,7 @@ public class TaskerField {
     public TaskerField(TaskerField field) {
         mTaskerName = field.mTaskerName;
         mLabel = field.mLabel;
+        mHTMLDesc = field.mHTMLDesc;
     }
 
     public String getVar() {
@@ -38,7 +40,7 @@ public class TaskerField {
     }
 
     public String getVarDesc() {
-        return getVar() + "\n" + mLabel + "\n";
+        return getVar() + "\n" + mLabel + "\n" + mHTMLDesc;
     }
 
     public String getVarDesc(String htmlDescription) {

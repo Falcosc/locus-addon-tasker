@@ -2,6 +2,8 @@ package falcosc.locus.addon.tasker.intent.handler;
 
 import android.os.Bundle;
 
+import org.jetbrains.annotations.NonNls;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,7 +11,9 @@ import java.util.Set;
 
 import androidx.annotation.NonNull;
 import falcosc.locus.addon.tasker.RequiredDataMissingException;
+import falcosc.locus.addon.tasker.intent.LocusActionType;
 import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
+import falcosc.locus.addon.tasker.utils.ExecutionTimes;
 import falcosc.locus.addon.tasker.utils.LocusCache;
 import falcosc.locus.addon.tasker.utils.LocusInfoField;
 import falcosc.locus.addon.tasker.utils.TaskerField;
@@ -18,7 +22,8 @@ import locus.api.android.objects.LocusInfo;
 
 public class LocusInfoRequest extends AbstractTaskerAction {
 
-    @SuppressWarnings("HardCodedStringLiteral")
+    @NonNls
+    public static final String DURATION_FIELD_SUFFIX = "_durations";
     private static final ArrayList<LocusInfoField> FIELDS = new ArrayList<>(Arrays.asList(
             new LocusInfoField("dir_backup", "Backup Folder", LocusInfo::getRootDirBackup),
             new LocusInfoField("dir_root", "Main Folder", LocusInfo::getRootDir),
@@ -41,15 +46,21 @@ public class LocusInfoRequest extends AbstractTaskerAction {
             new LocusInfoField("unit_area", "Unit Format Weight", LocusInfo::getUnitsFormatArea),
             new LocusInfoField("unit_energy", "Unit Format Energy", LocusInfo::getUnitsFormatEnergy),
             new LocusInfoField("unit_slope", "Unit Format Slope", LocusInfo::getUnitsFormatSlope),
-            new LocusInfoField("gc_owner_name", "GeoCache Owner Name", LocusInfo::getGcOwnerName)
+            new LocusInfoField("gc_owner_name", "GeoCache Owner Name", LocusInfo::getGcOwnerName),
+            new LocusInfoField("select_version_req" + DURATION_FIELD_SUFFIX, "Runtimes: Select Version",
+                    info -> ExecutionTimes.INSTANCE.extractDurations(LocusActionType.SELECT_VERSION)),
+            new LocusInfoField("locus_info_req" + DURATION_FIELD_SUFFIX, "Runtimes: Locus Info",
+                    info -> ExecutionTimes.INSTANCE.extractDurations(LocusActionType.LOCUS_INFO_REQUEST)),
+            new LocusInfoField("action_task_req" + DURATION_FIELD_SUFFIX, "Runtimes: Execute Action Task",
+                    info -> ExecutionTimes.INSTANCE.extractDurations(LocusActionType.ACTION_TASK)),
+            new LocusInfoField("track_points_req" + DURATION_FIELD_SUFFIX, "Runtimes: Get Track Points",
+                    info -> ExecutionTimes.INSTANCE.extractDurations(LocusActionType.TRACK_POINTS_REQUEST)),
+            new LocusInfoField("update_container_req" + DURATION_FIELD_SUFFIX, "Runtimes: Request sensors and stats",
+                    info -> ExecutionTimes.INSTANCE.extractDurations(LocusActionType.UPDATE_CONTAINER_REQUEST))
     ));
 
     public static List<TaskerField> getFieldNames() {
-        List<TaskerField> fields = new ArrayList<>();
-        for (int i = 0; i < FIELDS.size(); i++) {
-            fields.add(new TaskerField(FIELDS.get(i)));
-        }
-        return fields;
+        return new ArrayList<>(FIELDS);
     }
 
     @Override

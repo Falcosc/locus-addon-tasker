@@ -105,6 +105,13 @@ If you have multiple versions running on the same device, you can select from wh
 - unit_slope
 - gc_owner_name
 
+### Request Monitoring
+- select_version_req_durations
+- locus_info_req_durations
+- action_task_req_durations
+- track_points_req_durations
+- update_container_req_durations
+
 ### Status Fields
 - my_latitude
 - my_longitude

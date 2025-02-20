@@ -12,6 +12,7 @@ import com.asamm.logger.Logger;
 import falcosc.locus.addon.tasker.intent.LocusActionType;
 import falcosc.locus.addon.tasker.intent.handler.TaskerAction;
 import falcosc.locus.addon.tasker.utils.Const;
+import falcosc.locus.addon.tasker.utils.ExecutionTimes;
 import falcosc.locus.addon.tasker.utils.ReportingHelper;
 
 
@@ -21,6 +22,8 @@ public class TaskerActionFireReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
+        long startTime = System.nanoTime();
+        Logger.d(TAG, "onReceive start"); //NON-NLS
         Bundle apiExtraBundle = intent.getBundleExtra(com.twofortyfouram.locale.api.Intent.EXTRA_BUNDLE);
         if (apiExtraBundle == null) {
             Logger.i(TAG, "onReceive EXTRA_BUNDLE missing"); //NON-NLS
@@ -34,12 +37,16 @@ public class TaskerActionFireReceiver extends BroadcastReceiver {
         }
 
         try {
-            TaskerAction action = LocusActionType.valueOf(actionType).createHandler();
+            LocusActionType type = LocusActionType.valueOf(actionType);
+            TaskerAction action = type.createHandler();
             action.setContext(context, this);
             Logger.i(TAG, "onReceive: " + apiExtraBundle); //NON-NLS
             action.handle(intent, apiExtraBundle);
+            ExecutionTimes.INSTANCE.addDuration(type, System.nanoTime() - startTime);
         } catch (Exception e) {
             new ReportingHelper(context).sendErrorNotification(TAG, "Can't execute action " + actionType, e); //NON-NLS
         }
+
+        Logger.i(TAG, "finish " + actionType + " after " + ExecutionTimes.formatNanoToMilli(System.nanoTime() - startTime)); //NON-NLS
     }
 }
