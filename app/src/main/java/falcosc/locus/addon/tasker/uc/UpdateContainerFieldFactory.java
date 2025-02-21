@@ -136,6 +136,7 @@ public class UpdateContainerFieldFactory {
             return "";
         }));
         list.add(cField("simulate_error_visible", "", u -> {
+            //noinspection ProhibitedExceptionThrown
             throw new RuntimeException("Simulated Error");
         }));
 

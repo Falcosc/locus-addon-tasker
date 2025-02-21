@@ -1,0 +1,11 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Suite">
+    <test name="Tests">
+        <classes>
+            <class name="ExecutionTimesTest"/>
+            <class name="LocusConstTest"/>
+            <class name="LocusInfoGettersTest"/>
+            <class name="UpdateContainerGettersTest"/>
+        </classes>
+    </test>
+</suite>

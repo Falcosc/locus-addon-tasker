@@ -16,6 +16,7 @@ import java.util.Set;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import falcosc.locus.addon.tasker.BuildConfig;
+import falcosc.locus.addon.tasker.R;
 import falcosc.locus.addon.tasker.RequiredDataMissingException;
 import falcosc.locus.addon.tasker.reminder.VersionSelectReminder;
 import falcosc.locus.addon.tasker.uc.ExtUpdateContainer;
@@ -118,7 +119,7 @@ public final class LocusCache {
     @NonNull
     public LocusVersion requireLocusVersion() throws RequiredDataMissingException {
         if (mLocusVersion == null) {
-            throw new RequiredDataMissingException("Locus Maps need to be installed");
+            throw new RequiredDataMissingException(mApplicationContext.getString(R.string.err_locus_maps_not_installed));
         }
         return mLocusVersion;
     }
@@ -136,6 +137,7 @@ public final class LocusCache {
         return mInstance;
     }
 
+    //TODO move to application context to remove MissingAppContextException after resolving Package Permission issues
     @NonNull
     public static LocusCache getInstanceUnsafe(@NonNull Context context) throws MissingAppContextException {
         if (mInstance == null) {
@@ -164,7 +166,7 @@ public final class LocusCache {
     /**
      * used for debugging without process termination
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings("unused") //NON-NLS
     public static void reset() {
         mInstance = null;
     }

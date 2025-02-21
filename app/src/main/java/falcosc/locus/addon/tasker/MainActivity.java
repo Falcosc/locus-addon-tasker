@@ -3,7 +3,6 @@ package falcosc.locus.addon.tasker;
 import android.Manifest;
 import android.app.Service;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -88,7 +87,7 @@ public class MainActivity extends ProjectActivity {
         Intent importIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.TaskerExampleProjectImportLink)));
         try {
             startActivity(importIntent); //taskershare does always respond 0 with null data, does not make sense to check it
-            getPreferences(Context.MODE_PRIVATE).edit().putInt(IMPORTED_EXAMPLE_PROJECT_VER, 1).apply();
+            getPreferences(MODE_PRIVATE).edit().putInt(IMPORTED_EXAMPLE_PROJECT_VER, 1).apply();
         } catch (ActivityNotFoundException e) {
             Logger.e(e, TAG, ReportingHelper.getUserFriendlyName(e));
         }
@@ -109,7 +108,7 @@ public class MainActivity extends ProjectActivity {
             Logger.e(e, TAG, ReportingHelper.getUserFriendlyName(e));
         }
 
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getPreferences(MODE_PRIVATE);
         int importedVersion = sharedPref.getInt(IMPORTED_EXAMPLE_PROJECT_VER, 0);
         Logger.i(TAG, IMPORTED_EXAMPLE_PROJECT_VER + ": " + importedVersion);
         return importedVersion < 1;

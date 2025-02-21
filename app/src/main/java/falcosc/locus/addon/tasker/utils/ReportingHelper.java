@@ -17,7 +17,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;

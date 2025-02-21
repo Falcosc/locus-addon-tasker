@@ -70,7 +70,7 @@ public class VersionSelectReminder {
         long requestTime = System.currentTimeMillis();
         if (requestTime > mReminderVisibleEndTime) {
             mReminderVisibleEndTime = requestTime + (DateUtils.SECOND_IN_MILLIS * 7);
-            Toast.makeText(mContext, R.string.version_select_reminder, Toast.LENGTH_LONG).show();
+            Toast.makeText(mContext, R.string.version_select_reminder, Toast.LENGTH_LONG).show(); //TODO needs to be an dialog
             Toast.makeText(mContext, R.string.version_select_reminder, Toast.LENGTH_LONG).show();
         }
     }

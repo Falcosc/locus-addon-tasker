@@ -31,7 +31,6 @@ import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.preference.PreferenceManager;
 import falcosc.locus.addon.tasker.settings.SettingsActivity;
 import falcosc.locus.addon.tasker.thridparty.TaskerIntent;
@@ -89,8 +88,7 @@ public class LocusRunTaskerActivity extends ProjectActivity {
             }
         }
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(findViewById(R.id.toolbar));
     }
 
     @Override
