@@ -22,6 +22,7 @@ public class TaskerActionFireReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
+        ExecutionTimes.INSTANCE.addDurationSinceLastAdd(ExecutionTimes.Type.HANDLE_MESSAGE_TO_RECEIVE);
         long startTime = System.nanoTime();
         Logger.d(TAG, "onReceive start"); //NON-NLS
         Bundle apiExtraBundle = intent.getBundleExtra(com.twofortyfouram.locale.api.Intent.EXTRA_BUNDLE);
@@ -41,6 +42,7 @@ public class TaskerActionFireReceiver extends BroadcastReceiver {
             TaskerAction action = type.createHandler();
             action.setContext(context, this);
             Logger.i(TAG, "onReceive: " + apiExtraBundle); //NON-NLS
+            ExecutionTimes.INSTANCE.addDurationSinceLastAdd(ExecutionTimes.Type.FIND_PROCESSOR);
             action.handle(intent, apiExtraBundle);
             ExecutionTimes.INSTANCE.addDuration(type, System.nanoTime() - startTime);
         } catch (Exception e) {
@@ -48,5 +50,7 @@ public class TaskerActionFireReceiver extends BroadcastReceiver {
         }
 
         Logger.i(TAG, "finish " + actionType + " after " + ExecutionTimes.formatNanoToMilli(System.nanoTime() - startTime)); //NON-NLS
+
+        ExecutionTimes.INSTANCE.addDurationSinceLastAdd(ExecutionTimes.Type.RETURN_VARS);
     }
 }

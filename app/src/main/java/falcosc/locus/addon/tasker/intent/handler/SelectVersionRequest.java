@@ -1,11 +1,13 @@
 package falcosc.locus.addon.tasker.intent.handler;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import falcosc.locus.addon.tasker.R;
 import falcosc.locus.addon.tasker.RequiredDataMissingException;
 import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
+import falcosc.locus.addon.tasker.utils.ExecutionTimes;
 import falcosc.locus.addon.tasker.utils.LocusCache;
 import locus.api.android.ActionBasics;
 import locus.api.android.objects.LocusInfo;
@@ -19,7 +21,9 @@ public class SelectVersionRequest extends AbstractTaskerAction {
 
     @Override
     protected void doHandle(@NonNull Bundle apiExtraBundle) throws LocusCache.MissingAppContextException, RequiredDataMissingException {
-
+        for (ExecutionTimes.Type t : ExecutionTimes.Type.values()) {
+            Log.d("TEST",t.toString() + ": " + ExecutionTimes.INSTANCE.extractDurations(t));
+        }
         LocusCache locusCache = LocusCache.getInstanceUnsafe(mContext);
 
         String packageName = apiExtraBundle.getString(LocusConst.INTENT_EXTRA_PACKAGE_NAME);

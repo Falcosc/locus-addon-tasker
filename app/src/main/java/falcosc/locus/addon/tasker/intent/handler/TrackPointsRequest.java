@@ -9,6 +9,7 @@ import falcosc.locus.addon.tasker.intent.edit.TrackPointsEdit;
 import falcosc.locus.addon.tasker.thridparty.TaskerPlugin;
 import falcosc.locus.addon.tasker.uc.NavigationProgress;
 import falcosc.locus.addon.tasker.utils.Const;
+import falcosc.locus.addon.tasker.utils.ExecutionTimes;
 import falcosc.locus.addon.tasker.utils.LocusCache;
 import falcosc.locus.addon.tasker.utils.TrackPointCache;
 import locus.api.android.ActionBasics;
@@ -40,6 +41,8 @@ public class TrackPointsRequest extends AbstractTaskerAction {
         int count = Math.max(Integer.parseInt(apiExtraBundle.getString(Const.INTENT_EXTRA_COUNT, "100")), 100);
         int offset = Math.max(Integer.parseInt(apiExtraBundle.getString(Const.INTENT_EXTRA_OFFSET, "0")), 0);
 
+        ExecutionTimes.INSTANCE.addDurationSinceLastAdd(ExecutionTimes.Type.PARSE_VARS);
+
         LocusCache locusCache = LocusCache.getInstanceUnsafe(mContext);
 
         TrackPointCache track = getTrack(source, locusCache);
@@ -53,6 +56,9 @@ public class TrackPointsRequest extends AbstractTaskerAction {
         vars.putString(TrackPointsEdit.TRACK_SEGMENT_VAR.getVar(), track.getSelectedSegment(pointType).toString());
         vars.putString(TrackPointsEdit.TRACK_POINT_COUNT.getVar(), String.valueOf(track.mTrack.getPoints().size()));
         vars.putString(TrackPointsEdit.TRACK_WAYPOINT_COUNT.getVar(), String.valueOf(track.mTrack.getWaypoints().size()));
+
+        ExecutionTimes.INSTANCE.addDurationSinceLastAdd(ExecutionTimes.Type.PROCESS);
+
         TaskerPlugin.addVariableBundle(mReceiver.getResultExtras(true), vars);
 
         mReceiver.setResultCode(TaskerPlugin.Setting.RESULT_CODE_OK);

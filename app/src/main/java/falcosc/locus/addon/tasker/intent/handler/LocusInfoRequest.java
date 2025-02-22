@@ -72,6 +72,7 @@ public class LocusInfoRequest extends AbstractTaskerAction {
         requireSupportingVariables();
 
         Set<String> selectedFields = requireSelectedFields(apiExtraBundle);
+        ExecutionTimes.INSTANCE.addDurationSinceLastAdd(ExecutionTimes.Type.PARSE_VARS);
 
         LocusInfo info = ActionBasics.INSTANCE.getLocusInfo(locusCache.getApplicationContext(), locusCache.requireLocusVersion());
 
@@ -82,6 +83,7 @@ public class LocusInfoRequest extends AbstractTaskerAction {
                 varsBundle.putString(locusInfoField.getVar(), String.valueOf(locusInfoField.apply(info)));
             }
         }
+        ExecutionTimes.INSTANCE.addDurationSinceLastAdd(ExecutionTimes.Type.PROCESS);
 
         TaskerPlugin.addVariableBundle(mReceiver.getResultExtras(true), varsBundle);
         mReceiver.setResultCode(TaskerPlugin.Setting.RESULT_CODE_OK);

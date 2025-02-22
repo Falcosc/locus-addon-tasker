@@ -9,12 +9,15 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.asamm.logger.Logger;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 import androidx.annotation.Nullable;
@@ -54,6 +57,34 @@ public class MainActivity extends ProjectActivity {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(this, getString(R.string.err_notification_permission), Toast.LENGTH_LONG).show();
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 0);
+        }
+
+        replaceActivityThreadHandler();
+    }
+
+    public static void replaceActivityThreadHandler() {
+        try {
+            // Get the ActivityThread class
+            Class<?> activityThreadClass = Class.forName("android.app.ActivityThread");
+
+            // Get the current ActivityThread instance
+            Field currentActivityThreadField = activityThreadClass.getDeclaredField("sCurrentActivityThread");
+            currentActivityThreadField.setAccessible(true);
+            Object currentActivityThread = currentActivityThreadField.get(null);
+
+            // Get the mH field (the handler)
+            Field mHField = activityThreadClass.getDeclaredField("mH");
+            mHField.setAccessible(true);
+            Handler originalHandler = (Handler) mHField.get(currentActivityThread);
+
+            // Set the custom callback on the original handler
+            Field mCallbackField = Handler.class.getDeclaredField("mCallback");
+            mCallbackField.setAccessible(true);
+            CustomCallback customCallback = new CustomCallback(originalHandler);
+            mCallbackField.set(originalHandler, customCallback);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
