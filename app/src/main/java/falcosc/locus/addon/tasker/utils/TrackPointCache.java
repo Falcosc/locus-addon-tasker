@@ -34,6 +34,10 @@ public class TrackPointCache {
     private static final String ID = "Id"; //NON-NLS
     private static final String WAYPOINT_INDEX = "WaypointIndex";
 
+    public static final String DEFAULT_FIELDS = "Description, Comment, RteIndex";
+    public static final String ROUTING_FIELDS = "Description, Comment, RteIndex, RteTimeI, RteDistanceF, RteSpeedF, RtePointAction, " +
+            "RtePointPassPlaceNotify, RteStreet";
+
     /**
      * @noinspection HardCodedStringLiteral these are technical field names
      */
@@ -50,21 +54,21 @@ public class TrackPointCache {
             Map.entry("AddressRegion", GeoDataExtra.PAR_ADDRESS_REGION),
             Map.entry("AddressPostCode", GeoDataExtra.PAR_ADDRESS_POST_CODE),
             Map.entry("AddressCountry", GeoDataExtra.PAR_ADDRESS_COUNTRY),
-            Map.entry("RIndex", GeoDataExtra.PAR_RTE_INDEX),
-            Map.entry("RDistanceF", GeoDataExtra.PAR_RTE_DISTANCE_F),
-            Map.entry("RTimeI", GeoDataExtra.PAR_RTE_TIME_I),
-            Map.entry("RSpeedF", GeoDataExtra.PAR_RTE_SPEED_F),
-            Map.entry("RTurnCost", GeoDataExtra.PAR_RTE_TURN_COST),
-            Map.entry("RStreet", GeoDataExtra.PAR_RTE_STREET),
-            Map.entry("RPointAction", GeoDataExtra.PAR_RTE_POINT_ACTION),
-            Map.entry("RPointPassPlaceNotify", GeoDataExtra.PAR_RTE_POINT_PASS_PLACE_NOTIFY),
-            Map.entry("RComputeType", GeoDataExtra.PAR_RTE_COMPUTE_TYPE),
-            Map.entry("RSimpleRoundabouts", GeoDataExtra.PAR_RTE_SIMPLE_ROUNDABOUTS),
-            Map.entry("RPlanDefinition", GeoDataExtra.PAR_RTE_PLAN_DEFINITION),
-            Map.entry("RMaxSpeeds", GeoDataExtra.PAR_RTE_MAX_SPEEDS),
-            Map.entry("RWayTypes", GeoDataExtra.PAR_RTE_WAY_TYPES),
-            Map.entry("RSurfaces", GeoDataExtra.PAR_RTE_SURFACES),
-            Map.entry("RWarnings", GeoDataExtra.PAR_RTE_WARNINGS),
+            Map.entry("RteIndex", GeoDataExtra.PAR_RTE_INDEX),
+            Map.entry("RteDistanceF", GeoDataExtra.PAR_RTE_DISTANCE_F),
+            Map.entry("RteTimeI", GeoDataExtra.PAR_RTE_TIME_I),
+            Map.entry("RteSpeedF", GeoDataExtra.PAR_RTE_SPEED_F),
+            Map.entry("RteTurnCost", GeoDataExtra.PAR_RTE_TURN_COST),
+            Map.entry("RteStreet", GeoDataExtra.PAR_RTE_STREET),
+            Map.entry("RtePointAction", GeoDataExtra.PAR_RTE_POINT_ACTION),
+            Map.entry("RtePointPassPlaceNotify", GeoDataExtra.PAR_RTE_POINT_PASS_PLACE_NOTIFY),
+            Map.entry("RteComputeType", GeoDataExtra.PAR_RTE_COMPUTE_TYPE),
+            Map.entry("RteSimpleRoundabouts", GeoDataExtra.PAR_RTE_SIMPLE_ROUNDABOUTS),
+            Map.entry("RtePlanDefinition", GeoDataExtra.PAR_RTE_PLAN_DEFINITION),
+            Map.entry("RteMaxSpeeds", GeoDataExtra.PAR_RTE_MAX_SPEEDS),
+            Map.entry("RteWayTypes", GeoDataExtra.PAR_RTE_WAY_TYPES),
+            Map.entry("RteSurfaces", GeoDataExtra.PAR_RTE_SURFACES),
+            Map.entry("RteWarnings", GeoDataExtra.PAR_RTE_WARNINGS),
             Map.entry("OsmNotesId", GeoDataExtra.PAR_OSM_NOTES_ID),
             Map.entry("OsmNotesClosed", GeoDataExtra.PAR_OSM_NOTES_CLOSED),
             Map.entry("LopointsId", GeoDataExtra.PAR_LOPOINTS_ID),
@@ -130,8 +134,8 @@ public class TrackPointCache {
                             jsonPoint.put(entry.getKey(), value);
                         }
                     }
-                    if (jsonPoint.has("RPointAction")) {
-                        jsonPoint.put("RPointAction", GeoDataHelperKt.getParameterRteAction(p));
+                    if (jsonPoint.has("RtePointAction")) {
+                        jsonPoint.put("RtePointAction", GeoDataHelperKt.getParameterRteAction(p));
                     }
                 }
                 jsonPoint.put(ID, p.getId()); //Overwrite location id with waypoint id

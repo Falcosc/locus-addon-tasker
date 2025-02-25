@@ -37,7 +37,7 @@ public class TrackPointsRequest extends AbstractTaskerAction {
         Type pointType = Type.valueOf(requireField(apiExtraBundle, Const.INTENT_EXTRA_TRK_POINTS_TYPE));
         String locationFields = apiExtraBundle.getString(Const.INTENT_EXTRA_LOCATION_FIELDS);
         String extraWaypointFields = apiExtraBundle.getString(Const.INTENT_EXTRA_WAYPOINT_FIELDS);
-        int count = Math.max(Integer.parseInt(apiExtraBundle.getString(Const.INTENT_EXTRA_COUNT, "100")), 100);
+        int count = Math.max(Integer.parseInt(apiExtraBundle.getString(Const.INTENT_EXTRA_COUNT, "100")), 0);
         int offset = Math.max(Integer.parseInt(apiExtraBundle.getString(Const.INTENT_EXTRA_OFFSET, "0")), 0);
 
         LocusCache locusCache = LocusCache.getInstanceUnsafe(mContext);

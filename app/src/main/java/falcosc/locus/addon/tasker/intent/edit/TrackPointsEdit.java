@@ -105,7 +105,7 @@ public class TrackPointsEdit extends TaskerEditActivity {
         setContentView(R.layout.edit_track_points);
         setOptionalButton(R.string.act_documentation, (v) -> openWaypointExtraDoc());
 
-        TextView mTrackLabel =  findViewById(R.id.track_select_label);
+        TextView mTrackLabel = findViewById(R.id.track_select_label);
         TextView trackHelp = findViewById(R.id.track_select_help);
         mTrackSelection = findViewById(R.id.track_select);
         mTrackSelection.setAdapter(getTypeArrayAdapter(trackItems));
@@ -128,6 +128,11 @@ public class TrackPointsEdit extends TaskerEditActivity {
         mTypeSelection.setOnItemSelectedListener(new SimpleItemSelectListener(mTypeLabel.getText(),
                 (selectedValue) -> handleTypeChange((EnumSpinnerItem) selectedValue, findViewById(R.id.waypoint_content))));
 
+        findViewById(R.id.waypoint_extras_default).setOnClickListener((v) -> mWaypointExtrasEdit.setText(TrackPointCache.DEFAULT_FIELDS));
+        findViewById(R.id.waypoint_extras_routing).setOnClickListener((v) -> mWaypointExtrasEdit.setText(TrackPointCache.ROUTING_FIELDS));
+        findViewById(R.id.waypoint_extras_all).setOnClickListener((v) ->
+                mWaypointExtrasEdit.setText(String.join(", ", TrackPointCache.getValidWaypointExtras())));
+
         fillEdits(getIntent().getBundleExtra(com.twofortyfouram.locale.api.Intent.EXTRA_BUNDLE));
     }
 
@@ -141,11 +146,11 @@ public class TrackPointsEdit extends TaskerEditActivity {
             mCountEdit.setText(taskerBundle.getString(Const.INTENT_EXTRA_COUNT));
         }
 
-        if(mLocationFieldsEdit.getText().toString().trim().isEmpty()) {
+        if (mLocationFieldsEdit.getText().toString().trim().isEmpty()) {
             mLocationFieldsEdit.setText(String.join(", ", TrackPointCache.getValidLocationFields()));
         }
-        if(mWaypointExtrasEdit.getText().toString().trim().isEmpty()) {
-            mWaypointExtrasEdit.setText(String.join(", ", TrackPointCache.getValidWaypointExtras()));
+        if (mWaypointExtrasEdit.getText().toString().trim().isEmpty()) {
+            mWaypointExtrasEdit.setText(TrackPointCache.DEFAULT_FIELDS);
         }
     }
 
@@ -188,7 +193,7 @@ public class TrackPointsEdit extends TaskerEditActivity {
         String description = trackItem.toString();
         description += "\n" + count + " " + typeItem;
 
-        if(!"0".equals(offset)) {
+        if (!"0".equals(offset)) {
             description += "\n" + ((TextView) findViewById(R.id.offset_label)).getText() + " " + offset;
         }
         description += "\n" + ((TextView) findViewById(R.id.location_fields_label)).getText() + " " + locationFields;
@@ -242,7 +247,7 @@ public class TrackPointsEdit extends TaskerEditActivity {
     private String[] getVariableList(@NonNull TrackPointsRequest.Type type, @NonNull String offset) {
         Map<String, Object> jsonDesc = new LinkedHashMap<>();
         try {
-            if(!offset.isEmpty() && (offset.charAt(0) == '%')) {
+            if (!offset.isEmpty() && (offset.charAt(0) == '%')) {
                 jsonDesc.put(OFFSET_KEY, getString(R.string.offset_desc));
             }
             if (type == TrackPointsRequest.Type.WAYPOINTS) {
@@ -278,18 +283,18 @@ public class TrackPointsEdit extends TaskerEditActivity {
 
         Collection<String> invalidLocationFields =
                 TrackPointCache.findInvalidFields(mLocationFieldsEdit.getText().toString(), TrackPointCache.getValidLocationFields());
-        if(!invalidLocationFields.isEmpty()) {
+        if (!invalidLocationFields.isEmpty()) {
             mLocationFieldsEdit.setError(getString(R.string.err_trk_points_invalid_fields, String.join(", ", invalidLocationFields)));
             inputIsValid = false;
         }
         Collection<String> invalidWaypointExtras =
                 TrackPointCache.findInvalidFields(mWaypointExtrasEdit.getText().toString(), TrackPointCache.getValidWaypointExtras());
-        if(!invalidWaypointExtras.isEmpty()) {
+        if (!invalidWaypointExtras.isEmpty()) {
             mWaypointExtrasEdit.setError(getString(R.string.err_trk_points_invalid_fields, String.join(", ", invalidWaypointExtras)));
             inputIsValid = false;
         }
 
-        if(inputIsValid) {
+        if (inputIsValid) {
             finish(createResultIntent(), null);
         }
     }
