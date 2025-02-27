@@ -94,8 +94,8 @@ public class TrackPointCache {
     );
 
     public final Track mTrack;
-    public List<String> mSelectLocFields;
-    public List<String> mSelectWaypointExtras;
+    public String[] mSelectLocFields;
+    public String[] mSelectWaypointExtras;
     private int mSelectCount;
     private int mSelectOffset;
 
@@ -175,55 +175,18 @@ public class TrackPointCache {
     }
 
     @NonNull
-    private JSONObject[] getScopeAllFields(@NonNull JSONObject[] sourceObjects) {
+    private JSONArray getScope(@NonNull JSONObject[] sourceObjects, String[] selectFields) {
         int sourceCount = Math.max(0, sourceObjects.length - mSelectOffset);
         int count = Math.min(sourceCount, mSelectCount);
-        JSONObject[] jsonArray = new JSONObject[count];
-        if(count > 0) {
-            System.arraycopy(sourceObjects, mSelectOffset, jsonArray, 0, count);
-        }
-        return jsonArray;
-    }
-
-    private static void removeFields(@NonNull JSONObject[] output, @NonNull Set<String> fields) {
-        for (JSONObject jsonObject : output) {
-            for (String field : fields) {
-                jsonObject.remove(field);
-            }
-        }
-    }
-
-    @NonNull
-    private JSONArray getSelectedPoints() {
-        JSONObject[] jsonObjects = getScopeAllFields(mPoints);
-        Set<String> fieldsToRemove = new HashSet<>(fieldToLocGetter.keySet());
-        mSelectLocFields.forEach(fieldsToRemove::remove);
-        fieldsToRemove.remove(NAME); //we always want to keep Name in Location for waypoints
-        if (!fieldsToRemove.isEmpty()) {
-            removeFields(jsonObjects, fieldsToRemove);
-        }
-        return createJSONArray(jsonObjects);
-    }
-
-    @NonNull
-    private JSONArray getSelectedWaypoints() {
-        JSONObject[] jsonObjects = getScopeAllFields(mWaypoints);
-        Set<String> fieldsToRemove = new HashSet<>(fieldToWaypointExtra.keySet());
-        mSelectWaypointExtras.forEach(fieldsToRemove::remove);
-        if (!fieldsToRemove.isEmpty()) {
-            removeFields(jsonObjects, fieldsToRemove);
-        }
-        return createJSONArray(jsonObjects);
-    }
-
-    @NonNull
-    private static JSONArray createJSONArray(@NonNull JSONObject[] jsonObjects) {
+        JSONArray jsonArray = new JSONArray();
         try {
-            return new JSONArray(jsonObjects);
+            for (int i = 0; i < count; i++) {
+                jsonArray.put(new JSONObject(sourceObjects[mSelectOffset + i], selectFields));
+            }
         } catch (JSONException e) {
             Logger.e(e, TAG); //impossible, we only copy already validated json objects
         }
-        return new JSONArray();
+        return jsonArray;
     }
 
     public void setSelectFields(@Nullable String locFields, @Nullable String waypointExtras) {
@@ -253,17 +216,16 @@ public class TrackPointCache {
     }
 
     @NonNull
-    public static List<String> findMatchingFields(@Nullable String userFields, @NonNull Set<String> fields) {
+    public static String[] findMatchingFields(@Nullable String userFields, @NonNull Set<String> fields) {
         if (userFields == null) {
-            return new ArrayList<>();
+            return new String[0];
         }
         Map<String, String> lowerFields = fields.stream().collect(Collectors.toMap(
                 field -> field.toLowerCase(Locale.ROOT),
                 field -> field
         ));
         return getFieldsTrimmed(userFields).map(userField -> lowerFields.get(userField.toLowerCase(Locale.ROOT)))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                .filter(Objects::nonNull).toArray(String[]::new);
     }
 
     @NonNull
@@ -295,12 +257,12 @@ public class TrackPointCache {
         try {
             jsonResponse.put(TrackPointsEdit.OFFSET_KEY, mSelectOffset);
             if (pointType == TrackPointsRequest.Type.WAYPOINTS) {
-                jsonResponse.put(TrackPointsEdit.WAYPOINTS_KEY, getSelectedWaypoints());
+                jsonResponse.put(TrackPointsEdit.WAYPOINTS_KEY, getScope(mWaypoints, mSelectWaypointExtras));
             } else if (pointType == TrackPointsRequest.Type.POINTS) {
-                jsonResponse.put(TrackPointsEdit.POINTS_KEY, getSelectedPoints());
+                jsonResponse.put(TrackPointsEdit.POINTS_KEY, getScope(mPoints, mSelectLocFields));
             } else {
-                jsonResponse.put(TrackPointsEdit.WAYPOINTS_KEY, getSelectedWaypoints());
-                jsonResponse.put(TrackPointsEdit.POINTS_KEY, getSelectedPoints());
+                jsonResponse.put(TrackPointsEdit.WAYPOINTS_KEY, getScope(mWaypoints, mSelectWaypointExtras));
+                jsonResponse.put(TrackPointsEdit.POINTS_KEY, getScope(mPoints, mSelectLocFields));
             }
         } catch (JSONException e) {
             Logger.e(e, TAG); //impossible, we only put JSONArrays into the result

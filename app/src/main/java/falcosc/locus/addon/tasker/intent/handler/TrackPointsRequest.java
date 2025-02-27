@@ -44,7 +44,7 @@ public class TrackPointsRequest extends AbstractTaskerAction {
 
         TrackPointCache track = getTrack(source, locusCache);
         track.setSelectFields(locationFields, extraWaypointFields);
-        if (track.mSelectLocFields.isEmpty()) {
+        if (track.mSelectLocFields.length < 1) {
             throw new RequiredDataMissingException(mContext.getResources().getString(R.string.err_no_valid_loc_fields, locationFields));
         } //extraWaypointFields can stay empty
         track.setSelectAmount(count, offset);
