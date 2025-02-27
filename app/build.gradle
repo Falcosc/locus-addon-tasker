@@ -1,3 +1,4 @@
+//file:noinspection HardCodedStringLiteral
 apply plugin: 'com.android.application'
 
 android {
@@ -13,7 +14,7 @@ android {
     defaultConfig {
         minSdkVersion Integer.valueOf(PARAM_MIN_SDK_VERSION)
         targetSdkVersion Integer.valueOf(PARAM_TARGET_SDK_VERSION)
-        versionCode 93
+        versionCode 94
         versionName '1.8.0-SNAPSHOT'
         buildConfigField 'String', 'CONTACT_EMAIL', '"' + getContactEmail() + '"'
         buildConfigField 'String', 'ACTION_TASK_DOC_URL', '"' + PARAM_ACTION_TASK_DOC_URL + '"'
@@ -60,7 +61,7 @@ tasks.register('checkActionTaskDoc') {
     doLast {
         'git submodule update --remote'.execute().waitFor()
 
-        def currentRevision = 'git -C locus-api.wiki log -1 --format=%H -- "Action-tasks-(Broadcasts).md"'.execute().text.trim()
+        final def currentRevision = 'git -C locus-api.wiki log -1 --format=%H -- "Action-tasks-(Broadcasts).md"'.execute().text.trim()
 
         if (currentRevision != PARAM_IMPL_ACTION_TASK_REV) {
             throw new GradleException("New ActionTasks got documented. Compare here:\n" +
@@ -72,7 +73,7 @@ tasks.register('checkActionTaskDoc') {
     }
 }
 
-tasks.whenTaskAdded { task ->
+tasks.whenTaskAdded { final task ->
     if (task.name == 'preReleaseBuild') {
         task.dependsOn 'checkActionTaskDoc'
     }

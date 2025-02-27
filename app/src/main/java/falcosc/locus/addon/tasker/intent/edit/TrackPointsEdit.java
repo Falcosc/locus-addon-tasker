@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -115,7 +116,9 @@ public class TrackPointsEdit extends TaskerEditActivity {
         }));
 
         mLocationFieldsEdit = findViewById(R.id.location_fields_edit);
+        mLocationFieldsEdit.setRawInputType(InputType.TYPE_CLASS_TEXT); //force keyboard to show next
         mWaypointExtrasEdit = findViewById(R.id.waypoint_extras_edit);
+        mWaypointExtrasEdit.setRawInputType(InputType.TYPE_CLASS_TEXT); //force keyboard to show next
         mOffsetEdit = findViewById(R.id.offset_edit);
         mCountEdit = findViewById(R.id.count_edit);
 
