@@ -77,7 +77,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:labelFor="@+id/location_fields_edit"
-                android:text="Location Fields:" />
+                android:text="Point Fields:" />
 
             <EditText
                 android:id="@+id/location_fields_edit"
@@ -94,19 +94,14 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Waypoints will always return Name field" />
-
-                <TextView
-                    android:id="@+id/waypoint_extras_label"
+                    android:id="@+id/waypoint_fields_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:labelFor="@+id/waypoint_extras_edit"
-                    android:text="Waypoint Extras:" />
+                    android:labelFor="@+id/waypoint_fields_edit"
+                    android:text="Waypoint Fields:" />
 
                 <EditText
-                    android:id="@+id/waypoint_extras_edit"
+                    android:id="@+id/waypoint_fields_edit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:autofillHints=""
@@ -121,7 +116,7 @@
                     android:weightSum="3">
 
                     <Button
-                        android:id="@+id/waypoint_extras_default"
+                        android:id="@+id/waypoint_fields_default"
                         style="?android:attr/buttonBarButtonStyle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -129,7 +124,7 @@
                         android:text="Default" />
 
                     <Button
-                        android:id="@+id/waypoint_extras_routing"
+                        android:id="@+id/waypoint_fields_routing"
                         style="?android:attr/buttonBarButtonStyle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -137,7 +132,7 @@
                         android:text="Routing" />
 
                     <Button
-                        android:id="@+id/waypoint_extras_all"
+                        android:id="@+id/waypoint_fields_all"
                         style="?android:attr/buttonBarButtonStyle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"

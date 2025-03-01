@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -33,9 +32,9 @@ public class TrackPointCache {
     private static final String ID = "Id"; //NON-NLS
     private static final String WAYPOINT_INDEX = "WaypointIndex";
 
-    public static final String DEFAULT_FIELDS = "Description, Comment, RteIndex";
-    public static final String ROUTING_FIELDS = "Description, Comment, RteIndex, RteTimeI, RteDistanceF, RteSpeedF, RtePointAction, " +
-            "RtePointPassPlaceNotify, RteStreet";
+    public static final String DEFAULT_FIELDS = "Id, Lon, Lat, Name, Description, Comment, PointIndex";
+    public static final String ROUTING_FIELDS = "Id, Lon, Lat, Name, Description, Comment, PointIndex, " +
+            "RteTimeI, RteDistanceF, RteSpeedF, RtePointAction, RtePointPassPlaceNotify, RteStreet";
 
     /**
      * @noinspection HardCodedStringLiteral these are technical field names
@@ -53,7 +52,7 @@ public class TrackPointCache {
             Map.entry("AddressRegion", GeoDataExtra.PAR_ADDRESS_REGION),
             Map.entry("AddressPostCode", GeoDataExtra.PAR_ADDRESS_POST_CODE),
             Map.entry("AddressCountry", GeoDataExtra.PAR_ADDRESS_COUNTRY),
-            Map.entry("RteIndex", GeoDataExtra.PAR_RTE_INDEX),
+            Map.entry("PointIndex", GeoDataExtra.PAR_RTE_INDEX),
             Map.entry("RteDistanceF", GeoDataExtra.PAR_RTE_DISTANCE_F),
             Map.entry("RteTimeI", GeoDataExtra.PAR_RTE_TIME_I),
             Map.entry("RteSpeedF", GeoDataExtra.PAR_RTE_SPEED_F),
@@ -188,13 +187,9 @@ public class TrackPointCache {
         return jsonArray;
     }
 
-    public void setSelectFields(@Nullable String locFields, @Nullable String waypointExtras) {
-        mSelectLocFields = findMatchingFields(locFields, fieldToLocGetter.keySet());
-        String[] waypointExtraFields = findMatchingFields(waypointExtras, fieldToWaypointExtra.keySet());
-        mSelectWaypointFields = new String[mSelectLocFields.length + waypointExtraFields.length + 1];
-        System.arraycopy(mSelectLocFields, 0, mSelectWaypointFields, 0, mSelectLocFields.length);
-        System.arraycopy(waypointExtraFields, 0, mSelectWaypointFields, mSelectLocFields.length, waypointExtraFields.length);
-        mSelectWaypointFields[mSelectWaypointFields.length - 1] = NAME;
+    public void setSelectFields(@Nullable String locFields, @Nullable String waypointFields) {
+        mSelectLocFields = findMatchingFields(locFields, getValidLocationFields());
+        mSelectWaypointFields = findMatchingFields(waypointFields, getValidWaypointFields());
     }
 
     public void setSelectAmount(int count, int offset) {
@@ -205,21 +200,24 @@ public class TrackPointCache {
     @NonNull
     public static List<String> getValidLocationFields() {
         List<String> fields = new ArrayList<>(fieldToLocGetter.keySet());
-        fields.add(WAYPOINT_INDEX);
+        fields.add(WAYPOINT_INDEX); //custom field
         fields.sort(String::compareTo);
         return fields;
     }
 
     @NonNull
-    public static List<String> getValidWaypointExtras() {
-        return fieldToWaypointExtra.entrySet().stream()
+    public static List<String> getValidWaypointFields() {
+        List<String> fields = new ArrayList<>(fieldToLocGetter.keySet());
+        fields.add(NAME); //Name is a location field but only needed for Waypoints
+        fields.addAll(fieldToWaypointExtra.entrySet().stream()
                 .sorted(Map.Entry.comparingByValue())
                 .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
+        return fields;
     }
 
     @NonNull
-    public static String[] findMatchingFields(@Nullable String userFields, @NonNull Set<String> fields) {
+    public static String[] findMatchingFields(@Nullable String userFields, @NonNull List<String> fields) {
         if (userFields == null) {
             return new String[0];
         }

@@ -19,7 +19,6 @@ import locus.api.objects.geoData.Track;
 public class TrackPointsRequest extends AbstractTaskerAction {
 
 
-
     public enum Type {
         WAYPOINTS, POINTS, POINTS_AND_WAYPOINTS
     }
@@ -36,17 +35,14 @@ public class TrackPointsRequest extends AbstractTaskerAction {
         TrackSource source = TrackSource.valueOf(requireField(apiExtraBundle, Const.INTENT_EXTRA_TRK_SOURCE));
         Type pointType = Type.valueOf(requireField(apiExtraBundle, Const.INTENT_EXTRA_TRK_POINTS_TYPE));
         String locationFields = apiExtraBundle.getString(Const.INTENT_EXTRA_LOCATION_FIELDS);
-        String extraWaypointFields = apiExtraBundle.getString(Const.INTENT_EXTRA_WAYPOINT_FIELDS);
+        String waypointFields = apiExtraBundle.getString(Const.INTENT_EXTRA_WAYPOINT_FIELDS);
         int count = Math.max(Integer.parseInt(apiExtraBundle.getString(Const.INTENT_EXTRA_COUNT, "100")), 0);
         int offset = Math.max(Integer.parseInt(apiExtraBundle.getString(Const.INTENT_EXTRA_OFFSET, "0")), 0);
 
         LocusCache locusCache = LocusCache.getInstanceUnsafe(mContext);
 
         TrackPointCache track = getTrack(source, locusCache);
-        track.setSelectFields(locationFields, extraWaypointFields);
-        if (track.mSelectLocFields.length < 1) {
-            throw new RequiredDataMissingException(mContext.getResources().getString(R.string.err_no_valid_loc_fields, locationFields));
-        } //extraWaypointFields can stay empty
+        track.setSelectFields(locationFields, waypointFields);
         track.setSelectAmount(count, offset);
 
         Bundle vars = new Bundle();
@@ -63,12 +59,12 @@ public class TrackPointsRequest extends AbstractTaskerAction {
         //noinspection SwitchStatement we don't want to register handler, it's only used here.
         switch (source) {
             case LAST_LOADED:
-                if(lCache.mTrackPointCache == null) {
+                if (lCache.mTrackPointCache == null) {
                     throw new RequiredDataMissingException(lCache.getApplicationContext().getString(R.string.err_trk_points_no_loaded_track));
                 }
                 return lCache.mTrackPointCache;
             case LOAD_SHARE:
-                if(lCache.mLastSharedTrack == null) {
+                if (lCache.mLastSharedTrack == null) {
                     throw new RequiredDataMissingException(lCache.getApplicationContext().getString(R.string.err_trk_points_no_track_selected));
                 }
                 lCache.mTrackPointCache = new TrackPointCache(lCache.mLastSharedTrack);

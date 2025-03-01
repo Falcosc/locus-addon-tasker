@@ -124,7 +124,6 @@
     <string name="possible_configuration_errors">Possible configuration errors:</string>
     <string name="err_locus_maps_not_installed">Locus Maps need to be installed</string>
     <string name="err_select_version_no_package">Could not find Locus version for package: %s</string>
-    <string name="err_no_valid_loc_fields">Did not find any valid Fields in Location Field List %s</string>
     <string name="exec_duration_html_desc">10 last execution runtimes, values get cleared on retrieve</string>
     <string name="err_trk_points_no_loaded_track">There is no loaded track, use load last shared or load guide track first</string>
     <string name="err_trk_points_no_track_selected">There was no track selected since last plugin initialization, run any task from track share menu</string>

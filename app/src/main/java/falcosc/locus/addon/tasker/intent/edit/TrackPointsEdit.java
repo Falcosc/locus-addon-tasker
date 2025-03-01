@@ -55,7 +55,7 @@ public class TrackPointsEdit extends TaskerEditActivity {
     private Spinner mTypeSelection;
     private Spinner mTrackSelection;
     private EditText mLocationFieldsEdit;
-    private EditText mWaypointExtrasEdit;
+    private EditText mWaypointFieldsEdit;
     private EditText mOffsetEdit;
     private EditText mCountEdit;
 
@@ -117,8 +117,8 @@ public class TrackPointsEdit extends TaskerEditActivity {
 
         mLocationFieldsEdit = findViewById(R.id.location_fields_edit);
         mLocationFieldsEdit.setRawInputType(InputType.TYPE_CLASS_TEXT); //force keyboard to show next
-        mWaypointExtrasEdit = findViewById(R.id.waypoint_extras_edit);
-        mWaypointExtrasEdit.setRawInputType(InputType.TYPE_CLASS_TEXT); //force keyboard to show next
+        mWaypointFieldsEdit = findViewById(R.id.waypoint_fields_edit);
+        mWaypointFieldsEdit.setRawInputType(InputType.TYPE_CLASS_TEXT); //force keyboard to show next
         mOffsetEdit = findViewById(R.id.offset_edit);
         mCountEdit = findViewById(R.id.count_edit);
 
@@ -129,12 +129,12 @@ public class TrackPointsEdit extends TaskerEditActivity {
         mTypeSelection = findViewById(R.id.type_select);
         mTypeSelection.setAdapter(getTypeArrayAdapter(typeItems));
         mTypeSelection.setOnItemSelectedListener(new SimpleItemSelectListener(mTypeLabel.getText(),
-                (selectedValue) -> handleTypeChange((EnumSpinnerItem) selectedValue, findViewById(R.id.waypoint_content))));
+                (selectedValue) -> handleTypeChange((EnumSpinnerItem) selectedValue)));
 
-        findViewById(R.id.waypoint_extras_default).setOnClickListener((v) -> mWaypointExtrasEdit.setText(TrackPointCache.DEFAULT_FIELDS));
-        findViewById(R.id.waypoint_extras_routing).setOnClickListener((v) -> mWaypointExtrasEdit.setText(TrackPointCache.ROUTING_FIELDS));
-        findViewById(R.id.waypoint_extras_all).setOnClickListener((v) ->
-                mWaypointExtrasEdit.setText(String.join(", ", TrackPointCache.getValidWaypointExtras())));
+        findViewById(R.id.waypoint_fields_default).setOnClickListener((v) -> mWaypointFieldsEdit.setText(TrackPointCache.DEFAULT_FIELDS));
+        findViewById(R.id.waypoint_fields_routing).setOnClickListener((v) -> mWaypointFieldsEdit.setText(TrackPointCache.ROUTING_FIELDS));
+        findViewById(R.id.waypoint_fields_all).setOnClickListener((v) ->
+                mWaypointFieldsEdit.setText(String.join(", ", TrackPointCache.getValidWaypointFields())));
 
         fillEdits(getIntent().getBundleExtra(com.twofortyfouram.locale.api.Intent.EXTRA_BUNDLE));
     }
@@ -144,7 +144,7 @@ public class TrackPointsEdit extends TaskerEditActivity {
             mTypeSelection.setSelection(findSpinnerItemByTypeName(typeItems, taskerBundle.getString(Const.INTENT_EXTRA_TRK_POINTS_TYPE)));
             mTrackSelection.setSelection(findSpinnerItemByTypeName(trackItems, taskerBundle.getString(Const.INTENT_EXTRA_TRK_SOURCE)));
             mLocationFieldsEdit.setText(taskerBundle.getString(Const.INTENT_EXTRA_LOCATION_FIELDS));
-            mWaypointExtrasEdit.setText(taskerBundle.getString(Const.INTENT_EXTRA_WAYPOINT_FIELDS));
+            mWaypointFieldsEdit.setText(taskerBundle.getString(Const.INTENT_EXTRA_WAYPOINT_FIELDS));
             mOffsetEdit.setText(taskerBundle.getString(Const.INTENT_EXTRA_OFFSET));
             mCountEdit.setText(taskerBundle.getString(Const.INTENT_EXTRA_COUNT));
         }
@@ -152,8 +152,8 @@ public class TrackPointsEdit extends TaskerEditActivity {
         if (mLocationFieldsEdit.getText().toString().trim().isEmpty()) {
             mLocationFieldsEdit.setText(String.join(", ", TrackPointCache.getValidLocationFields()));
         }
-        if (mWaypointExtrasEdit.getText().toString().trim().isEmpty()) {
-            mWaypointExtrasEdit.setText(TrackPointCache.DEFAULT_FIELDS);
+        if (mWaypointFieldsEdit.getText().toString().trim().isEmpty()) {
+            mWaypointFieldsEdit.setText(TrackPointCache.DEFAULT_FIELDS);
         }
     }
 
@@ -165,15 +165,28 @@ public class TrackPointsEdit extends TaskerEditActivity {
         }
     }
 
-    private void handleTypeChange(@NonNull EnumSpinnerItem selectedValue, @NonNull View waypointContent) {
+    private void handleTypeChange(@NonNull EnumSpinnerItem selectedValue) {
+        View waypointContent = findViewById(R.id.waypoint_content);
         if (selectedValue.mType == TrackPointsRequest.Type.POINTS) {
             waypointContent.setVisibility(View.GONE);
         } else {
             waypointContent.setVisibility(View.VISIBLE);
-            waypointContent.getParent().requestChildFocus(mWaypointExtrasEdit, mWaypointExtrasEdit);
+            waypointContent.getParent().requestChildFocus(mWaypointFieldsEdit, mWaypointFieldsEdit);
+        }
+
+        View locationLabel = findViewById(R.id.location_fields_label);
+        View locationEdit = findViewById(R.id.location_fields_edit);
+        if (selectedValue.mType == TrackPointsRequest.Type.WAYPOINTS) {
+            locationLabel.setVisibility(View.GONE);
+            locationEdit.setVisibility(View.GONE);
+        } else {
+            locationLabel.setVisibility(View.VISIBLE);
+            locationEdit.setVisibility(View.VISIBLE);
+            locationEdit.getParent().requestChildFocus(locationEdit, locationEdit);
         }
     }
 
+    /** @noinspection OverlyLongMethod don't separate extraBundle from description creation */
     @NonNull
     private Intent createResultIntent() {
         Bundle extraBundle = new Bundle();
@@ -184,10 +197,6 @@ public class TrackPointsEdit extends TaskerEditActivity {
         EnumSpinnerItem trackItem = (EnumSpinnerItem) mTrackSelection.getSelectedItem();
         extraBundle.putString(Const.INTENT_EXTRA_TRK_SOURCE, trackItem.mType.name());
 
-        String locationFields = mLocationFieldsEdit.getText().toString().trim();
-        extraBundle.putString(Const.INTENT_EXTRA_LOCATION_FIELDS, locationFields);
-        String waypointFields = mWaypointExtrasEdit.getText().toString().trim();
-        extraBundle.putString(Const.INTENT_EXTRA_WAYPOINT_FIELDS, waypointFields);
         String offset = mOffsetEdit.getText().toString().trim();
         extraBundle.putString(Const.INTENT_EXTRA_OFFSET, offset);
         String count = mCountEdit.getText().toString().trim();
@@ -199,8 +208,19 @@ public class TrackPointsEdit extends TaskerEditActivity {
         if (!"0".equals(offset)) {
             description += "\n" + ((TextView) findViewById(R.id.offset_label)).getText() + " " + offset;
         }
-        description += "\n" + ((TextView) findViewById(R.id.location_fields_label)).getText() + " " + locationFields;
-        description += "\n" + ((TextView) findViewById(R.id.waypoint_extras_label)).getText() + " " + waypointFields;
+
+        if (typeItem.mType != TrackPointsRequest.Type.WAYPOINTS) {
+            String locationFields = mLocationFieldsEdit.getText().toString().trim();
+            extraBundle.putString(Const.INTENT_EXTRA_LOCATION_FIELDS, locationFields);
+            description += "\n" + ((TextView) findViewById(R.id.location_fields_label)).getText() + " " + locationFields;
+        }
+
+        if (typeItem.mType != TrackPointsRequest.Type.POINTS) {
+            String waypointFields = mWaypointFieldsEdit.getText().toString().trim();
+            extraBundle.putString(Const.INTENT_EXTRA_WAYPOINT_FIELDS, waypointFields);
+            description += "\n" + ((TextView) findViewById(R.id.waypoint_fields_label)).getText() + " " + waypointFields;
+        }
+
 
         Bundle hostExtras = getIntent().getExtras();
         if (TaskerPlugin.Setting.hostSupportsOnFireVariableReplacement(hostExtras)) {
@@ -282,7 +302,7 @@ public class TrackPointsEdit extends TaskerEditActivity {
     void onApply() {
         boolean inputIsValid = true;
         mLocationFieldsEdit.setError(null);
-        mWaypointExtrasEdit.setError(null);
+        mWaypointFieldsEdit.setError(null);
 
         Collection<String> invalidLocationFields =
                 TrackPointCache.findInvalidFields(mLocationFieldsEdit.getText().toString(), TrackPointCache.getValidLocationFields());
@@ -290,10 +310,10 @@ public class TrackPointsEdit extends TaskerEditActivity {
             mLocationFieldsEdit.setError(getString(R.string.err_trk_points_invalid_fields, String.join(", ", invalidLocationFields)));
             inputIsValid = false;
         }
-        Collection<String> invalidWaypointExtras =
-                TrackPointCache.findInvalidFields(mWaypointExtrasEdit.getText().toString(), TrackPointCache.getValidWaypointExtras());
-        if (!invalidWaypointExtras.isEmpty()) {
-            mWaypointExtrasEdit.setError(getString(R.string.err_trk_points_invalid_fields, String.join(", ", invalidWaypointExtras)));
+        Collection<String> invalidWaypointFields =
+                TrackPointCache.findInvalidFields(mWaypointFieldsEdit.getText().toString(), TrackPointCache.getValidWaypointFields());
+        if (!invalidWaypointFields.isEmpty()) {
+            mWaypointFieldsEdit.setError(getString(R.string.err_trk_points_invalid_fields, String.join(", ", invalidWaypointFields)));
             inputIsValid = false;
         }
 
