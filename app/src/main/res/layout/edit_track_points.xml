@@ -172,7 +172,7 @@
                     android:hint="limits data amount"
                     android:imeOptions="actionNext"
                     android:inputType="number"
-                    android:text="200" />
+                    android:text="1000" />
 
                 <TextView
                     android:id="@+id/offset_label"

@@ -94,7 +94,7 @@ public class TrackPointCache {
 
     public final Track mTrack;
     public String[] mSelectLocFields;
-    public String[] mSelectWaypointExtras;
+    public String[] mSelectWaypointFields;
     private int mSelectCount;
     private int mSelectOffset;
 
@@ -190,7 +190,11 @@ public class TrackPointCache {
 
     public void setSelectFields(@Nullable String locFields, @Nullable String waypointExtras) {
         mSelectLocFields = findMatchingFields(locFields, fieldToLocGetter.keySet());
-        mSelectWaypointExtras = findMatchingFields(waypointExtras, fieldToWaypointExtra.keySet());
+        String[] waypointExtraFields = findMatchingFields(waypointExtras, fieldToWaypointExtra.keySet());
+        mSelectWaypointFields = new String[mSelectLocFields.length + waypointExtraFields.length + 1];
+        System.arraycopy(mSelectLocFields, 0, mSelectWaypointFields, 0, mSelectLocFields.length);
+        System.arraycopy(waypointExtraFields, 0, mSelectWaypointFields, mSelectLocFields.length, waypointExtraFields.length);
+        mSelectWaypointFields[mSelectWaypointFields.length - 1] = NAME;
     }
 
     public void setSelectAmount(int count, int offset) {
@@ -256,11 +260,11 @@ public class TrackPointCache {
         try {
             jsonResponse.put(TrackPointsEdit.OFFSET_KEY, mSelectOffset);
             if (pointType == TrackPointsRequest.Type.WAYPOINTS) {
-                jsonResponse.put(TrackPointsEdit.WAYPOINTS_KEY, getScope(mWaypoints, mSelectWaypointExtras));
+                jsonResponse.put(TrackPointsEdit.WAYPOINTS_KEY, getScope(mWaypoints, mSelectWaypointFields));
             } else if (pointType == TrackPointsRequest.Type.POINTS) {
                 jsonResponse.put(TrackPointsEdit.POINTS_KEY, getScope(mPoints, mSelectLocFields));
             } else {
-                jsonResponse.put(TrackPointsEdit.WAYPOINTS_KEY, getScope(mWaypoints, mSelectWaypointExtras));
+                jsonResponse.put(TrackPointsEdit.WAYPOINTS_KEY, getScope(mWaypoints, mSelectWaypointFields));
                 jsonResponse.put(TrackPointsEdit.POINTS_KEY, getScope(mPoints, mSelectLocFields));
             }
         } catch (JSONException e) {
